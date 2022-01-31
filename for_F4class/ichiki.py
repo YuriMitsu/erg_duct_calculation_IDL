@@ -54,9 +54,13 @@ def F(X):
 
     x, y, z = X
 
-    def Tb(a, b, c=0):
+    def Tb(r, theta, phi):
 
         # a, b, c = Xa
+
+        a = r*np.sin(theta)*np.cos(phi)
+        b = r*np.sin(theta)*np.sin(phi)
+        c = r*np.cos(theta)
 
         A = a - x
         B = b - y
@@ -73,8 +77,8 @@ def F(X):
 
         return Tb
 
-    Tb_integrate, Tb_err = integrate.dblquad(
-        Tb, -1000, 1000, lambda x: -1000, lambda x: 1000)
+    Tb_integrate, Tb_err = integrate.tplquad(
+        Tb, 0, 100, lambda x: 0, lambda x: 2*np.pi, , lambda x: 0, lambda x: np.pi)
 
     F = (myu_0*J) / (4*np.pi) * Tb_integrate
     F_err = (myu_0*J) / (4*np.pi) * Tb_err
