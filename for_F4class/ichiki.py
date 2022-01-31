@@ -2,10 +2,12 @@
 import numpy as np
 # from sympy import integrate
 import scipy.integrate as integrate
+import matplotlib.pyplot as plt
 
+# %%
 
 # 定数
-myu_0 = 1.2
+myu_0 = 1.256637e-6
 J = 3  # ?
 
 # Magnetized bodyの中心位置
@@ -71,17 +73,39 @@ def F(X):
 
         return Tb
 
-    Tb_integrate, err = integrate.dblquad(
+    Tb_integrate, Tb_err = integrate.dblquad(
         Tb, -1000, 1000, lambda x: -1000, lambda x: 1000)
 
     F = (myu_0*J) / (4*np.pi) * Tb_integrate
+    F_err = (myu_0*J) / (4*np.pi) * Tb_err
 
     # return Tb_integrate, err
-    return F
+    return F, F_err
 
 
 # %%
 F([1, 2, 3])
 # errorを吐く、、、0に近い値が出るのでそれっぽい値を使っていることろがあるって内容らしい
+
+# %%
+xx = np.arange(-100, 100, 50)
+yy = np.arange(-100, 100, 50)
+xxx, yyy = np.meshgrid(xx, yy)
+
+F_all = []
+
+for i in np.arange(len(xxx)):
+    F_, F_err = F([xxx[i], yyy[i], 0])
+
+    F_all.append(F_)
+
+
+# %%
+
+x_plot = np.reshape(xxx, -1)
+y_plot = np.reshape(yyy, -1)
+F_plot = np.reshape(F_all, -1)
+
+plt.scatter(x_plot, y_plot, c=F_plot)
 
 # %%
