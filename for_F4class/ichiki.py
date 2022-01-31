@@ -78,7 +78,7 @@ def F(X):
         return Tb
 
     Tb_integrate, Tb_err = integrate.tplquad(
-        Tb, 0, 100, lambda x: 0, lambda x: 2*np.pi, , lambda x: 0, lambda x: np.pi)
+        Tb, 0, 100, lambda x: 0, lambda x: 2*np.pi, lambda x: 0, lambda x: np.pi)
 
     F = (myu_0*J) / (4*np.pi) * Tb_integrate
     F_err = (myu_0*J) / (4*np.pi) * Tb_err
