@@ -1,8 +1,10 @@
 # %%
+from cmath import pi
 import numpy as np
-# from sympy import integrate
+import math
 import scipy.integrate as integrate
 import matplotlib.pyplot as plt
+import time
 
 # %%
 
@@ -11,7 +13,7 @@ myu_0 = 1.256637e-6
 J = 3  # ?
 
 # Magnetized bodyの中心位置
-Mx, My, Mz = 0, 0, 200  # [m]
+Mx, My, Mz = 0, 0, 0  # [m]
 
 # %%
 
@@ -49,67 +51,45 @@ alpha23 = N*m + M*n
 
 # %%
 
+def F(x, y):
 
-def F(X):
-
-    x, y, z = X
-
-    def Tb(r, theta, phi):
-
-        # a, b, c = Xa
-
-        a = r*np.sin(theta)*np.cos(phi)
-        b = r*np.sin(theta)*np.sin(phi)
-        c = r*np.cos(theta)
+    def Tb(a, b, c):
 
         A = a - x
         B = b - y
-        C = c - z
+        C = c
 
         R = np.sqrt(A**2 + B**2 + C**2)
 
         Tb = alpha23/2*np.log((R-A)/(R+A)) \
             + alpha13/2*np.log((R-B)/(R+B)) \
             - alpha12*np.log(R+C) \
-            - L*l*np.arctan(A*B / (A**2+R*C+C**2)) \
-            - M*m*np.arctan(A*B / (B**2+R*C+C**2)) \
-            - N*n*np.arctan(A*B / R*C)
+            - L*l*np.arctan2(A*B, (A**2+R*C+C**2)) \
+            - M*m*np.arctan2(A*B, (B**2+R*C+C**2)) \
+            - N*n*np.arctan2(A*B, R*C)
 
         return Tb
+    T = 0
 
-    Tb_integrate, Tb_err = integrate.tplquad(
-        Tb, 0, 100, lambda x: 0, lambda x: 2*np.pi, lambda x: 0, lambda x: np.pi)
+    for c in range(100, 300, 4):
 
-    F = (myu_0*J) / (4*np.pi) * Tb_integrate
-    F_err = (myu_0*J) / (4*np.pi) * Tb_err
+        for b in range(-int(np.sqrt(400*c-30000-c*c)), int(np.sqrt(400*c-30000-c*c)), 4):
+            for a in range(-int(np.sqrt(400*c-30000-c*c-b*b)), int(np.sqrt(400*c-30000-c*c-b*b)), 4):
+                T += Tb(a+4, b+4, c+4) - Tb(a, b+4, c+4) - Tb(a+4, b, c+1) - Tb(a+4,
+                                                                                b+4, c) + Tb(a+4, b, c) + Tb(a, b+4, c) + Tb(a, b, c+4) - Tb(a, b, c)
+    return T
 
-    # return Tb_integrate, err
-    return F, F_err
 
-
-# %%
-F([1, 2, 3])
 # errorを吐く、、、0に近い値が出るのでそれっぽい値を使っていることろがあるって内容らしい
 
 # %%
-xx = np.arange(-100, 100, 50)
-yy = np.arange(-100, 100, 50)
+
+xx = np.arange(-10000, 10000, 100)
+yy = np.arange(-10000, 10000, 100)
 xxx, yyy = np.meshgrid(xx, yy)
 
-F_all = []
-
-for i in np.arange(len(xxx)):
-    F_, F_err = F([xxx[i], yyy[i], 0])
-
-    F_all.append(F_)
-
+F_all = F(xxx, yyy)
 
 # %%
-
-x_plot = np.reshape(xxx, -1)
-y_plot = np.reshape(yyy, -1)
-F_plot = np.reshape(F_all, -1)
-
-plt.scatter(x_plot, y_plot, c=F_plot)
-
-# %%
+plt.pcolormesh(xxx, yyy, F_all)
+plt.show()
