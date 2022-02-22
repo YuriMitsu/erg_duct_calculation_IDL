@@ -272,9 +272,11 @@ pro day_plot, span=span, hour_plot=hour_plot
   endfor
 
   ; ************************************
-  ; 12.WNA, polarization and planarity
+  ; 12.WNA, polarization and planarity 
   ; ************************************
+  ;  erg_calc_pwe_wna.pro を参考に作成
 
+  powspec_b = dblarr(n_t,n_e)
   wna = dblarr(n_t,n_e)
   polarization = dblarr(n_t,n_e)
   planarity = dblarr(n_t,n_e)
@@ -282,17 +284,23 @@ pro day_plot, span=span, hour_plot=hour_plot
   for i=0, n_elements(s00.x)-1 do begin
     for j=0, n_elements(s00.v2)-2 do begin
       ; power spec
-      ; powspec_b[i,j] = sqrt(A[0,0,i,j]^2 + A[1,1,i,j]^2 + A[2,2,i,j]^2)
+      powspec_b[i,j] = sqrt(A[0,0,i,j]^2 + A[1,1,i,j]^2 + A[2,2,i,j]^2)
       ; wave normal
-      wna_matsuda[i,j] = abs(atan(sqrt(V_SORT[0,0,i,j]^2+V_SORT[0,1,i,j]^2)/V_SORT[0,2,i,j])/!dtor) ;[degree]
+      wna[i,j] = abs(atan(sqrt(V_SORT[0,0,i,j]^2+V_SORT[0,1,i,j]^2)/V_SORT[0,2,i,j])/!dtor) ;[degree]
       ; wna_azm[i,j] = atan(V_SORT[0,1,i,j], V_SORT[0,0,i,j])/!dtor 
       ; polarization
-      polarization_matsuda[i,j] = W_SORT[1,i,j]/W_SORT[2,i,j]
-      ; if(rr[1,0,i,j,1] LT 0.) then polarization[i,j] *= -1.
+      polarization[i,j] = W_SORT[1,i,j]/W_SORT[2,i,j]
+      if(rr[1,0,i,j,1] LT 0.) then polarization[i,j] *= -1.
       ; planarity
       planarity[i,j] = 1. - sqrt(W_SORT[0,i,j]/W_SORT[2,i,j])
     endfor
   endfor
+
+  store_data, 'powspec_b', data={x:s00.x, y:powspec_b, v:s00.v2} ; *** modified (v->v2)
+  options, 'powspec_b', ytitle='powspec_b_LA SVD', $
+    ztitle='', ysubtitle='Frequency [kHz]', spec = 1
+  ylim, 'powspec_b', 0.064, 20, 1 ; kHz
+  zlim, 'powspec_b', 1E-2, 1E2, 1 ; nT
   
   store_data, 'kvec', data={x:s00.x, y:wna, v:s00.v2} ; *** modified (v->v2)
   options, 'kvec', ytitle='wave normal angle_LA SVD', $
@@ -300,7 +308,7 @@ pro day_plot, span=span, hour_plot=hour_plot
   ylim, 'kvec', 0.064, 20, 1 ; kHz
   zlim, 'kvec', 0., 90, 0 ; degree
 
-  store_data, 'polarization', data={x:s00.x, y:polarization_matsuda, v:s00.v2} ; *** modified (v->v2)
+  store_data, 'polarization', data={x:s00.x, y:polarization, v:s00.v2} ; *** modified (v->v2)
   options, 'polarization', ytitle='polarization_LA SVD', $
     ztitle='', ysubtitle='Frequency [kHz]', spec = 1
   ylim, 'polarization', 0.064, 20, 1 ; kHz
@@ -315,7 +323,7 @@ pro day_plot, span=span, hour_plot=hour_plot
   ;  tplot, [pr_matrix+'Bx_Bx_re', pr_matrix+'By_By_re', pr_matrix+'Bz_Bz_re', 'kvec']
 
   ; ************************************
-  ; 12*.WNA, polarization and planarity with Algebraic SVD?
+  ; 12*.WNA, polarization and planarity with Algebraic SVD? or Means et al 1972
   ; ************************************
 
   wna_algebraic = dblarr(n_t,n_e)
@@ -355,6 +363,7 @@ pro day_plot, span=span, hour_plot=hour_plot
 
   window, 0, xsize=1000, ysize=750
   tplot, ['kvec', 'kvec_algebraic', 'polarization', 'polarization_algebraic', 'planarity']
+  ; tplot, ['erg_pwe_ofa_l2_spec_B_spectra_132', 'powspec_b']
 
   stop
 
