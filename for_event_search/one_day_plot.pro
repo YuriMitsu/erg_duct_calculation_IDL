@@ -4,6 +4,9 @@ pro one_day_plot
   ; 2018-06
   ; *****************
 
+;  timespan, '2017-03-25/11:30:00', 2, /hour
+;  day_plot
+
 ;  timespan, '2018-06-01'
 ;  day_plot
 ;

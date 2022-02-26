@@ -238,7 +238,9 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   ; ************************************
   ; 2.10.wave normal angle
   ; ************************************
-  wna=dblarr(n_elements(s00.x), n_elements(s00.v2)) ; *** modified (v->v2)
+
+  wna = dblarr(n_elements(s00.x), n_elements(s00.v2)) ; *** modified (v->v2)
+  ; rrの移動平均をrrrに保存
   rrr = rr * 0.0
   for i=0, n_elements(s00.x)-1 do begin
     for j=1, n_elements(s00.v2)-2 do begin ; *** modified (v->v2)
