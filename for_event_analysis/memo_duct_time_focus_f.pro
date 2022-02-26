@@ -13,8 +13,8 @@ pro memo_duct_time_focus_f
   
   ; 入れ子になっているイベント
   timespan, '2018-06-06/11:25:00', 20, /minute
-  plot_kpara_ne, duct_time='2018-06-06/11:29:56', focus_f=[1., 2., 3., 4., 5.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot', k_para_ = [0.00074098376, 0.0012041943, 0.0016674048, 0.0019, 0.00235]
-  plot_kpara_ne, duct_time='2018-06-06/11:31:28', focus_f=[1., 2., 3., 4., 5.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot';, k_para_ = [0.048, 0.09, 0.15, 0.225, 0.285]
+  plot_kpara_ne, duct_time='2018-06-06/11:29:56', focus_f=[1., 2., 3., 4., 5.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot'
+  plot_kpara_ne, duct_time='2018-06-06/11:31:28', focus_f=[1., 2., 3., 4., 5.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot'
   plot_kpara_ne, duct_time='2018-06-06/11:32:29', focus_f=[3., 4., 5., 6., 7.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot'
   plot_kpara_ne, duct_time='2018-06-06/11:39:53', focus_f=[1., 2., 3., 4., 5.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot'
   plot_kpara_ne, duct_time='2018-06-06/11:42:08', focus_f=[2., 3., 4., 5., 6.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot'

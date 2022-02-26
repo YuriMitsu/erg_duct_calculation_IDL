@@ -30,7 +30,7 @@ tplot, 'f_UHR', /oplot
 
 stop
 
-;追加したいとき
+;追加・訂正したいとき
 
 tplot, 'erg_pwe_hfa_l2_high_spectra_e_mix'
 ctime, f_time, f_y

@@ -141,14 +141,18 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   !p.color = 0
   
   get_data, 'k_para'+wave_params_+'_mask', data = k_paradata
-  k_paradata.y[*, where(k_paradata.v lt focus_f[0]-1.) ] = 'NaN'
-  ; k_paradata.y[*, where(k_paradata.v gt focus_f[-1]+1.) ] = 'NaN'
+  k_paradata.y[*, where(k_paradata.v lt focus_f[0]-0.1) ] = 'NaN'
+  k_paradata.y[*, where(k_paradata.v gt focus_f[-1]+0.1) ] = 'NaN'
   time_ = time_double(duct_time)
   idx_t = where( k_paradata.x lt time_+4. and k_paradata.x gt time_-4., cnt )
+  if idx_t eq -1 then begin
+    print, '!!!!Caution!!!! /n Duct time is not selected correctly. Check the code.'
+    stop
+  endif
   plot, k_paradata.v, k_paradata.y[idx_t[0], *], psym=-4, xtitle='f (kHz)', ytitle='k_para (/m)'
 
   ; 最小二乗法でダクト中心でのk_paraを直線に当てはめる
-  if not keyword_set(lsm) then lsm = least_squares_method(k_paradata.v[where(k_paradata.v lt 8)], k_paradata.y[idx_t[0], where(k_paradata.v lt 8)]) ;外れ値に左右され過ぎてしまう 余裕があったらロバスト回帰を導入？
+  if not keyword_set(lsm) then lsm = least_squares_method(k_paradata.v, k_paradata.y[idx_t[0], *]) ;外れ値に左右され過ぎてしまう 余裕があったらロバスト回帰を導入？
   ; lsm = [0.00019399999,   0.00014002688]
 
 ;  k_para_ = [ 0.00072889862, 0.00084289216, 0.0010308567, 0.0013732987, 0.0016690817] ; 3,4,5,6,7
@@ -196,6 +200,7 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   ; *****************
   
   tvlct, 255,0,0,1
+  tvlct, 255,255,255,2
   tvlct, 0,0,0,4
   
   tvlct, 143,119,181,10
@@ -205,18 +210,22 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   tvlct, 252,15,192,14
   tvlct, 255,0,0,15
   
-  
-  plot, k_perp, Ne_k_para[*, 0], color=4, yrange=[min(Ne_k_para)-5, max(Ne_k_para)+5]
+  plot, k_perp, Ne_k_para[*, 0], color=4, yrange=[min(Ne_k_para)-5, max(Ne_k_para)+5] $
+        , xtitle='k_perp [/m]', ytitle='Ne [/cc]'
   oplot, k_perp, Ne_k_para[*, 0], color=10
   oplot, [k_perp[0]], [Ne_k_para[0, 0]], psym=4, color=6
   xyouts, k_perp[2], Ne_k_para[0, 0], string(fix(Ne_k_para[0, 0]), format='(i0)'), color=10, CHARSIZE=2
-  xyouts, k_perp[-8], Ne_k_para[-1, 0], string(focus_f[i], FORMAT='(f0.1)')+'kHz', color=10, CHARSIZE=2
+  xyouts, k_perp[-8], Ne_k_para[-1, 0], string(focus_f[0], FORMAT='(f0.1)')+'kHz', color=10, CHARSIZE=2
   for i = 1, n_elements(focus_f)-1 do begin
     oplot, k_perp, Ne_k_para[*, i], color=i+10
     oplot, [k_perp[0]], [Ne_k_para[0, i]], psym=4, color=6
     xyouts, k_perp[2], Ne_k_para[0, i], string(fix(Ne_k_para[0, i]), format='(i0)'), color=i+10, CHARSIZE=2
     xyouts, k_perp[-8], Ne_k_para[-1, i], string(focus_f[i], FORMAT='(f0.1)')+'kHz', color=i+10, CHARSIZE=2
   endfor
+
+  get_data, 'f_ce', data = data
+  idx_t = where( data.x lt time_+4. and data.x gt time_-4., cnt )
+  xyouts, k_perp[-12], min(Ne_k_para[-1, *])-50, 'fce/2 = '+string(data.y[idx_t]/1000/2, FORMAT='(f0.1)')+'kHz', color=4, CHARSIZE=2
   
   makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_Ne_kpara'
   
@@ -259,11 +268,12 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
     N0_names[i] = 'N0_f' + string(focus_f[i], FORMAT='(f0.1)')
   endfor
 
-  for i=0,n_elements(focus_f)-1 do begin
+  for i=0, n_elements(focus_f)-1 do begin
     
     store_data, UT_B_names[i], data={x:Bspec.x, y:Bspec.y[*,idx_f[i]]}
     ylim, UT_B_names[i], 0.0, UT_B_ymax[i], 0
     options, UT_B_names[i], 'ystyle', 9
+    options, UT_B_names[i], 'ytitle', 'f' + string(focus_f[i], FORMAT='(f0.1)') + '!COFA B [nT]'
     
     store_data, N0_names[i], data={x:data.x, y:data.y}
 ;    options, N0_names[i], 'databar', {yval:Ne_k_para[0,i], linestyle:2, color:i+10, thick:2}
@@ -279,15 +289,17 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
     options, N0_names[i], axis={yaxis:1, yrange:[Ne_min, Ne_max], ystyle:1, color:6}, ystyle=5
     options, N0_names[i], colors=6
     
-    tplot, UT_B_names[i]
-    tplot, N0_names[i], /oplot
+    
+    ; tplot, UT_B_names[i]
+    ; tplot, N0_names[i], /oplot
     options, N0_names[i], 'databar', {yval:Ne_k_para[0,i], linestyle:2, color:i+10, thick:2}
-    tplot_apply_databar
+    ; tplot_apply_databar
 ;    options, N0_names[i], 'databar', {yval:N0_obs[i], linestyle:1, color:i+10, thick:2}
 ;    tplot_apply_databar
     
   endfor
   
+  time_stamp, /off
   tplot, UT_B_names
   tplot, N0_names, /oplot
   tplot_apply_databar
