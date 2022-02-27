@@ -68,7 +68,7 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
 ;  read_f_uhr
   tplot_restore, file=[UHR_file_name]
   get_data, 'f_UHR', data=data
-  store_data, 'test', data={x:data.x, y:data.y}, dlim={colors:5,thick:1,linestyle:1}
+  ; store_data, 'test', data={x:data.x, y:data.y}, dlim={colors:5,thick:1,linestyle:1}
   tinterpol_mxn, 'f_UHR', 'polarization'+wave_params_
   options, 'f_UHR_interp', linestyles=0
   get_data, 'f_UHR_interp', data=f_UHR

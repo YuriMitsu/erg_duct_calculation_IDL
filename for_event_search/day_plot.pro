@@ -189,6 +189,7 @@ pro day_plot, span=span, hour_plot=hour_plot
   ; window, xsize=1200, ysize=600
   tplot, ['hfa_e','ofa_e', pr_matrix + 'Btotal_132', 'kvec_mask', 'polarization_mask'] + '_gyro'
 
+  stop
 
   ; ************************************
   ; 18.plot

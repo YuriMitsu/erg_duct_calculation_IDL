@@ -215,15 +215,36 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
       for j=1, n_elements(s00.v2)-2 do begin 
 
           idx_j = j + indgen(moving_average) - uint(moving_average/2)
-          rrr[2,1,i,j,1] = total( rr[2,1,i,idx_j,1] )
-          rrr[0,2,i,j,1] = total( rr[0,2,i,idx_j,1] )
-          rrr[1,0,i,j,1] = total( rr[1,0,i,idx_j,1] )
+          rrr[0,0,i,j,0] = total( rr[0,0,i,idx_j,0] ) / double(moving_average)
+          rrr[0,0,i,j,1] = total( rr[0,0,i,idx_j,1] ) / double(moving_average)
+          rrr[0,1,i,j,0] = total( rr[0,1,i,idx_j,0] ) / double(moving_average)
+          rrr[0,1,i,j,1] = total( rr[0,1,i,idx_j,1] ) / double(moving_average)
+          rrr[0,2,i,j,0] = total( rr[0,2,i,idx_j,0] ) / double(moving_average)
+          rrr[0,2,i,j,1] = total( rr[0,2,i,idx_j,1] ) / double(moving_average)
+
+          rrr[1,0,i,j,0] = total( rr[1,0,i,idx_j,0] ) / double(moving_average)
+          rrr[1,0,i,j,1] = total( rr[1,0,i,idx_j,1] ) / double(moving_average)
+          rrr[1,1,i,j,0] = total( rr[1,1,i,idx_j,0] ) / double(moving_average)
+          rrr[1,1,i,j,1] = total( rr[1,1,i,idx_j,1] ) / double(moving_average)
+          rrr[1,2,i,j,0] = total( rr[1,2,i,idx_j,0] ) / double(moving_average)
+          rrr[1,2,i,j,1] = total( rr[1,2,i,idx_j,1] ) / double(moving_average)
+
+          rrr[2,0,i,j,0] = total( rr[2,0,i,idx_j,0] ) / double(moving_average)
+          rrr[2,0,i,j,1] = total( rr[2,0,i,idx_j,1] ) / double(moving_average)
+          rrr[2,1,i,j,0] = total( rr[2,1,i,idx_j,0] ) / double(moving_average)
+          rrr[2,1,i,j,1] = total( rr[2,1,i,idx_j,1] ) / double(moving_average)
+          rrr[2,2,i,j,0] = total( rr[2,2,i,idx_j,0] ) / double(moving_average)
+          rrr[2,2,i,j,1] = total( rr[2,2,i,idx_j,1] ) / double(moving_average)
 
       endfor
     endfor
   
-    rr = rrr
-  endif
+    rr_ = rrr
+  endif else begin
+
+    rr_ = rr
+
+  endelse
 
 
 
@@ -241,12 +262,12 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
   W_SORT=dblarr(3,n_t,n_e)
   V_SORT=dblarr(3,3,n_t,n_e)
 
-  A[0,0,*,*]=rr[0,0,*,*,0] & A[1,0,*,*]=rr[1,0,*,*,0]  & A[2,0,*,*]=rr[2,0,*,*,0]
-  A[0,1,*,*]=rr[1,0,*,*,0] & A[1,1,*,*]=rr[1,1,*,*,0]  & A[2,1,*,*]=rr[2,1,*,*,0]
-  A[0,2,*,*]=rr[2,0,*,*,0] & A[1,2,*,*]=rr[2,1,*,*,0]  & A[2,2,*,*]=rr[2,2,*,*,0]
-  A[0,3,*,*]=0.0           & A[1,3,*,*]=-rr[1,0,*,*,1] & A[2,3,*,*]=-rr[2,0,*,*,1]
-  A[0,4,*,*]=rr[1,0,*,*,1] & A[1,4,*,*]=0.0            & A[2,4,*,*]=-rr[2,1,*,*,1]
-  A[0,5,*,*]=rr[2,0,*,*,1] & A[1,5,*,*]=rr[2,1,*,*,1]  & A[2,5,*,*]=0.0
+  A[0,0,*,*]=rr_[0,0,*,*,0] & A[1,0,*,*]=rr_[1,0,*,*,0]  & A[2,0,*,*]=rr_[2,0,*,*,0]
+  A[0,1,*,*]=rr_[1,0,*,*,0] & A[1,1,*,*]=rr_[1,1,*,*,0]  & A[2,1,*,*]=rr_[2,1,*,*,0]
+  A[0,2,*,*]=rr_[2,0,*,*,0] & A[1,2,*,*]=rr_[2,1,*,*,0]  & A[2,2,*,*]=rr_[2,2,*,*,0]
+  A[0,3,*,*]=0.0           & A[1,3,*,*]=-rr_[1,0,*,*,1] & A[2,3,*,*]=-rr_[2,0,*,*,1]
+  A[0,4,*,*]=rr_[1,0,*,*,1] & A[1,4,*,*]=0.0            & A[2,4,*,*]=-rr_[2,1,*,*,1]
+  A[0,5,*,*]=rr_[2,0,*,*,1] & A[1,5,*,*]=rr_[2,1,*,*,1]  & A[2,5,*,*]=0.0
 
 
   for i=0, n_elements(s00.x)-1 do begin
@@ -282,7 +303,7 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
       ; wna_azm[i,j] = atan(V_SORT[0,1,i,j], V_SORT[0,0,i,j])/!dtor 
       ; polarization
       polarization[i,j] = W_SORT[1,i,j]/W_SORT[2,i,j]
-      if(rr[1,0,i,j,1] LT 0.) then polarization[i,j] *= -1.
+      if(rr_[1,0,i,j,1] LT 0.) then polarization[i,j] *= -1.
       ; planarity
       planarity[i,j] = 1. - sqrt(W_SORT[0,i,j]/W_SORT[2,i,j])
     endfor
@@ -292,30 +313,28 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
   if moving_average ne 1 then ma = '_ma'+string(moving_average, FORMAT='(i0)')
 
   store_data, 'powspec_b_LASVD'+ma, data={x:s00.x, y:powspec_b, v:s00.v2} ; *** modified (v->v2)
-  options, 'powspec_b_LASVD'+ma, ytitle='powspec_b/LA SVD'+'  '+ma, $
+  options, 'powspec_b_LASVD'+ma, ytitle='powspec_b!CLA SVD'+ma, $
     ztitle='', ysubtitle='Frequency [kHz]', spec = 1
   ylim, 'powspec_b_LASVD'+ma, 0.064, 20, 1 ; kHz
   zlim, 'powspec_b_LASVD'+ma, 1E-2, 1E2, 1 ; nT
   
   store_data, 'kvec_LASVD'+ma, data={x:s00.x, y:wna, v:s00.v2} ; *** modified (v->v2)
-  options, 'kvec_LASVD'+ma, ytitle='wave normal angle/LA SVD'+'  '+ma, $
+  options, 'kvec_LASVD'+ma, ytitle='wave normal angle!CLA SVD'+ma, $
     ztitle='[degree]', ysubtitle='Frequency [kHz]', spec = 1
   ylim, 'kvec_LASVD'+ma, 0.064, 20, 1 ; kHz
   zlim, 'kvec_LASVD'+ma, 0., 90, 0 ; degree
 
   store_data, 'polarization_LASVD'+ma, data={x:s00.x, y:polarization, v:s00.v2} ; *** modified (v->v2)
-  options, 'polarization_LASVD'+ma, ytitle='polarization/LA SVD'+'  '+ma, $
+  options, 'polarization_LASVD'+ma, ytitle='polarization!CLA SVD'+ma, $
     ztitle='', ysubtitle='Frequency [kHz]', spec = 1
   ylim, 'polarization_LASVD'+ma, 0.064, 20, 1 ; kHz
   zlim, 'polarization_LASVD'+ma, -1., 1., 0 ; degree
 
   store_data, 'planarity_LASVD'+ma, data={x:s00.x, y:planarity, v:s00.v2} ; *** modified (v->v2)
-  options, 'planarity_LASVD'+ma, ytitle='planarity/LA SVD'+'  '+ma, $
+  options, 'planarity_LASVD'+ma, ytitle='planarity!CLA SVD'+ma, $
     ztitle='', ysubtitle='Frequency [kHz]', spec = 1
   ylim, 'planarity_LASVD'+ma, 0.064, 20, 1 ; kHz
   zlim, 'planarity_LASVD'+ma, 0., 1., 0
-
-
 
   ; ************************************
   ; 7*.WNA, polarization and planarity with Algebraic SVD? or Means et al 1972
@@ -329,14 +348,14 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
     for i=0, n_elements(s00.x)-1 do begin
       for j=0, n_elements(s00.v2)-1 do begin ; *** modified (v->v2)
         ; wave normal
-        wna_x = rr[2,1,i,j,1] / sqrt(rr[2,1,i,j,1]^2 + rr[0,2,i,j,1]^2 + rr[1,0,i,j,1]^2)
-        wna_y = rr[0,2,i,j,1] / sqrt(rr[2,1,i,j,1]^2 + rr[0,2,i,j,1]^2 + rr[1,0,i,j,1]^2)
-        wna_z = rr[1,0,i,j,1] / sqrt(rr[2,1,i,j,1]^2 + rr[0,2,i,j,1]^2 + rr[1,0,i,j,1]^2)
+        wna_x = rr_[2,1,i,j,1] / sqrt(rr_[2,1,i,j,1]^2 + rr_[0,2,i,j,1]^2 + rr_[1,0,i,j,1]^2)
+        wna_y = rr_[0,2,i,j,1] / sqrt(rr_[2,1,i,j,1]^2 + rr_[0,2,i,j,1]^2 + rr_[1,0,i,j,1]^2)
+        wna_z = rr_[1,0,i,j,1] / sqrt(rr_[2,1,i,j,1]^2 + rr_[0,2,i,j,1]^2 + rr_[1,0,i,j,1]^2)
 
         wna_algebraic[i,j] = abs(atan(sqrt(wna_x^2+wna_y^2)/wna_z)/!dtor)
 
         polarization_algebraic[i,j] = $
-          (2 * rr[1,0,i,j,1]) / (rr[0,0,i,j,0] + rr[1,1,i,j,0])
+          (2 * rr_[1,0,i,j,1]) / (rr_[0,0,i,j,0] + rr_[1,1,i,j,0])
       endfor
     endfor
 

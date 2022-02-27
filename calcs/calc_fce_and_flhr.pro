@@ -12,12 +12,10 @@ pro calc_fce_and_flhr
     ; *****************
 
     ;磁場読み込み
-    erg_load_mgf, datatype='8sec', uname=uname, pass=pass
-
     get_data, 'erg_mgf_l2_magt_8sec', data=data
 
     if (size(data))[0] eq 0 then begin
-        erg_load_mgf
+        erg_load_mgf, datatype='8sec', uname=uname, pass=pass
         get_data, 'erg_mgf_l2_magt_8sec', data=data
     endif
 
