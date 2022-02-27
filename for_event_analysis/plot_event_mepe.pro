@@ -1,4 +1,4 @@
-pro plot_event, UHR_file_name=UHR_file_name
+pro plot_event_mepe, UHR_file_name=UHR_file_name
 
     ; *****************
     ; plot event for meeting
@@ -64,7 +64,7 @@ pro plot_event, UHR_file_name=UHR_file_name
     ; 16.1.mepe PA
     ; ************************************
 
-    if 0 then begin
+    if 1 then begin
 
         erg_load_mepe,uname='erg_project', pass='geospace',datatype='3dflux'
         ; 特定の値のenergyを測っている。plotで決めた範囲内に観測しているエネルギー値がなければtplot変数にデータが入らない？
@@ -142,12 +142,12 @@ pro plot_event, UHR_file_name=UHR_file_name
     !p.color = 0
 
     time_stamp, /off
-    tplot, ['hfa', pr_matrix+'Btotal_132', pr_matrix+'Etotal_132', 'kvec_mask', 'polarization_mask', 'planarity_mask'] + '_gyro'
+    tplot, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'kvec_mask_gyro', 'mepe_PA_0-3', 'mepe_PA_177-188', 'mepe_PA_3-37']
 
     t = timerange(/current) 
     ret1 = strsplit(time_string(t[0]), '-/:', /extract)
     ret2 = strsplit(time_string(t[1]), '-/:', /extract)
-    makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret1[0]+ret1[1]+ret1[2]+'/'+ret1[3]+ret1[4]+ret1[5]+'-'+ret2[3]+ret2[4]+ret2[5]
+    makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret1[0]+ret1[1]+ret1[2]+'/'+ret1[3]+ret1[4]+ret1[5]+'-'+ret2[3]+ret2[4]+ret2[5]+'_mepe'
 
     stop
 end
