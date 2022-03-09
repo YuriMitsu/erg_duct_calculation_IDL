@@ -69,4 +69,18 @@ pro calc_equatorial_fce, plot_flag=plot_flag
         tplot, ['hfa_e_Bmodels', 'ofa_e_Bmodels', 'ofa_b_Bmodels']
     endif
 
+    
+    ; *****************
+    ; 2.補正したらもっと良くなるかものやつ
+    ; *****************
+
+    get_data, 'erg_orb_l3_pos_blocal_TS04', data=data
+    get_data, 'erg_mgf_l2_magt_8sec', data=magt
+    if (size(magt))[0] eq 0 then begin
+        erg_load_mgf, datatype='8sec', uname=uname, pass=pass
+        get_data, 'erg_mgf_l2_magt_8sec', data=magt
+    endif
+
+    store_data, 'test', 
+
 end

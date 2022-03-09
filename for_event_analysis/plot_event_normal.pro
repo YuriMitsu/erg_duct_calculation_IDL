@@ -61,34 +61,10 @@ pro plot_event_normal, UHR_file_name=UHR_file_name
 
 
     ; ************************************
-    ; 16.1.mepe PA
+    ; 16.mepe
     ; ************************************
 
-    if 0 then begin
-
-        erg_load_mepe,uname='erg_project', pass='geospace',datatype='3dflux'
-        ; 特定の値のenergyを測っている。plotで決めた範囲内に観測しているエネルギー値がなければtplot変数にデータが入らない？
-        erg_mep_part_products, 'erg_mepe_l2_3dflux_FEDU',outputs='energy', pitch=[0.,3.], regrid=[32,32], mag_name='erg_mgf_l2_mag_8sec_dsi', pos_name='erg_orb_l2_pos_gse', /no_ang_weight
-        store_data, 'mepe_PA_0-3', /delete
-        store_data, 'erg_mepe_l2_3dflux_FEDU_energy', newname='mepe_PA_0-3'
-
-        erg_mep_part_products, 'erg_mepe_l2_3dflux_FEDU',outputs='energy', pitch=[177.,188.], regrid=[32,32], mag_name='erg_mgf_l2_mag_8sec_dsi', pos_name='erg_orb_l2_pos_gse', /no_ang_weight
-        store_data, 'mepe_PA_177-188', /delete
-        store_data, 'erg_mepe_l2_3dflux_FEDU_energy', newname='mepe_PA_177-188'
-
-        erg_mep_part_products, 'erg_mepe_l2_3dflux_FEDU',outputs='energy', pitch=[3.,37.5], regrid=[32,32], mag_name='erg_mgf_l2_mag_8sec_dsi', pos_name='erg_orb_l2_pos_gse', /no_ang_weight
-        store_data, 'mepe_PA_3-37', /delete
-        store_data, 'erg_mepe_l2_3dflux_FEDU_energy', newname='mepe_PA_3-37'
-
-
-        ; ************************************
-        ; 16.2.mepe ET
-        ; ************************************
-        erg_load_mepe,level='l2',datatype='omniflux'
-        ; 'erg_mepe_l2_omniflux_FEDO'を取得
-        store_data, 'erg_mepe_l2_omniflux_FEDO', newname='mepe_ET'
-
-    endif
+    calc_mepe
 
     ; ************************************
     ; 17-1.cal fce.etc

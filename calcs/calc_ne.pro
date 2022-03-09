@@ -20,9 +20,9 @@ pro calc_Ne, UHR_file_name=UHR_file_name
     endif
 
     tplot_restore, file=[UHR_file_name]
-    get_data, 'f_UHR', data=f_UHR
     tinterpol_mxn, 'f_UHR', 'erg_mgf_l2_magt_8sec'
     options, 'f_UHR_interp', linestyles=0
+    get_data, 'f_UHR_interp', data=f_UHR
 
     ; ************************************
     ; 2.calc. Ne
