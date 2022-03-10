@@ -21,8 +21,23 @@ pro calc_Ne, UHR_file_name=UHR_file_name
 
     tplot_restore, file=[UHR_file_name]
     tinterpol_mxn, 'f_UHR', 'erg_mgf_l2_magt_8sec'
-    options, 'f_UHR_interp', linestyles=0
-    get_data, 'f_UHR_interp', data=f_UHR
+    ; options, 'f_UHR_interp', linestyles=0
+    ; get_data, 'f_UHR_interp', data=f_UHR
+
+    get_data, 'f_UHR', data=data
+    get_data, 'f_UHR_interp', data=data_interp
+
+    mask1 = ( data_interp.x lt data.x[0] )
+    idx1 = UINT( TOTAL(mask1) )
+    data_interp.y[0:idx1-1] = !VALUES.F_NAN
+
+    mask2 = ( data_interp.x lt data.x[-1] )
+    idx2 = UINT( TOTAL(mask2) )
+    data_interp.y[idx2:-1] = !VALUES.F_NAN
+
+    store_data, 'f_UHR_interp_nan', data={x:data_interp.x, y:data_interp.y}
+    options, 'f_UHR_interp_nan', linestyles=0
+    get_data, 'f_UHR_interp_nan', data=f_UHR
 
     ; ************************************
     ; 2.calc. Ne
