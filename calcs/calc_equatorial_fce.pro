@@ -69,18 +69,44 @@ pro calc_equatorial_fce, plot_flag=plot_flag
         tplot, ['hfa_e_Bmodels', 'ofa_e_Bmodels', 'ofa_b_Bmodels']
     endif
 
-    
+
     ; *****************
     ; 2.補正したらもっと良くなるかものやつ
     ; *****************
 
-    get_data, 'erg_orb_l3_pos_blocal_TS04', data=data
     get_data, 'erg_mgf_l2_magt_8sec', data=magt
     if (size(magt))[0] eq 0 then begin
         erg_load_mgf, datatype='8sec', uname=uname, pass=pass
         get_data, 'erg_mgf_l2_magt_8sec', data=magt
     endif
 
-    store_data, 'test', 
+    tinterpol_mxn, 'erg_orb_l3_pos_blocal_TS04', 'erg_mgf_l2_magt_8sec'
+    get_data, 'erg_orb_l3_pos_blocal_TS04_interp', data=B_TS04_arase
+
+    store_data, 'Brate', data={x:B_TS04_arase.x, y:magt.y/B_TS04_arase.y}
+    ylim, 'Brate', 1.5, 0.5, 0
+
+    ; 磁場モデルの磁力線に沿ってトレースした磁気赤道面でのfc/2を計算
+    ; erg_load_orb_l3, model='ts04' ; TS04モデル ##erg_orb_l3_pos_blocal_TS04##
+    get_data, 'erg_orb_l3_pos_beq_TS04', data=B_TS04
+    tinterpol_mxn, 'Brate', 'erg_orb_l3_pos_beq_TS04'
+    get_data, 'Brate', data=Brate
+
+    fce_TS04_correction = B_TS04.y * Brate.y / 10^(9.) * 1.6 * 10^(-19.) / (9.1093D * 10^(-31.)) / 2. / !pi / 1000.
+    store_data, 'fce_TS04_correction', data={x:B_TS04.x, y:fce_TS04_correction}
+    store_data, 'fce_TS04_correction_half', data={x:B_TS04.x, y:fce_TS04_correction/2.}
+
+    ; color: 0黒 1ピンク 2青 3シアン 4黄緑 5黄色 6赤 7以降黒
+    ; linestyle: 0棒線 1破線(細) 2破線(長) 3破線(細＆長) 4破線(細*3＆長) 5以降破線(長)
+    options, 'fce_TS04_correction',      colors=5, thick=2, linestyle=0
+    options, 'fce_TS04_correction_half', colors=5, thick=2, linestyle=2
+
+    store_data, 'hfa_e_Bmodels_correction', data=['erg_pwe_hfa_l2_high_spectra_e_mix', 'fce_TS04', 'fce_TS04_half', 'fce_T89', 'fce_T89_half', 'fce_IGRF', 'fce_IGRF_half', 'fce_TS04_correction', 'fce_TS04_correction_half']
+    store_data, 'ofa_e_Bmodels_correction', data=['erg_pwe_ofa_l2_spec_E_spectra_132', 'fce_TS04', 'fce_TS04_half', 'fce_T89', 'fce_T89_half', 'fce_IGRF', 'fce_IGRF_half', 'fce_TS04_correction', 'fce_TS04_correction_half']
+    store_data, 'ofa_b_Bmodels_correction', data=['erg_pwe_ofa_l2_spec_B_spectra_132', 'fce_TS04', 'fce_TS04_half', 'fce_T89', 'fce_T89_half', 'fce_IGRF', 'fce_IGRF_half', 'fce_TS04_correction', 'fce_TS04_correction_half']
+
+    ylim,  'hfa_e_Bmodels_correction', 10.0, 400.0, 1
+    ylim,  'ofa_e_Bmodels_correction', 1.0, 20.0, 1
+    ylim,  'ofa_b_Bmodels_correction', 1.0, 20.0, 1
 
 end
