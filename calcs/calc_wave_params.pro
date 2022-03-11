@@ -5,7 +5,7 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
   ; *****************
 
   if not keyword_set(moving_average) then moving_average = 3
-  if not keyword_set(algebraic_SVD) then algebraic_SVD = 0
+  if not keyword_set(algebraic_SVD) then algebraic_SVD = 0 ; algebraic_SVD=1 だと algebraic SVD も計算する
 
   uname = 'erg_project'
   pass = 'geospace'
@@ -183,7 +183,6 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
   ylim, pr_matrix + 'B?_B?_??', 0.064, 20, 1 ; kHz
   zlim, pr_matrix + 'B?_B?_??', 1E-3, 1E2, 1 ; nT
 
-
   ; ************************************
   ; 5.2.auto-spectra E
   ; ************************************
@@ -273,7 +272,7 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
   for i=0, n_elements(s00.x)-1 do begin
     for j=0, n_elements(s00.v2)-1 do begin
     
-      LA_SVD,reform(A[*,*,i,j]),W,U,V,/double
+      LA_SVD,reform(A[*,*,i,j]),W,U,V,/double ; W: 特異値を含む行列  U: 左特異ベクトル  V: 右特異ベクトル
       W2[*,i,j]=W
       V2[*,*,i,j]=V
       W_ORDER = SORT(W2[*,i,j])
@@ -293,6 +292,10 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
   wna = dblarr(n_t,n_e)
   polarization = dblarr(n_t,n_e)
   planarity = dblarr(n_t,n_e)
+  lambda1 = dblarr(n_t,n_e)
+  lambda2 = dblarr(n_t,n_e)
+  lambda3 = dblarr(n_t,n_e)
+
 
   for i=0, n_elements(s00.x)-1 do begin
     for j=0, n_elements(s00.v2)-2 do begin
@@ -306,6 +309,12 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
       if(rr_[1,0,i,j,1] LT 0.) then polarization[i,j] *= -1.
       ; planarity
       planarity[i,j] = 1. - sqrt(W_SORT[0,i,j]/W_SORT[2,i,j])
+
+      ;lambda
+      lambda1[i,j] = W_sort[0,i,j]
+      lambda2[i,j] = W_sort[1,i,j]
+      lambda3[i,j] = W_sort[2,i,j]
+
     endfor
   endfor
 
@@ -335,6 +344,47 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
     ztitle='', ysubtitle='Frequency [kHz]', spec = 1
   ylim, 'planarity_LASVD'+ma, 0.064, 20, 1 ; kHz
   zlim, 'planarity_LASVD'+ma, 0., 1., 0
+
+  ;lambda1
+  ; lambda1 = dblarr(n_elements(s00.x), n_elements(s00.v2))
+  ; for i=0, n1(s00.)
+  ; lambda1[*,*] = W_sort[0,*,*]
+  store_data, 'lambda1_LASVD'+ma, data={x:s00.x, y:lambda1, v:s00.v2} ; *** modified (v->v2)
+  options, 'lambda1_LASVD'+ma, ytitle='lambda1!CLA SVD'+ma, $
+    ztitle='', ysubtitle='Frequency [kHz]', spec = 1
+  ylim, 'lambda1_LASVD'+ma, 0.064, 20, 1 ; kHz
+  zlim, 'lambda1_LASVD'+ma, 0., 10., 0
+  zlim, ['lambda1_LASVD'+ma,'lambda2_LASVD'+ma,'lambda3_LASVD'+ma], 0., 10., 0
+
+  ;lambda2
+  store_data, 'lambda2_LASVD'+ma, data={x:s00.x, y:lambda2, v:s00.v2} ; *** modified (v->v2)
+  options, 'lambda2_LASVD'+ma, ytitle='lambda2!CLA SVD'+ma, $
+    ztitle='', ysubtitle='Frequency [kHz]', spec = 1
+  ylim, 'lambda2_LASVD'+ma, 0.064, 20, 1 ; kHz
+  zlim, 'lambda2_LASVD'+ma, 0., 10., 0
+
+  ;lambda3
+  store_data, 'lambda3_LASVD'+ma, data={x:s00.x, y:lambda3, v:s00.v2} ; *** modified (v->v2)
+  options, 'lambda3_LASVD'+ma, ytitle='lambda3!CLA SVD'+ma, $
+    ztitle='', ysubtitle='Frequency [kHz]', spec = 1
+  ylim, 'lambda3_LASVD'+ma, 0.064, 20, 1 ; kHz
+  zlim, 'lambda3_LASVD'+ma, 0., 10., 0
+
+    ;lambda2-1
+  store_data, 'lambda2-1_LASVD'+ma, data={x:s00.x, y:lambda2-lambda1, v:s00.v2} ; *** modified (v->v2)
+  options, 'lambda2-1_LASVD'+ma, ytitle='lambda2-1!CLA SVD'+ma, $
+    ztitle='', ysubtitle='Frequency [kHz]', spec = 1
+  ylim, 'lambda2-1_LASVD'+ma, 0.064, 20, 1 ; kHz
+  zlim, 'lambda2-1_LASVD'+ma, 0., 0.1, 0
+
+  ;lambda3-2
+  store_data, 'lambda3-2_LASVD'+ma, data={x:s00.x, y:lambda3-lambda2, v:s00.v2} ; *** modified (v->v2)
+  options, 'lambda3-2_LASVD'+ma, ytitle='lambda3-2!CLA SVD'+ma, $
+    ztitle='', ysubtitle='Frequency [kHz]', spec = 1
+  ylim, 'lambda3-2_LASVD'+ma, 0.064, 20, 1 ; kHz
+  zlim, 'lambda3-2_LASVD'+ma, 0., 0.1, 0
+
+  stop
 
   ; ************************************
   ; 7*.WNA, polarization and planarity with Algebraic SVD? or Means et al 1972
