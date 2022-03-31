@@ -206,15 +206,21 @@ pro day_plot, span=span, hour_plot=hour_plot
 
   options, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'mepe_PA_10keV', 'mepe_PA_41keV', 'mepe_PA_72keV', 'mepe_ET'], 'datagap', 60.0
 
+  ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'mepe_PA_10keV', 'mepe_PA_41keV', 'mepe_PA_72keV', 'mepe_ET']
+  ; makepng, 'erg_ofa_matrix_mepe_'+ret[0]+ret[1]+ret[2]
+  
   tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'mepe_PA_10keV', 'mepe_PA_41keV', 'mepe_PA_72keV', 'mepe_ET']
-  makepng, 'erg_ofa_matrix_mepe_'+ret[0]+ret[1]+ret[2]
+  makepng, '/Users/ampuku/Documents/duct/Fig/day_plots/2018/days/201807/erg_ofa_matrix_mepe_wna_'+ret[0]+ret[1]+ret[2]
 
   if hourplot_on eq 1 then begin
     n_plot = fix(24.0/span)
     for i=0, n_plot-1 do begin
       timespan, [td[0]+3600.0*span*i, td[0]+3600.0*span*(i+1)]
+      ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'mepe_PA_10keV', 'mepe_PA_41keV', 'mepe_PA_72keV', 'mepe_ET']
+      ; makepng, 'erg_ofa_matrix_mepe_'+ret[0]+ret[1]+ret[2]+'_'+string(span*i,format='(i2.2)')
+      
       tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'mepe_PA_10keV', 'mepe_PA_41keV', 'mepe_PA_72keV', 'mepe_ET']
-      makepng, 'erg_ofa_matrix_mepe_'+ret[0]+ret[1]+ret[2]+'_'+string(span*i,format='(i2.2)')
+      makepng, '/Users/ampuku/Documents/duct/Fig/day_plots/2018/days/201807/erg_ofa_matrix_mepe_wna_'+ret[0]+ret[1]+ret[2]+'_'+string(span*i,format='(i2.2)')
     endfor
   endif
 
