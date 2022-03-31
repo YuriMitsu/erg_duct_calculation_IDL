@@ -325,7 +325,7 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
   options, 'powspec_b_LASVD'+ma, ytitle='powspec_b!CLA SVD'+ma, $
     ztitle='', ysubtitle='Frequency [kHz]', spec = 1
   ylim, 'powspec_b_LASVD'+ma, 0.064, 20, 1 ; kHz
-  zlim, 'powspec_b_LASVD'+ma, 1E-2, 1E2, 1 ; nT
+  zlim, 'powspec_b_LASVD'+ma, 1E-4, 1E2, 1 ; nT
   
   store_data, 'kvec_LASVD'+ma, data={x:s00.x, y:wna, v:s00.v2} ; *** modified (v->v2)
   options, 'kvec_LASVD'+ma, ytitle='wave normal angle!CLA SVD'+ma, $

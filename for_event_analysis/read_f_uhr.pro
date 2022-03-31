@@ -31,6 +31,7 @@ tplot, 'f_UHR', /oplot
 stop
 
 ;追加・訂正したいとき
+;tplot_restore, file=[UHR_file_name]
 
 tplot, 'erg_pwe_hfa_l2_high_spectra_e_mix'
 ctime, f_time, f_y
