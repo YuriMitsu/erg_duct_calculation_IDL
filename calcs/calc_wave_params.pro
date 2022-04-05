@@ -269,10 +269,10 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
   A[0,5,*,*]=rr_[2,0,*,*,1] & A[1,5,*,*]=rr_[2,1,*,*,1]  & A[2,5,*,*]=0.0
 
 
-  for i=0, n_elements(s00.x)-1 do begin
-    for j=0, n_elements(s00.v2)-1 do begin
+  for i=0, n_t-1 do begin
+    for j=0, n_e-1 do begin
     
-      LA_SVD,reform(A[*,*,i,j]),W,U,V,/double ; W: 特異値を含む行列  U: 左特異ベクトル  V: 右特異ベクトル
+      LA_SVD,reform(A[*,*,i,j]),W,U,V,/double,status=status ; W: 特異値を含む行列  U: 左特異ベクトル  V: 右特異ベクトル
       W2[*,i,j]=W
       V2[*,*,i,j]=V
       W_ORDER = SORT(W2[*,i,j])

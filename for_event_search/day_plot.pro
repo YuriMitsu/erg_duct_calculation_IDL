@@ -1,3 +1,6 @@
+
+; .compile -v '/Users/ampuku/Documents/duct/code/IDL/for_event_search/day_plot.pro'
+
 pro day_plot, span=span, hour_plot=hour_plot
 
 
@@ -45,17 +48,20 @@ pro day_plot, span=span, hour_plot=hour_plot
   ; 3.calc. wave params
   ; *****************
 
-  calc_wave_params, moving_average=1, algebraic_SVD=1
+  calc_wave_params, moving_average=3, algebraic_SVD=1
 
   ; ************************************
   ; *.WNA, polarization and planarity with LA SVD と Algebraic SVD? の比較
   ; ************************************
 
-  window, 0, xsize=1000, ysize=750
-  tplot, ['kvec_LASVD', 'kvec_algebraic', 'polarization_LASVD', 'polarization_algebraic', 'planarity_LASVD']
-  ; tplot, ['erg_pwe_ofa_l2_spec_B_spectra_132', 'powspec_b']
 
-  stop
+  SET_PLOT, 'X'
+  !p.BACKGROUND = 255
+  !p.color = 0
+  window, 0, xsize=1000, ysize=750
+  tplot, ['kvec_LASVD_ma3', 'polarization_LASVD_ma3', 'planarity_LASVD_ma3']
+  ; tplot, ['kvec_LASVD', 'kvec_algebraic', 'polarization_LASVD', 'polarization_algebraic', 'planarity_LASVD']
+  ; tplot, ['erg_pwe_ofa_l2_spec_B_spectra_132', 'powspec_b']
 
   ; ************************************
   ; 13.stokes parameter
@@ -70,16 +76,16 @@ pro day_plot, span=span, hour_plot=hour_plot
   get_data, pr_matrix + 'Btotal_132', data=data_ref; *** modified (B_total_132 -> Btotal_132)
   cut_f = 1E-2
   ; kvec
-  get_data, 'kvec_LASVD', data=data, dlim=dlim, lim=lim
+  get_data, 'kvec_LASVD_ma3', data=data, dlim=dlim, lim=lim
   data.y[where(data_ref.y LT cut_f)] = 'NaN'
   store_data, 'kvec_LASVD_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
   ; polarization
-  get_data, 'polarization_LASVD', data=data, dlim=dlim, lim=lim
+  get_data, 'polarization_LASVD_ma3', data=data, dlim=dlim, lim=lim
   data.y[where(data_ref.y LT cut_f)] = 'NaN'
   store_data, 'polarization_LASVD_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
 
   ; planarity
-  get_data, 'planarity_LASVD', data=data, dlim=dlim, lim=lim
+  get_data, 'planarity_LASVD_ma3', data=data, dlim=dlim, lim=lim
   data.y[where(data_ref.y LT cut_f)] = 'NaN'
   store_data, 'planarity_LASVD_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
 
@@ -128,20 +134,8 @@ pro day_plot, span=span, hour_plot=hour_plot
   ; ************************************
   ; 16.1.mepe PA
   ; ************************************
-  erg_load_mepe,uname='erg_project', pass='geospace',datatype='3dflux'
-  ; 特定の値のenergyを測っている。plotで決めた範囲内に観測しているエネルギー値がなければtplot変数にデータが入らない？
-  erg_mep_part_products, 'erg_mepe_l2_3dflux_FEDU',outputs='energy', pitch=[0.,3.], regrid=[32,32], mag_name='erg_mgf_l2_mag_8sec_dsi', pos_name='erg_orb_l2_pos_gse', /no_ang_weight
-  store_data, 'mepe_PA_0-3', /delete
-  store_data, 'erg_mepe_l2_3dflux_FEDU_energy', newname='mepe_PA_0-3'
-
-  erg_mep_part_products, 'erg_mepe_l2_3dflux_FEDU',outputs='energy', pitch=[177.,188.], regrid=[32,32], mag_name='erg_mgf_l2_mag_8sec_dsi', pos_name='erg_orb_l2_pos_gse', /no_ang_weight
-  store_data, 'mepe_PA_177-188', /delete
-  store_data, 'erg_mepe_l2_3dflux_FEDU_energy', newname='mepe_PA_177-188'
-
-  erg_mep_part_products, 'erg_mepe_l2_3dflux_FEDU',outputs='energy', pitch=[3.,37.5], regrid=[32,32], mag_name='erg_mgf_l2_mag_8sec_dsi', pos_name='erg_orb_l2_pos_gse', /no_ang_weight
-  store_data, 'mepe_PA_3-37', /delete
-  store_data, 'erg_mepe_l2_3dflux_FEDU_energy', newname='mepe_PA_3-37'
-
+  
+  calc_mepe
 
   ; ************************************
   ; 16.2.mepe ET
@@ -165,8 +159,8 @@ pro day_plot, span=span, hour_plot=hour_plot
 
   store_data, pr_matrix + 'Btotal_132_gyro', $
     data=[pr_matrix + 'Btotal_132', 'fce', 'fce_half','flhr']
-  store_data, 'kvec_mask_gyro', data=['kvec_mask', 'fce', 'fce_half','flhr']
-  store_data, 'polarization_mask_gyro', data=['polarization_mask', 'fce', 'fce_half','flhr']
+  store_data, 'kvec_mask_gyro', data=['kvec_LASVD_mask', 'fce', 'fce_half','flhr']
+  store_data, 'polarization_mask_gyro', data=['polarization_LASVD_mask', 'fce', 'fce_half','flhr']
   ylim, '*_gyro', 0.064, 20, 1 ; kHz
   zlim, pr_matrix + 'Btotal_132_gyro', 1E-2, 1E2, 1 ; pT^2/Hz
   options, 'erg_pwe_ofa_l2_Btotal_132_gyro', $
@@ -186,10 +180,10 @@ pro day_plot, span=span, hour_plot=hour_plot
   options, pr_matrix + 'Btotal_132_gyro', 'ysubtitle', 'frequency [kHz]'
   options, pr_matrix + 'Btotal_132_gyro', 'zbtitle', '[pT^2/Hz]'
 
+  options, 'hfa_e_gyro', 'panel_size', 2.0
+
   ; window, xsize=1200, ysize=600
   tplot, ['hfa_e','ofa_e', pr_matrix + 'Btotal_132', 'kvec_mask', 'polarization_mask'] + '_gyro'
-
-  stop
 
   ; ************************************
   ; 18.plot
@@ -204,13 +198,13 @@ pro day_plot, span=span, hour_plot=hour_plot
   ts = time_string(td[0])
   ret = strsplit(ts, '-/:', /extract)
 
-  options, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'mepe_PA_10keV', 'mepe_PA_41keV', 'mepe_PA_72keV', 'mepe_ET'], 'datagap', 60.0
+  options, ['hfa_e_gyro', 'ofa_e_gyro', 'Btotal_132_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'mepe_PA_0-3', 'mepe_PA_177-188', 'mepe_PA_3-37', 'mepe_ET'], 'datagap', 60.0
 
   ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'mepe_PA_10keV', 'mepe_PA_41keV', 'mepe_PA_72keV', 'mepe_ET']
   ; makepng, 'erg_ofa_matrix_mepe_'+ret[0]+ret[1]+ret[2]
   
-  tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'mepe_PA_10keV', 'mepe_PA_41keV', 'mepe_PA_72keV', 'mepe_ET']
-  makepng, '/Users/ampuku/Documents/duct/Fig/day_plots/2018/days/201807/erg_ofa_matrix_mepe_wna_'+ret[0]+ret[1]+ret[2]
+  tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'Btotal_132_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'mepe_PA_0-3', 'mepe_PA_177-188', 'mepe_PA_3-37', 'mepe_ET']
+  makepng, '/Users/ampuku/Documents/duct/Fig/day_plots/'+ret[0]+'/'+ret[1]+'/days/erg_ofa_matrix_mepe_wna_'+ret[0]+ret[1]+ret[2]
 
   if hourplot_on eq 1 then begin
     n_plot = fix(24.0/span)
@@ -219,8 +213,8 @@ pro day_plot, span=span, hour_plot=hour_plot
       ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'mepe_PA_10keV', 'mepe_PA_41keV', 'mepe_PA_72keV', 'mepe_ET']
       ; makepng, 'erg_ofa_matrix_mepe_'+ret[0]+ret[1]+ret[2]+'_'+string(span*i,format='(i2.2)')
       
-      tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'mepe_PA_10keV', 'mepe_PA_41keV', 'mepe_PA_72keV', 'mepe_ET']
-      makepng, '/Users/ampuku/Documents/duct/Fig/day_plots/2018/days/201807/erg_ofa_matrix_mepe_wna_'+ret[0]+ret[1]+ret[2]+'_'+string(span*i,format='(i2.2)')
+      tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'Btotal_132_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'mepe_PA_0-3', 'mepe_PA_177-188', 'mepe_PA_3-37', 'mepe_ET']
+      makepng, '/Users/ampuku/Documents/duct/Fig/day_plots/'+ret[0]+'/'+ret[1]+'/hours/erg_ofa_matrix_mepe_wna_'+ret[0]+ret[1]+ret[2]+'_'+string(span*i,format='(i2.2)')
     endfor
   endif
 
