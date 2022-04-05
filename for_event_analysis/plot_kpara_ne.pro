@@ -151,7 +151,7 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
 
 
   ; ダクトに合わせて変える or 消す！！！
-  ; k_paradata.y[idx_t[0], *] = mean(k_paradata.y[idx_t[0]-3:idx_t[0]+3, *], DIMENSION=1, /nan)
+  k_paradata.y[idx_t[0], *] = mean(k_paradata.y[idx_t[0]-3:idx_t[0]+3, *], DIMENSION=1, /nan)
   ; print, k_paradata.x[idx_t[0]+10]-k_paradata.x[idx_t[0]-10]
   ; print, time_string(k_paradata.x[idx_t[0]+10])
   ; print, time_string(k_paradata.x[idx_t[0]-10])
@@ -175,7 +175,8 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
 ;  k_para_ = [0.00074098376,    0.0012041943,    0.0016674048,    0.0019,    0.00235]
 ;  f_ = [3000., 4000., 5000., 6000., 7000.] ;Hz
   
-  if not keyword_set(k_para_) then k_para_ = lsm[0] * focus_f + lsm[1]
+  ; if not keyword_set(k_para_) then k_para_ = lsm[0] * focus_f + lsm[1]
+  k_para_ = lsm[0] * focus_f + lsm[1]
 
   plot, [0., 15.], lsm[0] * [0., 15.] + lsm[1], xtitle='f (kHz)', ytitle='k_para (/m)'
 
@@ -237,6 +238,8 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
     b2_theta = - k_perp_theta^2 + f_ce_ave / f_ * k_para_[i] * sqrt( k_para_[i]^2 + k_perp_theta^2 ) - k_para_[i]^2
     Ne_theta[*, i] = b1_theta * b2_theta / 10^(6.) ;cm-3
   endfor
+
+  
 
   ; *****************
   ; 7.plot
@@ -387,8 +390,6 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   
   makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_UT_B'
   
-  stop
-  
 ;  store_data, 'UT_B_f3', data={x:Bspec.x, y:Bspec.y[*,idx_f[0]]}
 ;  ylim, 'UT_B_f3', 0.0, 0.01, 0
 ;  options, 'UT_B_f3', 'ystyle', 9
@@ -403,6 +404,73 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
 ;  tplot, 'UT_B_f3'
 ;  tplot, 'N0_f', /oplot
 ;  tplot_apply_databar
+
+
+  ; *****************
+  ; 9.plot f_Ne0
+  ; *****************
+
+  plot_f=dindgen(500, increment=0.01, start=1.0)
+  Ne_0 = fltarr(n_elements(plot_f))
+  k_para_Ne0 = lsm[0] * plot_f + lsm[1]
+  for i=0, n_elements( plot_f )-1 do begin
+    f_ = plot_f[i] * 1000. ;kHz -> Hz
+    b1 = (9.1093D * 10^(-31.)) / (1.25D * 10^(-6.)) / (1.6 * 10^(-19.))^2
+    b2 = k_para_Ne0[i]^2 * (f_ce_ave / f_ - 1 )
+    Ne_0[i] = b1 * b2 / 10^(6.) ;cm-3
+  endfor
+
+  set_plot, 'Z'
+  !p.background = 255
+  !p.color = 0
+  plot, plot_f, Ne_0, xtitle='ferq [kHz]', ytitle='Ne0 [/cc]', yrange=[min(Ne_0)-5,max(Ne_0)+5]
+  makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_f_Ne0'
+
+  get_data, 'erg_pwe_ofa_l2_spec_B_spectra_132', data = Bdata
+  time_ = time_double(duct_time)
+  idx_t = where( Bdata.x lt time_+0.6 and Bdata.x gt time_-0.6, cnt )
+  Bdata.y[idx_t,*] = mean(Bdata.y[idx_t-25:idx_t+25, *], DIMENSION=1, /nan)
+  plot, Bdata.v, Bdata.y[idx_t,*], xtitle='frequency [kHz]', ytitle='OFA-SPEC B [pT^2/Hz]', xrange=[min(plot_f), max(plot_f)]
+  makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_f_B'
+
+  ; *****************
+  ; 10.plot theta_Ne
+  ; *****************
+
+  calc_ave_WNA
+
+  tinterpol_mxn, 'Ne', 'kvec_ave'
+
+  get_data, 'kvec_ave', data=kvec_avedata
+  get_data, 'Ne_interp', data=Nedata
+
+  time_ = time_double(duct_time)
+  idx_t = where( kvec_avedata.x lt time_+4. and kvec_avedata.x gt time_-4., cnt )
+
+  set_plot, 'Z'
+  !p.background = 255
+  !p.color = 0
+  
+  plot, theta, Ne_theta[*, 0], color=4, yrange=[250, 500] $
+        , xtitle='theta [degree]', ytitle='Ne [/cc]'
+  oplot, theta, Ne_theta[*, 0], color=10
+  oplot, [theta[0]], [Ne_theta[0, 0]], psym=4, color=6
+  ; xyouts, theta[2], Ne_theta[0, 0], string(fix(Ne_theta[0, 0]), format='(i0)'), color=10, CHARSIZE=2
+  ; xyouts, theta[-8], Ne_theta[-1, 0], string(focus_f[0], FORMAT='(f0.1)')+'kHz', color=10, CHARSIZE=2
+  for i = 1, n_elements(focus_f)-1 do begin
+    oplot, theta, Ne_theta[*, i], color=i+10
+    oplot, [theta[0]], [Ne_theta[0, i]], psym=4, color=6
+    ; xyouts, theta[2], Ne_theta[0, i], string(fix(Ne_theta[0, i]), format='(i0)'), color=i+10, CHARSIZE=2
+    ; xyouts, theta[-8], Ne_theta[-1, i], string(focus_f[i], FORMAT='(f0.1)')+'kHz', color=i+10, CHARSIZE=2
+  endfor
+
+  oplot, kvec_avedata.y[idx_t-3:idx_t+3], Nedata.y[idx_t-3:idx_t+3], xtitle='theta [deg]', ytitle='Ne [/cc]', psym=4, color=2
+
+  makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_Ne_theta_withdata'
+
+  stop
+
+
 
   
   

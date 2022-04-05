@@ -1,3 +1,8 @@
+
+; コンパイル 
+; .compile -v '/Users/ampuku/Documents/duct/code/IDL/for_event_analysis/plot_event_normal.pro'
+
+
 pro plot_event_normal, UHR_file_name=UHR_file_name
 
     ; *****************
