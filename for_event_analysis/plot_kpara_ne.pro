@@ -1,6 +1,11 @@
 
 ; コンパイル 
 ; .compile -v '/Users/ampuku/Documents/duct/code/IDL/for_event_analysis/plot_kpara_ne.pro'
+; .compile -v '/Users/ampuku/Documents/duct/code/IDL/calcs/calc_ave_WNA.pro'
+
+; このproとcalc_ave_WNAは未完成！！
+; 着目するダクトによって手書きで周波数方向と時間方向のデータ数を決めないと各ダクトの大きさに対応できない...
+; うまく修正できたら良いな...
 
 
 function least_squares_method,x,y
@@ -191,6 +196,7 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   ret = strsplit(duct_time, '-/:', /extract)
   makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_f_kpara'
   
+  stop
 
   ; *****************
   ; 6.1.calculate Ne(k_perp)
@@ -262,7 +268,7 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   
   if 1 then begin
     ; plot, k_perp, Ne_k_para[*, 0], color=4, yrange=[max([min(Ne_k_para)-5, 0.]), min([max(Ne_k_para)+5, 500.])] $
-    plot, k_perp, Ne_k_para[*, 0], color=4, yrange=[250, 500] $
+    plot, k_perp, Ne_k_para[*, 0], color=4, yrange=[0, 300] $
           , xtitle='k_perp [/m]', ytitle='Ne [/cc]'
     oplot, k_perp, Ne_k_para[*, 0], color=10
     oplot, [k_perp[0]], [Ne_k_para[0, 0]], psym=4, color=6
@@ -295,7 +301,7 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   ; *****************
 
   ; plot, theta, Ne_theta[*, 0], color=4, yrange=[max([min(Ne_theta)-5, 0.]), min([max(Ne_theta)+5, 500.])] $
-  plot, theta, Ne_theta[*, 0], color=4, yrange=[250, 500] $
+  plot, theta, Ne_theta[*, 0], color=4, yrange=[0, 300] $
         , xtitle='theta [degree]', ytitle='Ne [/cc]'
   oplot, theta, Ne_theta[*, 0], color=10
   oplot, [theta[0]], [Ne_theta[0, 0]], psym=4, color=6
@@ -410,7 +416,7 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   ; 9.plot f_Ne0
   ; *****************
 
-  plot_f=dindgen(500, increment=0.01, start=1.0)
+  plot_f=dindgen(500, increment=0.01, start=3.0)
   Ne_0 = fltarr(n_elements(plot_f))
   k_para_Ne0 = lsm[0] * plot_f + lsm[1]
   for i=0, n_elements( plot_f )-1 do begin
@@ -437,21 +443,11 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   ; 10.plot theta_Ne
   ; *****************
 
-  calc_ave_WNA
-
-  tinterpol_mxn, 'Ne', 'kvec_ave'
-
-  get_data, 'kvec_ave', data=kvec_avedata
-  get_data, 'Ne_interp', data=Nedata
-
-  time_ = time_double(duct_time)
-  idx_t = where( kvec_avedata.x lt time_+4. and kvec_avedata.x gt time_-4., cnt )
-
   set_plot, 'Z'
   !p.background = 255
   !p.color = 0
   
-  plot, theta, Ne_theta[*, 0], color=4, yrange=[250, 500] $
+  plot, theta, Ne_theta[*, 0], color=4, yrange=[0, 300] $
         , xtitle='theta [degree]', ytitle='Ne [/cc]'
   oplot, theta, Ne_theta[*, 0], color=10
   oplot, [theta[0]], [Ne_theta[0, 0]], psym=4, color=6
@@ -464,7 +460,34 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
     ; xyouts, theta[-8], Ne_theta[-1, i], string(focus_f[i], FORMAT='(f0.1)')+'kHz', color=i+10, CHARSIZE=2
   endfor
 
-  oplot, kvec_avedata.y[idx_t-3:idx_t+3], Nedata.y[idx_t-3:idx_t+3], xtitle='theta [deg]', ytitle='Ne [/cc]', psym=4, color=2
+  if 0 then begin
+    calc_ave_WNA
+
+    tinterpol_mxn, 'Ne', 'kvec_ave'
+
+    get_data, 'kvec_ave', data=kvec_avedata
+    get_data, 'Ne_interp', data=Nedata
+
+    time_ = time_double(duct_time)
+    idx_t = where( kvec_avedata.x lt time_+4. and kvec_avedata.x gt time_-4., cnt )
+
+    kvec__ = kvec_avedata.y[idx_t-3:idx_t+3]
+    Ne__ = Nedata.y[idx_t-3:idx_t+3]
+
+    oplot, kvec__, Ne__, psym=4
+  endif
+
+  tinterpol_mxn, 'Ne', 'kvec_LASVD_ma3_mask'
+
+  get_data, 'kvec_LASVD_ma3_mask', data=kvec__data
+  get_data, 'Ne_interp', data=Nedata
+
+  time_ = time_double(duct_time)
+  idx_t = where( kvec__data.x lt time_+4. and kvec__data.x gt time_-4., cnt )
+
+  kvec__ = kvec__data.y[idx_t-3:idx_t+3,*]
+  Ne__ = Nedata.y[idx_t-3:idx_t+3]
+  for i=0,n_elements(kvec__[0,*])-1 do oplot, kvec__[*,i], Ne__, psym=4
 
   makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_Ne_theta_withdata'
 
