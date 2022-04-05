@@ -384,8 +384,6 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
   ylim, 'lambda3-2_LASVD'+ma, 0.064, 20, 1 ; kHz
   zlim, 'lambda3-2_LASVD'+ma, 0., 0.1, 0
 
-  stop
-
   ; ************************************
   ; 7*.WNA, polarization and planarity with Algebraic SVD? or Means et al 1972
   ; ************************************
