@@ -4,3 +4,9 @@
 .RESET_SESSION
 
 .CONTINUE
+
+; displyにwindowを作成
+set_plot, 'X'
+window, 0, xsize=1000, ysize=600
+!p.background = 255
+!p.color = 0

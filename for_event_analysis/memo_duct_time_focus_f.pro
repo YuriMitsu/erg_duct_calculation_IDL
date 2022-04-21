@@ -15,11 +15,11 @@ pro memo_duct_time_focus_f
   ; timespan, '2018-06-06/11:20:00', 40, /minute
   ; plot_event_normal, UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot'
   timespan, '2018-06-06/11:25:00', 20, /minute
-  plot_kpara_ne, duct_time='2018-06-06/11:29:35', focus_f=[1., 2., 3., 4., 5.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot' ; I
-  plot_kpara_ne, duct_time='2018-06-06/11:31:28', focus_f=[1., 2., 3., 4., 5.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot' ; I
-  plot_kpara_ne, duct_time='2018-06-06/11:32:29', focus_f=[3., 4., 5., 6., 7.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot', lsm=[0.000355,0.00032] ; D
-  plot_kpara_ne, duct_time='2018-06-06/11:39:53', focus_f=[1., 2., 3., 4., 5.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot' ; I
-  plot_kpara_ne, duct_time='2018-06-06/11:42:08', focus_f=[2., 3., 4., 5., 6.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot' ; D
+  plot_kpara_ne, duct_time='2018-06-06/11:29:40', focus_f=[1., 2., 3., 4., 5.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot', duct_wid_data_n=3 ; I
+  plot_kpara_ne, duct_time='2018-06-06/11:31:25', focus_f=[1., 2., 3., 4., 5.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot', duct_wid_data_n=3 ; I
+  plot_kpara_ne, duct_time='2018-06-06/11:32:29', focus_f=[3., 4., 5., 6., 7.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot', lsm=[0.000355,0.00032], duct_wid_data_n=3 ; D
+  plot_kpara_ne, duct_time='2018-06-06/11:39:53', focus_f=[1., 2., 3., 4., 5.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot', duct_wid_data_n=3 ; I
+  plot_kpara_ne, duct_time='2018-06-06/11:41:33', focus_f=[2., 3., 4., 5., 6.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot', duct_wid_data_n=7 ; D
 
   ; 特にこの４つ 2018-06-06/11:29:56, 2018-06-06/11:31:28, 2018-06-06/11:32:29, 2018-06-06/11:39:53
   ; 以下弱いのも含めた１４こ
