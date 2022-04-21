@@ -79,6 +79,8 @@ pro plot_event_normal, UHR_file_name=UHR_file_name
 
     calc_Ne, UHR_file_name=UHR_file_name
 
+    calc_equatorial_fce
+
     ; ************************************
     ; 17-2.overplot fce.etc
     ; ************************************
@@ -87,7 +89,9 @@ pro plot_event_normal, UHR_file_name=UHR_file_name
         , data=[pr_matrix + 'Etotal_132', 'fce', 'fce_half','flhr']
     store_data, pr_matrix + 'Btotal_132_gyro' $
         , data=[pr_matrix + 'Btotal_132', 'fce', 'fce_half','flhr']
-
+    
+    store_data, 'planarity_gyro', data=['planarity_LASVD_ma3', 'fce', 'fce_half','flhr']
+    options, 'kvec_mask_gyro', ytitle='WNA', ysubtitle='Frequency!C[kHz]', ztitle='[degree]'
     store_data, 'kvec_mask_gyro', data=['kvec_LASVD_ma3_mask', 'fce', 'fce_half','flhr']
     options, 'kvec_mask_gyro', ytitle='WNA', ysubtitle='Frequency!C[kHz]', ztitle='[degree]'
     store_data, 'polarization_mask_gyro', data=['polarization_LASVD_ma3_mask', 'fce', 'fce_half','flhr']
@@ -118,12 +122,13 @@ pro plot_event_normal, UHR_file_name=UHR_file_name
     ; ************************************
 
     SET_PLOT, 'Z'
-    DEVICE, SET_RESOLUTION = [1000,600]
+    DEVICE, SET_RESOLUTION = [1500,1800]
     !p.BACKGROUND = 255
     !p.color = 0
 
     time_stamp, /off
-    tplot, ['hfa', pr_matrix+'Btotal_132', pr_matrix+'Etotal_132', 'kvec_mask', 'polarization_mask', 'planarity_mask'] + '_gyro'
+    options, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'ofa_b_Bmodels_correction'], 'color_table', 43
+    tplot, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'ofa_b_Bmodels_correction']
 
     t = timerange(/current) 
     ret1 = strsplit(time_string(t[0]), '-/:', /extract)

@@ -6,7 +6,7 @@ pro read_f_UHR, tplot_name=tplot_name
 
 erg_load_pwe_hfa, level='l2', mode=['l','h'], uname='erg_project', pass='geospace'
 ;ylim,  'erg_pwe_hfa_l2_high_spectra_e_mix', 40.0, 120.0, 0
-ylim,  'erg_pwe_hfa_l2_high_spectra_e_mix', 20.0, 110.0, 0
+ylim,  'erg_pwe_hfa_l2_high_spectra_e_mix', 100.0, 250.0, 0
 
 SET_PLOT, 'X'
 !p.BACKGROUND = 255
@@ -22,7 +22,7 @@ options, 'f_UHR', 'ytitle', 'f_UHR'
 options, 'f_UHR', 'ysubtitle', 'frequency [kHz]'
 
 ; ylim,  ['erg_pwe_hfa_l2_high_spectra_e_mix', 'f_UHR'], 40.0, 200.0, 0
-ylim,  ['erg_pwe_hfa_l2_high_spectra_e_mix', 'f_UHR'], 20.0, 110.0, 0
+ylim,  ['erg_pwe_hfa_l2_high_spectra_e_mix', 'f_UHR'], 100.0, 250.0, 0
 tplot, 'erg_pwe_hfa_l2_high_spectra_e_mix'
 tplot, 'f_UHR', /oplot
 
@@ -64,9 +64,11 @@ store_data, 'new_f_UHR', newname='f_UHR'
 options, 'f_UHR', 'ytitle', 'f_UHR'
 options, 'f_UHR', 'ysubtitle', 'frequency [kHz]'
 
+;tplot_save, 'f_UHR', filename='/Users/ampuku/Documents/duct/code/IDL/UHR_tplots/f_UHR_2017-05-10/040000'
 ;tplot_save, 'f_UHR', filename='/Users/ampuku/Documents/duct/code/IDL/UHR_tplots/f_UHR_2018-06-02/101400'
 ;tplot_save, 'f_UHR', filename='/Users/ampuku/Documents/duct/code/IDL/UHR_tplots/f_UHR_2018-06-06/112500-120500'
 ;tplot_save, 'f_UHR', filename='/Users/ampuku/Documents/duct/code/IDL/UHR_tplots/f_UHR_2018-07-10/052500-054500'
+
 
 ; ylim,  ['erg_pwe_hfa_l2_high_spectra_e_mix', 'f_UHR'], 40.0, 200.0, 0
 ; ylim, 'ofa_b_Bmodels', 1., 10., 0

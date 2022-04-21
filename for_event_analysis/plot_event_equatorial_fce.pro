@@ -11,7 +11,7 @@ pro plot_event_equatorial_fce
     ; 1.set time span
     ; *****************
 
-    ;  timespan, '2018-06-06/11:20:00', 40, /minute
+    ;  timespan, '2018-06-06/11:25:00', 20, /minute
 
     ; *****************
     ; 2.load HFA
@@ -28,6 +28,8 @@ pro plot_event_equatorial_fce
 
     calc_equatorial_fce
     calc_fce_and_flhr
+
+    stop
 
     ; ************************************
     ; 18.plot
