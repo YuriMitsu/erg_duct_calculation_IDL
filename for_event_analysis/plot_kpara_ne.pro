@@ -146,9 +146,14 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
 
   options, 'erg_pwe_hfa', 'color_table', 43
   options, 'k_para'+wave_params_+'_mask', 'color_table', 43
-  ylim, 'Ne', 150, 400, 0
   timespan, time_string(time_double(duct_time)-120. ), 4, /minute
-  tplot, ['erg_pwe_hfa', 'Ne', 'k_para'+wave_params_+'_mask']
+  tplot, ['erg_pwe_hfa', 'k_para'+wave_params_+'_mask']
+
+  options, 'kvec'+wave_params_+'_mask', 'color_table', 43
+  ylim, 'Ne', 150, 400, 0
+  ylim, 'kvec'+wave_params_+'_mask', 1., 9.0, 0
+  timespan, time_string(time_double(duct_time)-120. ), 4, /minute
+  tplot, ['Ne', 'kvec'+wave_params_+'_mask']
 
   ret = strsplit(duct_time, '-/:', /extract)
   if test eq 0 then begin
@@ -197,6 +202,7 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
     print, '!!!!Caution!!!! /n Duct time is not selected correctly. Check the code.'
     stop
   endif
+  !p.multi=0
   plot, k_paradata.v, k_paradata.y[idx_t[0], *], psym=-4, xtitle='f (kHz)', ytitle='k_para (/m)'
 
   ; 最小二乗法でダクト中心でのk_paraを直線に当てはめる
@@ -452,42 +458,7 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
 
 
   ; *****************
-  ; 9.plot f_Ne0, f_B
-  ; *****************
-
-  plot_f=dindgen(500, increment=0.01, start=focus_f[0])
-  Ne_0 = fltarr(n_elements(plot_f))
-  k_para_Ne0 = lsm[0] * plot_f + lsm[1]
-  for i=0, n_elements( plot_f )-1 do begin
-    f_ = plot_f[i] * 1000. ;kHz -> Hz
-    b1 = (9.1093D * 10^(-31.)) / (1.25D * 10^(-6.)) / (1.6 * 10^(-19.))^2
-    b2 = k_para_Ne0[i]^2 * (f_ce_ave / f_ - 1 )
-    Ne_0[i] = b1 * b2 / 10^(6.) ;cm-3
-  endfor
-
-  if test eq 0 then begin
-    set_plot, 'Z'
-    !p.background = 255
-    !p.color = 0
-  endif
-  !p.multi=[0,1,2]
-  plot, plot_f, Ne_0, xtitle='ferq [kHz]', ytitle='Ne0 [/cc]', yrange=[min(Ne_0)-5,max(Ne_0)+5]
-  ; if test eq 0 then begin
-  ;   makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_f_Ne0'
-  ; endif
-
-  get_data, 'erg_pwe_ofa_l2_spec_B_spectra_132', data = Bdata
-  time_ = time_double(duct_time)
-  idx_t = where( Bdata.x lt time_+0.6 and Bdata.x gt time_-0.6, cnt )
-  Bdata.y[idx_t,*] = mean(Bdata.y[idx_t-25:idx_t+25, *], DIMENSION=1, /nan)
-
-  plot, Bdata.v, Bdata.y[idx_t,*], xtitle='frequency [kHz]', ytitle='OFA-SPEC B [pT^2/Hz]', xrange=[min(plot_f), max(plot_f)]
-  if test eq 0 then begin
-    makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_f_Ne0_f_B'
-  endif
-
-  ; *****************
-  ; 10.plot theta_Ne
+  ; 9.plot theta_Ne
   ; *****************
 
   if test eq 0 then begin
@@ -529,7 +500,7 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
 
 
   ; *****************
-  ; 11.plot Ne_theta_withdata
+  ; 10.plot Ne_theta_withdata
   ; *****************
 
   ; ここ、ダクト外のfreqにあたるkvec__を切る作業をしていない　　!!!書き換えないでの使用不可!!!
@@ -551,7 +522,7 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
 
 
   ; *****************
-  ; 12.plot f_theta
+  ; 11.plot f_theta
   ; *****************
 
   if test eq 0 then begin
@@ -609,8 +580,6 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
     makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_f_theta_witht'
   endif
 
-  stop
-
   ; plot, f_kvec__gendrin_diff, kvec__gendrin_diff, xtitle='f [kHz]', ytitle='theta - theta_G [degree]', xrange=[min(focus_f)-0.5, max(focus_f)+0.5]
 
   ; 確認用 手で調べたやつ いい感じに一致した
@@ -622,6 +591,83 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   ; oplot, [5], [42], color=13, psym=4
   ; oplot, [6], [27], color=14, psym=4
   ; oplot, [7], [0], color=14, psym=4
+
+
+
+  ; *****************
+  ; 12.plot f_Ne0, f_B
+  ; *****************
+
+  plot_f=dindgen(500, increment=0.01, start=focus_f[0])
+  Ne_0 = fltarr(n_elements(plot_f))
+  k_para_Ne0 = lsm[0] * plot_f + lsm[1]
+  for i=0, n_elements( plot_f )-1 do begin
+    f_ = plot_f[i] * 1000. ;kHz -> Hz
+    b1 = (9.1093D * 10^(-31.)) / (1.25D * 10^(-6.)) / (1.6 * 10^(-19.))^2
+    b2 = k_para_Ne0[i]^2 * (f_ce_ave / f_ - 1 )
+    Ne_0[i] = b1 * b2 / 10^(6.) ;cm-3
+  endfor
+
+  if test eq 0 then begin
+    set_plot, 'Z'
+    !p.background = 255
+    !p.color = 0
+  endif
+  
+  !p.multi=[0,1,2]
+  plot, plot_f, Ne_0, xtitle='frequency [kHz]', ytitle='Ne0 [/cc]', yrange=[min(Ne_0)-5,max(Ne_0)+5]
+  get_data, 'Ne', data=obs_Ne
+  duct_obs_Ne = obs_Ne.y[idx_t-duct_wid_data_n:idx_t+duct_wid_data_n]
+  idx_Ne = where( abs(duct_obs_Ne-duct_obs_Ne[0]) eq max(abs(duct_obs_Ne-duct_obs_Ne[0])), cnt )
+  duct_obs_Ne_min = duct_obs_Ne[ idx_Ne[0] ]
+  oplot, [plot_f[0],plot_f[-1]], [duct_obs_Ne_min,duct_obs_Ne_min]
+  xyouts, plot_f[-1]-0.5, duct_obs_Ne_min+2., string(duct_obs_Ne_min, format='(i0)'), CHARSIZE=1.5
+  
+  dif = Ne_0-duct_obs_Ne_min
+  idx_dif = where( dif[0:-2] * dif[1:-1] lt 0, cnt )
+  if idx_dif[0] ne -1 then begin
+    for i=0, n_elements(idx_dif)-1 do begin
+      duct_f = plot_f[idx_dif[i]]
+      oplot, [duct_f,duct_f], [min(Ne_0)-15,max(Ne_0)+15]
+      ; xyouts, duct_f+0.1, min(Ne_0), string(duct_f, format='(f0.1)'), CHARSIZE=2
+    endfor
+  endif
+
+  ; if test eq 0 then begin
+  ;   makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_f_Ne0'
+  ; endif
+
+  get_data, 'erg_pwe_ofa_l2_spec_B_spectra_132', data = Bdata
+  time_ = time_double(duct_time)
+  idx_t = where( Bdata.x lt time_+0.6 and Bdata.x gt time_-0.6, cnt )
+  Bdata.y[idx_t,*] = mean(Bdata.y[idx_t-25:idx_t+25, *], DIMENSION=1, /nan)
+
+  plot, Bdata.v, Bdata.y[idx_t,*], xtitle='frequency [kHz]', ytitle='OFA-SPEC B [pT^2/Hz]', xrange=[min(plot_f), max(plot_f)]
+
+  if idx_dif[0] ne -1 then begin
+    for i=0, n_elements(idx_dif)-1 do begin
+      duct_f = plot_f[idx_dif[i]]
+      oplot, [duct_f,duct_f], [min(Bdata.y[idx_t,*])-0.01,max(Bdata.y[idx_t,*])+0.01]
+      ; xyouts, duct_f+0.1, min(), string(duct_f, format='(f0.1)'), CHARSIZE=2
+    endfor
+
+  endif
+
+  calc_equatorial_fce
+  tinterpol_mxn, 'fce_TS04_half', 'erg_pwe_ofa_l2_spec_B_spectra_132'
+  get_data, 'fce_TS04_half_interp', data=equatorial_fce
+  time_ = time_double(duct_time)
+  idx_t = where( equatorial_fce.x lt time_+0.6 and equatorial_fce.x gt time_-0.6, cnt )
+  duct_equatorial_fce = equatorial_fce.y[idx_t]
+
+  oplot, [duct_equatorial_fce, duct_equatorial_fce], [min(Bdata.y[idx_t,*])-0.01,max(Bdata.y[idx_t,*])+0.01], linestyle=2
+  xyouts, duct_equatorial_fce+0.1, min(Bdata.y[idx_t,*])+0.001, 'fce_eq/2 = '+string(duct_equatorial_fce, format='(f0.1)'), CHARSIZE=1.5
+
+  if test eq 0 then begin
+    makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_f_Ne0_f_B'
+  endif
+
+  stop
 
 
   ;
