@@ -69,7 +69,7 @@ pro plot_event_normal, UHR_file_name=UHR_file_name
     ; 16.mepe
     ; ************************************
 
-    calc_mepe
+    ; calc_mepe
 
     ; ************************************
     ; 17-1.cal fce.etc
@@ -128,6 +128,8 @@ pro plot_event_normal, UHR_file_name=UHR_file_name
 
     time_stamp, /off
     options, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'ofa_b_Bmodels_correction'], 'color_table', 43
+    ylim, [pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'ofa_b_Bmodels_correction'], 0.5, 10., 1
+    ylim, 'Ne', 50, 500, 1
     tplot, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'ofa_b_Bmodels_correction']
 
     t = timerange(/current) 

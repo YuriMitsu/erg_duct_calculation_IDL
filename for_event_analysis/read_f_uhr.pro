@@ -1,5 +1,6 @@
 pro read_f_UHR, tplot_name=tplot_name
 
+; timespan, '2017-05-10/04:00:00', 30, /minute
 ; timespan, '2018-06-02/10:00:00', 20, /minute
 ; timespan, '2018-06-06/11:25:00', 40, /minute
 ; timespan, '2018-07-10/05:25:00', 20, /minute
@@ -30,8 +31,41 @@ tplot, 'f_UHR', /oplot
 
 stop
 
-;追加・訂正したいとき
-;tplot_restore, file=[UHR_file_name]
+
+;前後の時間を追加・訂正したいとき
+;tplot_restore, file=['/Users/ampuku/Documents/duct/code/IDL/UHR_tplots/f_UHR_2017-05-10/040000.tplot']
+
+tplot, 'erg_pwe_hfa_l2_high_spectra_e_mix'
+ctime, f_time, f_y
+
+get_data, 'f_UHR', data=data
+
+idx0 = n_elements(data.x)
+
+new_datax = dblarr( n_elements(data.x)+n_elements(f_time) )
+new_datay = dblarr( n_elements(data.x)+n_elements(f_time) )
+
+new_datax[0:idx0-1] = data.x
+new_datay[0:idx0-1] = data.y
+new_datax[idx0:-1] = f_time
+new_datay[idx0:-1] = f_y
+
+store_data, 'new_f_UHR', data={x:new_datax, y:new_datay}, dlim={colors:5,thick:1,linestyle:1}
+
+ylim,  ['erg_pwe_hfa_l2_high_spectra_e_mix', 'new_f_UHR'], 100.0, 250.0, 0
+tplot, 'erg_pwe_hfa_l2_high_spectra_e_mix'
+tplot, 'new_f_UHR', /oplot
+
+; いい感じなら再保存
+store_data, 'f_UHR', /delete
+store_data, 'new_f_UHR', newname='f_UHR'
+options, 'f_UHR', 'ytitle', 'f_UHR'
+options, 'f_UHR', 'ysubtitle', 'frequency [kHz]'
+
+
+
+;点を追加・訂正したいとき
+;tplot_restore, file=['/Users/ampuku/Documents/duct/code/IDL/UHR_tplots/f_UHR_2017-05-10/040000.tplot']
 
 tplot, 'erg_pwe_hfa_l2_high_spectra_e_mix'
 ctime, f_time, f_y
