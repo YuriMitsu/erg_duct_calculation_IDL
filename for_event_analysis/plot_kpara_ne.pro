@@ -19,7 +19,7 @@ function least_squares_method,x,y
 end
 
 ; plot_kpara_neはtimespanを設定してから使用！！
-pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_name, lsm=lsm, k_para_=k_para_, cut_f=cut_f, k_perp_range=k_perp_range, duct_wid_data_n=duct_wid_data_n
+pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_name, lsm=lsm, k_para_=k_para_, cut_f=cut_f, k_perp_range=k_perp_range, duct_wid_data_n=duct_wid_data_n, IorD=IorD
 
   test = 0 ; 0: Fig保存あり、画面上plotなし　　　1: Fig保存なし、画面上plotあり
 
@@ -396,7 +396,7 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   
   for i=0, n_elements(focus_f)-1 do begin
     difarr = abs(Bspec.v-focus_f[i])
-    idx_f[i] = where( difarr eq min(difarr) , cnt )
+    idx_f[i] = (where( difarr eq min(difarr) , cnt ))[0]
     UT_B_names[i] = 'UT_B_f' + string(focus_f[i], FORMAT='(f0.1)')
     N0_names[i] = 'N0_f' + string(focus_f[i], FORMAT='(f0.1)')
   endfor
@@ -549,12 +549,46 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
     f_kvec__[*, i] = obs_f[i]
   endfor
 
+  stop
+
+
+
+
+  ;
+  ;
+  ;  ここから_(┐「ε:)_
+  ;
+  ;
+
+
+
+
+  polarization_color = indgen(n_elements(obs_f)*7)
+
+
   ; t: t方向に潰してplotしたので変数にしてないが、idx_tの前後nデータ分, freq: obs_f, theta-theta_gendrin: kvec__gendrin_diff
   f_ce_ave_ = f_ce_ave / 1000.
-  plot, obs_f/f_ce_ave_, gendrin_angle, xtitle='f/fce', ytitle='theta [degree]', xrange=[ (min(focus_f)-0.5)/f_ce_ave_, (max(focus_f)+0.5)/f_ce_ave_ ]
-  oplot, obs_f/f_ce_ave_, gendrin_angle, color=6
-  oplot, f_kvec__/f_ce_ave_, kvec__, psym=4
+  ; plot, obs_f/f_ce_ave_, gendrin_angle, xtitle='f/fce', ytitle='theta [degree]', xrange=[ (min(focus_f)-0.5)/f_ce_ave_, (max(focus_f)+0.5)/f_ce_ave_ ]
+  ; oplot, obs_f/f_ce_ave_, gendrin_angle, color=6
+  ; oplot, f_kvec__/f_ce_ave_, kvec__, psym=4
+
+
+
+  plot, f_kvec__/f_ce_ave_, kvec__
+  colorbar
+  plots, f_kvec__/f_ce_ave_, kvec__, color=polarization_color, psym=4
   xyouts, max(focus_f/f_ce_ave_)-0.04, min(kvec__)+5, 'Gendrin Angle', color=6, CHARSIZE=1.5
+
+
+
+  ;
+  ;
+  ;  ここまで_(┐「ε:)_
+  ;
+  ;
+
+
+
 
   if test eq 0 then begin
     makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_f_theta'
@@ -618,17 +652,30 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   plot, plot_f, Ne_0, xtitle='frequency [kHz]', ytitle='Ne0 [/cc]', yrange=[min(Ne_0)-5,max(Ne_0)+5]
   get_data, 'Ne', data=obs_Ne
   duct_obs_Ne = obs_Ne.y[idx_t-duct_wid_data_n:idx_t+duct_wid_data_n]
-  idx_Ne = where( abs(duct_obs_Ne-duct_obs_Ne[0]) eq max(abs(duct_obs_Ne-duct_obs_Ne[0])), cnt )
-  duct_obs_Ne_min = duct_obs_Ne[ idx_Ne[0] ]
-  oplot, [plot_f[0],plot_f[-1]], [duct_obs_Ne_min,duct_obs_Ne_min]
-  xyouts, plot_f[-1]-0.5, duct_obs_Ne_min+2., string(duct_obs_Ne_min, format='(i0)'), CHARSIZE=1.5
+
+  if IorD eq 'I' then begin
+    idx_Ne = where( duct_obs_Ne eq max(duct_obs_Ne), cnt )
+    duct_obs_Ne_top = duct_obs_Ne[ idx_Ne[0] ]
+  endif else begin
+  if IorD eq 'D' then begin
+    idx_Ne = where( duct_obs_Ne eq min(duct_obs_Ne), cnt )
+    duct_obs_Ne_top = duct_obs_Ne[ idx_Ne[0] ]
+  endif else begin
+    print, 'Please specify an argument IorD'
+  endelse
+  endelse
+
+
+
+  oplot, [plot_f[0]-1,plot_f[-1]+1], [duct_obs_Ne_top,duct_obs_Ne_top]
+  xyouts, plot_f[-1]-0.5, duct_obs_Ne_top+2., string(duct_obs_Ne_top, format='(i0)'), CHARSIZE=1.5
   
-  dif = Ne_0-duct_obs_Ne_min
+  dif = Ne_0-duct_obs_Ne_top
   idx_dif = where( dif[0:-2] * dif[1:-1] lt 0, cnt )
   if idx_dif[0] ne -1 then begin
     for i=0, n_elements(idx_dif)-1 do begin
       duct_f = plot_f[idx_dif[i]]
-      oplot, [duct_f,duct_f], [min(Ne_0)-15,max(Ne_0)+15]
+      oplot, [duct_f,duct_f], [min(Ne_0)-300,max(Ne_0)+300]
       ; xyouts, duct_f+0.1, min(Ne_0), string(duct_f, format='(f0.1)'), CHARSIZE=2
     endfor
   endif
@@ -647,7 +694,7 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   if idx_dif[0] ne -1 then begin
     for i=0, n_elements(idx_dif)-1 do begin
       duct_f = plot_f[idx_dif[i]]
-      oplot, [duct_f,duct_f], [min(Bdata.y[idx_t,*])-0.01,max(Bdata.y[idx_t,*])+0.01]
+      oplot, [duct_f,duct_f], [min(Bdata.y[idx_t,*])-0.1,max(Bdata.y[idx_t,*])+0.1]
       ; xyouts, duct_f+0.1, min(), string(duct_f, format='(f0.1)'), CHARSIZE=2
     endfor
 
@@ -660,8 +707,8 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   idx_t = where( equatorial_fce.x lt time_+0.6 and equatorial_fce.x gt time_-0.6, cnt )
   duct_equatorial_fce = equatorial_fce.y[idx_t]
 
-  oplot, [duct_equatorial_fce, duct_equatorial_fce], [min(Bdata.y[idx_t,*])-0.01,max(Bdata.y[idx_t,*])+0.01], linestyle=2
-  xyouts, duct_equatorial_fce+0.1, min(Bdata.y[idx_t,*])+0.001, 'fce_eq/2 = '+string(duct_equatorial_fce, format='(f0.1)'), CHARSIZE=1.5
+  oplot, [duct_equatorial_fce, duct_equatorial_fce], [min(Bdata.y[idx_t,*])-0.1,max(Bdata.y[idx_t,*])+0.1], linestyle=2
+  xyouts, duct_equatorial_fce+0.1, min(Bdata.y[idx_t,*])+0.00, 'fce_eq/2 = '+string(duct_equatorial_fce, format='(f0.1)'), CHARSIZE=1.5
 
   if test eq 0 then begin
     makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_f_Ne0_f_B'
