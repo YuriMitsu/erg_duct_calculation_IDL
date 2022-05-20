@@ -21,7 +21,7 @@ end
 ; plot_kpara_neはtimespanを設定してから使用！！
 pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_name, lsm=lsm, k_para_=k_para_, cut_f=cut_f, k_perp_range=k_perp_range, duct_wid_data_n=duct_wid_data_n, IorD=IorD
 
-  test = 0 ; 0: Fig保存あり、画面上plotなし　　　1: Fig保存なし、画面上plotあり
+  test = 1 ; 0: Fig保存あり、画面上plotなし　　　1: Fig保存なし、画面上plotあり
 
   if not keyword_set(duct_time) then duct_time = '2018-06-02/10:05:56'
   if not keyword_set(focus_f) then focus_f = [3., 4., 5., 6., 7.] ;Hz
@@ -159,7 +159,6 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   if test eq 0 then begin
     makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_hfa_kpara_mask'
   endif
-
 
 
 
@@ -323,6 +322,7 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
     get_data, 'f_ce', data = data
     idx_t = where( data.x lt time_+4. and data.x gt time_-4., cnt )
     xyouts, k_perp[-12], max([min(Ne_k_para)-5, 0.])+25, 'fce/2 = '+string(data.y[idx_t]/1000/2, FORMAT='(f0.1)')+'kHz', color=4, CHARSIZE=2
+    fce_loc_string = string(data.y[idx_t]/1000, FORMAT='(f0.1)')
 
     if test eq 0 then begin
       makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_Ne_kpara'
@@ -549,7 +549,6 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
     f_kvec__[*, i] = obs_f[i]
   endfor
 
-  stop
 
 
 
@@ -568,17 +567,27 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
 
   ; t: t方向に潰してplotしたので変数にしてないが、idx_tの前後nデータ分, freq: obs_f, theta-theta_gendrin: kvec__gendrin_diff
   f_ce_ave_ = f_ce_ave / 1000.
-  ; plot, obs_f/f_ce_ave_, gendrin_angle, xtitle='f/fce', ytitle='theta [degree]', xrange=[ (min(focus_f)-0.5)/f_ce_ave_, (max(focus_f)+0.5)/f_ce_ave_ ]
-  ; oplot, obs_f/f_ce_ave_, gendrin_angle, color=6
-  ; oplot, f_kvec__/f_ce_ave_, kvec__, psym=4
+  plot, obs_f/f_ce_ave_, gendrin_angle, xtitle='f/fce  '+'(fce = '+fce_loc_string+'kHz)', ytitle='theta [degree]', xrange=[ (min(focus_f)-0.5)/f_ce_ave_, (max(focus_f)+0.5)/f_ce_ave_ ]
+  oplot, obs_f/f_ce_ave_, gendrin_angle, color=6
+  oplot, f_kvec__/f_ce_ave_, kvec__, psym=4
 
 
 
-  plot, f_kvec__/f_ce_ave_, kvec__
-  colorbar
-  plots, f_kvec__/f_ce_ave_, kvec__, color=polarization_color, psym=4
+  ; plot, f_kvec__/f_ce_ave_, kvec__
+  ; colorbar
+  ; plots, f_kvec__/f_ce_ave_, kvec__, color=polarization_color, psym=4
   xyouts, max(focus_f/f_ce_ave_)-0.04, min(kvec__)+5, 'Gendrin Angle', color=6, CHARSIZE=1.5
 
+
+  calc_equatorial_fce
+  tinterpol_mxn, 'fce_TS04_half', 'erg_pwe_ofa_l2_spec_B_spectra_132'
+  get_data, 'fce_TS04_half_interp', data=equatorial_fce
+  time_ = time_double(duct_time)
+  idx_t = where( equatorial_fce.x lt time_+0.6 and equatorial_fce.x gt time_-0.6, cnt )
+  duct_equatorial_fce = equatorial_fce.y[idx_t]
+
+  oplot, [duct_equatorial_fce/f_ce_ave_, duct_equatorial_fce/f_ce_ave_], [min(gendrin_angle)-20.,max(gendrin_angle)+20.], linestyle=2
+  xyouts, duct_equatorial_fce/f_ce_ave_+0.1, min(kvec__)+1, 'fce_eq/2 = '+string(duct_equatorial_fce/f_ce_ave_, format='(f0.1)')+'kHz', CHARSIZE=1.5
 
 
   ;
@@ -651,7 +660,8 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   !p.multi=[0,1,2]
   plot, plot_f, Ne_0, xtitle='frequency [kHz]', ytitle='Ne0 [/cc]', yrange=[min(Ne_0)-5,max(Ne_0)+5]
   get_data, 'Ne', data=obs_Ne
-  duct_obs_Ne = obs_Ne.y[idx_t-duct_wid_data_n:idx_t+duct_wid_data_n]
+  idx_t_Ne = where( obs_Ne.x lt time_+0.6 and obs_Ne.x gt time_-0.6, cnt )
+  duct_obs_Ne = obs_Ne.y[idx_t_Ne-duct_wid_data_n:idx_t_Ne+duct_wid_data_n]
 
   if IorD eq 'I' then begin
     idx_Ne = where( duct_obs_Ne eq max(duct_obs_Ne), cnt )
@@ -714,8 +724,7 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
     makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_f_Ne0_f_B'
   endif
 
-  stop
-
+stop
 
   ;
   ;

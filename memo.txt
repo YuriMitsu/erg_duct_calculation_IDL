@@ -10,3 +10,47 @@ set_plot, 'X'
 window, 0, xsize=1000, ysize=600
 !p.background = 255
 !p.color = 0
+
+
+; 速度見たいとき
+erg_load_orb
+get_data, 'erg_orb_l2_vel_gse', data = data
+vel = sqrt( (data.y[*,0])^2 + (data.y[*,1])^2 + (data.y[*,2])^2 )
+store_data, 'vel_abs', data={x:data.x, y:vel}
+
+; JpGUポスター用の画像作ったとき
+; plot_event_normalのstop位置をmakepngされないようちょい上に書き換え
+erg_init
+timespan, '2018-06-02/10:00:00', 20, /minute
+.compile -v '/Users/ampuku/Documents/duct/code/IDL/for_event_analysis/plot_event_normal.pro'
+plot_event_normal, UHR_file_name='/UHR_tplots/f_UHR_2018-06-02/100000.tplot'
+; plot_kpara_ne 163行目に stop 追記
+.compile -v '/Users/ampuku/Documents/duct/code/IDL/for_event_analysis/plot_kpara_ne.pro'
+plot_kpara_ne, duct_time='2018-06-02/10:05:56', focus_f=[3., 4., 5., 6., 7., 8.] ;, lsm = [0.00018982743, 0.00018986984]
+
+timespan, '2018-06-02/10:03:00', 6, /minute
+ylim, ['erg_pwe_ofa_l2_matrix_Etotal_132_gyro', 'erg_pwe_ofa_l2_matrix_Btotal_132_gyro', 'k_para_LASVD_ma3_mask', 'kvec_LASVD_ma3_mask', 'polarization_LASVD_ma3_mask', 'planarity_LASVD_ma3_mask'], 3., 7., 0
+zlim, 'erg_pwe_ofa_l2_matrix_Btotal_132_gyro', 0.001, 10.0, 1
+ylim, 'Ne', 0, 200, 0
+window, 0, xsize=500, ysize=600
+tplot, ['erg_pwe_ofa_l2_matrix_Etotal_132_gyro', 'erg_pwe_ofa_l2_matrix_Btotal_132_gyro', 'Ne', 'k_para_LASVD_ma3_mask', 'kvec_LASVD_ma3_mask', 'polarization_LASVD_ma3_mask', 'planarity_LASVD_ma3_mask']
+
+
+; plot_event_normalのstop位置をmakepngされないようちょい上に書き換え
+erg_init
+timespan, '2018-06-06/11:20:00', 40, /minute
+.compile -v '/Users/ampuku/Documents/duct/code/IDL/for_event_analysis/plot_event_normal.pro'
+plot_event_normal, UHR_file_name='/Users/ampuku/Documents/duct/code/IDL/UHR_tplots/f_UHR_2018-06-06/112500.tplot'
+; plot_kpara_ne 163行目に stop 追記
+plot_kpara_ne, duct_time='2018-06-06/11:31:25', focus_f=[1., 2., 3., 4., 5.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot', duct_wid_data_n=3 ; I
+
+timespan, '2018-06-06/11:27:00', 14, /minute
+ylim, ['erg_pwe_ofa_l2_matrix_Etotal_132_gyro', 'erg_pwe_ofa_l2_matrix_Btotal_132_gyro', 'k_para_LASVD_ma3_mask', 'kvec_LASVD_ma3_mask', 'polarization_LASVD_ma3_mask', 'planarity_LASVD_ma3_mask'], 1., 7., 0
+zlim, 'erg_pwe_ofa_l2_matrix_Btotal_132_gyro', 0.001, 10.0, 1
+ylim, 'Ne', 150, 350, 0
+window, 0, xsize=1000, ysize=690
+tplot, ['erg_pwe_ofa_l2_matrix_Etotal_132_gyro', 'erg_pwe_ofa_l2_matrix_Btotal_132_gyro', 'Ne', 'k_para_LASVD_ma3_mask', 'kvec_LASVD_ma3_mask', 'polarization_LASVD_ma3_mask', 'planarity_LASVD_ma3_mask']
+
+
+window, 0, xsize=500, ysize=350
+window, 0, xsize=380, ysize=250

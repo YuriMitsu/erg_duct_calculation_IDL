@@ -5,6 +5,7 @@ pro memo_duct_time_focus_f
   
   ; 最初のイベント
   timespan, '2018-06-02/10:00:00', 20, /minute
+  ; plot_event_normal, UHR_file_name='UHR_tplots/f_UHR_2018-06-02/100000.tplot'
   plot_kpara_ne, duct_time='2018-06-02/10:04:00', focus_f=[3., 4., 5., 6., 7.], cut_f=1E-4 ;ダクト外比較用
   plot_kpara_ne, duct_time='2018-06-02/10:05:56', focus_f=[3., 4., 5., 6., 7., 8.] ;, lsm = [0.00018982743, 0.00018986984]
   plot_kpara_ne, duct_time='2018-06-02/10:09:40', focus_f=[3., 4., 5., 6., 7.];, lsm = [0.00027217917, 0.00015393361]
@@ -15,11 +16,11 @@ pro memo_duct_time_focus_f
   ; timespan, '2018-06-06/11:20:00', 40, /minute
   ; plot_event_normal, UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot'
   timespan, '2018-06-06/11:25:00', 20, /minute
-  plot_kpara_ne, duct_time='2018-06-06/11:29:40', focus_f=[1., 2., 3., 4., 5.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot', duct_wid_data_n=3 ; I
-  plot_kpara_ne, duct_time='2018-06-06/11:31:25', focus_f=[1., 2., 3., 4., 5.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot', duct_wid_data_n=3 ; I
-  plot_kpara_ne, duct_time='2018-06-06/11:32:29', focus_f=[3., 4., 5., 6., 7.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot', lsm=[0.000355,0.00032], duct_wid_data_n=3 ; D
-  plot_kpara_ne, duct_time='2018-06-06/11:39:53', focus_f=[1., 2., 3., 4., 5.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot', duct_wid_data_n=3 ; I
-  plot_kpara_ne, duct_time='2018-06-06/11:41:33', focus_f=[2., 3., 4., 5., 6.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot', duct_wid_data_n=7 ; D
+  plot_kpara_ne, duct_time='2018-06-06/11:29:40', focus_f=[1., 2., 3., 4., 5.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot', duct_wid_data_n=3, IorD='I' ; I
+  plot_kpara_ne, duct_time='2018-06-06/11:31:25', focus_f=[1., 2., 3., 4., 5.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot', duct_wid_data_n=3, IorD='I' ; I
+  plot_kpara_ne, duct_time='2018-06-06/11:32:29', focus_f=[3., 4., 5., 6., 7.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot', lsm=[0.000355,0.00032], duct_wid_data_n=3, IorD='D' ; D
+  plot_kpara_ne, duct_time='2018-06-06/11:39:53', focus_f=[1., 2., 3., 4., 5.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot', duct_wid_data_n=3, IorD='I' ; I
+  plot_kpara_ne, duct_time='2018-06-06/11:41:33', focus_f=[2., 3., 4., 5., 6.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot', duct_wid_data_n=7, IorD='D' ; D
 
   ; 特にこの４つ 2018-06-06/11:29:56, 2018-06-06/11:31:28, 2018-06-06/11:32:29, 2018-06-06/11:39:53
   ; 以下弱いのも含めた１４こ
