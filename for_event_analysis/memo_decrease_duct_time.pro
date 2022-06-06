@@ -31,4 +31,20 @@ pro memo_decrease_duct_time
     ; plot_kpara_ne, duct_time='2018-06-06/11:39:53', focus_f=[1., 2., 3., 4., 5.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot', duct_wid_data_n=3, IorD='I' ; I
     ; plot_kpara_ne, duct_time='2018-06-06/11:41:33', focus_f=[3., 4., 5., 6.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot', lsm=[0.000355,0.00032], duct_wid_data_n=7, IorD='D' ; D
 
+
+    timespan, '2017-06-27/06:40:00', 20, /minute
+    plot_event_normal, UHR_file_name='/UHR_tplots/f_UHR_2017-05-10/040000.tplot' ; 041500-043000.pngを作成
+
+
+
+    timespan, '2017-07-03/04:05:00', 20, /minute
+    plot_event_normal, UHR_file_name='/UHR_tplots/f_UHR_2017-07-03/040500.tplot' ; 040500-042500.pngを作成
+    plot_kpara_ne, duct_time='2017-07-03/04:0:40', focus_f=[1., 2., 3., 4., 5.], UHR_file_name='UHR_tplots/f_UHR_2017-07-03/040500.tplot', duct_wid_data_n=3, IorD='I' ; I
+    timespan, '2017-07-03/04:25:00', 20, /minute
+    plot_event_normal, UHR_file_name='/UHR_tplots/f_UHR_2017-07-03/040500.tplot' ; 042500-044500.pngを作成
+
+    
+
+
+
 end

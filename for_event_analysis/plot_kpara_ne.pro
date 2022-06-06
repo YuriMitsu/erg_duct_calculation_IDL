@@ -207,9 +207,12 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   ; 最小二乗法でダクト中心でのk_paraを直線に当てはめる
   if not keyword_set(lsm) then begin
     lsm = least_squares_method(k_paradata.v, k_paradata.y[idx_t[0], *]) ;外れ値に左右され過ぎてしまう 余裕があったらロバスト回帰を導入？
-    ; mask_lsm = ( (k_paradata.y[idx_t[0],*]-lsm[0]*k_paradata.v+lsm[1]) lt 0.001 )
-    ; k_paradatay = k_paradata.y[idx_t[0], *]
-    ; lsm = least_squares_method(k_paradata.v*[mask_lsm], k_paradatay*[mask_lsm])
+
+    ; 適宜次行 lt あとの数字を書き換えて外れ値を除去、その時のlsmをメモって使用...
+    ; res = where(k_paradata.y[idx_t[0], *]-lsm[0]*k_paradata.v+lsm[1] lt 0.0008, count)
+    ; if count gt 0 then begin
+      ; lsm = least_squares_method(k_paradata.v[res], (k_paradata.y[idx_t[0], *])[res])
+    ; endif
   endif
 ;  k_para_ = [ 0.00072889862, 0.00084289216, 0.0010308567, 0.0013732987, 0.0016690817] ; 3,4,5,6,7
 ;  k_para_ = [0.00074098376,    0.0012041943,    0.0016674048,    0.0019,    0.00235]
@@ -226,7 +229,7 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   lsm_f = [min(k_paradata.v), max(k_paradata.v)]
   lsm_k_para = lsm[0] * lsm_f + lsm[1]
   oplot, lsm_f, lsm_k_para, color=1
-  
+
   ; 保存
   ret = strsplit(duct_time, '-/:', /extract)
   if test eq 0 then begin
@@ -643,12 +646,15 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
 
   plot_f=dindgen(500, increment=0.01, start=focus_f[0])
   Ne_0 = fltarr(n_elements(plot_f))
+  Ne_1 = fltarr(n_elements(plot_f))
   k_para_Ne0 = lsm[0] * plot_f + lsm[1]
+  b1 = (9.1093D * 10^(-31.)) / (1.25D * 10^(-6.)) / (1.6 * 10^(-19.))^2
   for i=0, n_elements( plot_f )-1 do begin
     f_ = plot_f[i] * 1000. ;kHz -> Hz
-    b1 = (9.1093D * 10^(-31.)) / (1.25D * 10^(-6.)) / (1.6 * 10^(-19.))^2
     b2 = k_para_Ne0[i]^2 * (f_ce_ave / f_ - 1 )
     Ne_0[i] = b1 * b2 / 10^(6.) ;cm-3
+    b3 = k_para_Ne0[i]^2 * (f_ce_ave / (2*f_))^2
+    Ne_1[i] = b1 * b3 / 10^(6.) ;cm-3
   endfor
 
   if test eq 0 then begin
@@ -658,9 +664,10 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   endif
   
   !p.multi=[0,1,2]
-  plot, plot_f, Ne_0, xtitle='frequency [kHz]', ytitle='Ne0 [/cc]', yrange=[min(Ne_0)-5,max(Ne_0)+5]
+  plot, plot_f, Ne_0, xtitle='frequency [kHz]', ytitle='Ne0 [/cc]', yrange=[min([Ne_0,Ne_1])-5,max([Ne_0,Ne_1])+5]
+  oplot, plot_f, Ne_1
   get_data, 'Ne', data=obs_Ne
-  idx_t_Ne = where( obs_Ne.x lt time_+0.6 and obs_Ne.x gt time_-0.6, cnt )
+  idx_t_Ne = where( obs_Ne.x lt time_+4.0 and obs_Ne.x gt time_-4.0, cnt )
   duct_obs_Ne = obs_Ne.y[idx_t_Ne-duct_wid_data_n:idx_t_Ne+duct_wid_data_n]
 
   if IorD eq 'I' then begin

@@ -684,9 +684,9 @@ pro one_day_plot
   ; timespan, '2018-06-30'
   ; day_plot
   
-  ; ; *****************
-  ; ; 2018-07
-  ; ; *****************
+  ; *****************
+  ; 2018-07
+  ; *****************
   
 
   ; timespan, '2018-07-01'
@@ -781,6 +781,105 @@ pro one_day_plot
 
   ; timespan, '2018-07-31'
   ; day_plot
+  
+    
+  ; ; *****************
+  ; ; 2018-08
+  ; ; *****************
+  
+
+  ; timespan, '2018-08-01'
+  ; day_plot
+
+  ; timespan, '2018-08-02'
+  ; day_plot
+
+  ; timespan, '2018-08-03'
+  ; day_plot
+
+  ; timespan, '2018-08-04'
+  ; day_plot
+
+  ; timespan, '2018-08-05'
+  ; day_plot
+
+  ; timespan, '2018-08-06'
+  ; day_plot
+
+  ; timespan, '2018-08-07'
+  ; day_plot
+
+  ; timespan, '2018-08-08'
+  ; day_plot
+
+  ; timespan, '2018-08-09'
+  ; day_plot
+
+  ; timespan, '2018-08-10'
+  ; day_plot
+
+  ; timespan, '2018-08-11'
+  ; day_plot
+
+  ; timespan, '2018-08-12'
+  ; day_plot
+
+  ; timespan, '2018-08-13'
+  ; day_plot
+
+  ; timespan, '2018-08-14'
+  ; day_plot
+
+  ; timespan, '2018-08-15'
+  ; day_plot
+
+  ; timespan, '2018-08-16'
+  ; day_plot
+
+  ; timespan, '2018-08-17'
+  ; day_plot
+
+  ; timespan, '2018-08-18'
+  ; day_plot
+
+  ; timespan, '2018-08-19'
+  ; day_plot
+
+  ; timespan, '2018-08-20'
+  ; day_plot
+
+  timespan, '2018-08-21'
+  day_plot
+
+  timespan, '2018-08-22'
+  day_plot
+
+  timespan, '2018-08-23'
+  day_plot
+
+  timespan, '2018-08-24'
+  day_plot
+
+  timespan, '2018-08-25'
+  day_plot
+
+  timespan, '2018-08-26'
+  day_plot
+
+  timespan, '2018-08-27'
+  day_plot
+
+  timespan, '2018-08-28'
+  day_plot
+
+  timespan, '2018-08-29'
+  day_plot
+
+  timespan, '2018-08-30'
+  day_plot
+
+  timespan, '2018-08-31'
+  day_plot
   
   
   print, '!!DONE!!'
