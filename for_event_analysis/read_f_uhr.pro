@@ -4,27 +4,31 @@ pro read_f_UHR, tplot_name=tplot_name
 ; timespan, '2018-06-02/10:00:00', 20, /minute
 ; timespan, '2018-06-06/11:25:00', 40, /minute
 ; timespan, '2018-07-10/05:25:00', 20, /minute
+; timespan, '2017-07-03/04:05:00', 30, /minute
 
 erg_load_pwe_hfa, level='l2', mode=['l','h'], uname='erg_project', pass='geospace'
 ;ylim,  'erg_pwe_hfa_l2_high_spectra_e_mix', 40.0, 120.0, 0
-ylim,  'erg_pwe_hfa_l2_high_spectra_e_mix', 100.0, 250.0, 0
+ylim,  'erg_pwe_hfa_l2_lh_spectra_e_mix', 90.0, 200.0, 0
 
 SET_PLOT, 'X'
 !p.BACKGROUND = 255
 !p.color = 0
 window, xsize=1200, ysize=800
 ;tplot, 'erg_pwe_hfa_l2_low_spectra_e_mix'
-tplot, 'erg_pwe_hfa_l2_high_spectra_e_mix'
-ctime, f_time, f_y
+tplot, 'erg_pwe_hfa_l2_lh_spectra_e_mix'
+ctime, f_time, f_y, /ex
 ; 右クリックで終了
 
 store_data, 'f_UHR', data={x:f_time, y:f_y}, dlim={colors:5,thick:1,linestyle:1}
 options, 'f_UHR', 'ytitle', 'f_UHR'
 options, 'f_UHR', 'ysubtitle', 'frequency [kHz]'
 
+options, 'f_UHR', colors=5, thick=2, linestyle=0
+
+
 ; ylim,  ['erg_pwe_hfa_l2_high_spectra_e_mix', 'f_UHR'], 40.0, 200.0, 0
-ylim,  ['erg_pwe_hfa_l2_high_spectra_e_mix', 'f_UHR'], 100.0, 250.0, 0
-tplot, 'erg_pwe_hfa_l2_high_spectra_e_mix'
+ylim,  ['erg_pwe_hfa_l2_lh_spectra_e_mix', 'f_UHR'], 90.0, 200.0, 0
+tplot, 'erg_pwe_hfa_l2_lh_spectra_e_mix'
 tplot, 'f_UHR', /oplot
 
 

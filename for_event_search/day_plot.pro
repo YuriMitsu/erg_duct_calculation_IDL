@@ -161,6 +161,7 @@ pro day_plot, span=span, hour_plot=hour_plot
     data=[pr_matrix + 'Btotal_132', 'fce', 'fce_half','flhr']
   store_data, 'kvec_mask_gyro', data=['kvec_LASVD_mask', 'fce', 'fce_half','flhr']
   store_data, 'polarization_mask_gyro', data=['polarization_LASVD_mask', 'fce', 'fce_half','flhr']
+  store_data, 'planarity_mask_gyro', data=['planarity_LASVD_mask', 'fce', 'fce_half','flhr']
   ylim, '*_gyro', 0.064, 20, 1 ; kHz
   zlim, pr_matrix + 'Btotal_132_gyro', 1E-2, 1E2, 1 ; pT^2/Hz
   options, 'erg_pwe_ofa_l2_Btotal_132_gyro', $
@@ -183,7 +184,7 @@ pro day_plot, span=span, hour_plot=hour_plot
   options, 'hfa_e_gyro', 'panel_size', 2.0
 
   ; window, xsize=1200, ysize=600
-  tplot, ['hfa_e','ofa_e', pr_matrix + 'Btotal_132', 'kvec_mask', 'polarization_mask'] + '_gyro'
+  tplot, ['hfa_e','ofa_e', pr_matrix + 'Btotal_132', 'kvec_mask', 'polarization_mask', 'planarity_mask'] + '_gyro'
 
   ; ************************************
   ; 18.plot
@@ -198,12 +199,14 @@ pro day_plot, span=span, hour_plot=hour_plot
   ts = time_string(td[0])
   ret = strsplit(ts, '-/:', /extract)
 
-  options, ['hfa_e_gyro', 'ofa_e_gyro', 'Btotal_132_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'mepe_PA_0-3', 'mepe_PA_177-188', 'mepe_PA_3-37', 'mepe_ET'], 'datagap', 60.0
+  options, ['hfa_e_gyro', 'ofa_e_gyro', 'Btotal_132_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'mepe_PA_0-3', 'mepe_PA_177-188', 'mepe_PA_3-37', 'mepe_ET'], 'datagap', 60.0
 
   ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'mepe_PA_10keV', 'mepe_PA_41keV', 'mepe_PA_72keV', 'mepe_ET']
   ; makepng, 'erg_ofa_matrix_mepe_'+ret[0]+ret[1]+ret[2]
   
-  tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'Btotal_132_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'mepe_PA_0-3', 'mepe_PA_177-188', 'mepe_PA_3-37', 'mepe_ET']
+  tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'Btotal_132_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'mepe_PA_0-3', 'mepe_PA_177-188', 'mepe_PA_3-37', 'mepe_ET']
+
+  ; makepng, '/Users/ampuku/Documents/duct/Fig/event_plots_v2/days/erg_ofa_matrix_mepe_wna_'+ret[0]+ret[1]+ret[2]
   makepng, '/Users/ampuku/Documents/duct/Fig/day_plots/'+ret[0]+'/'+ret[1]+'/days/erg_ofa_matrix_mepe_wna_'+ret[0]+ret[1]+ret[2]
 
   if hourplot_on eq 1 then begin
@@ -213,7 +216,8 @@ pro day_plot, span=span, hour_plot=hour_plot
       ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'mepe_PA_10keV', 'mepe_PA_41keV', 'mepe_PA_72keV', 'mepe_ET']
       ; makepng, 'erg_ofa_matrix_mepe_'+ret[0]+ret[1]+ret[2]+'_'+string(span*i,format='(i2.2)')
       
-      tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'Btotal_132_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'mepe_PA_0-3', 'mepe_PA_177-188', 'mepe_PA_3-37', 'mepe_ET']
+      tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'Btotal_132_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'mepe_PA_0-3', 'mepe_PA_177-188', 'mepe_PA_3-37', 'mepe_ET']
+      ; makepng, '/Users/ampuku/Documents/duct/Fig/event_plots_v2/hours/erg_ofa_matrix_mepe_wna_'+ret[0]+ret[1]+ret[2]+'_'+string(span*i,format='(i2.2)')
       makepng, '/Users/ampuku/Documents/duct/Fig/day_plots/'+ret[0]+'/'+ret[1]+'/hours/erg_ofa_matrix_mepe_wna_'+ret[0]+ret[1]+ret[2]+'_'+string(span*i,format='(i2.2)')
     endfor
   endif
