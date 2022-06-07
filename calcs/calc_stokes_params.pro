@@ -20,7 +20,7 @@ pro calc_stokes_params
 
 
   ; *****************
-  ; 2.1.OFA-MATRIX E to spacrla matrix
+  ; 2.OFA-MATRIX E to spacrla matrix
   ; *****************
   get_data, pr_matrix + 'Ex_Ex_132', data=sE00
   get_data, pr_matrix + 'Ex_Ey_132', data=sE01
@@ -34,7 +34,7 @@ pro calc_stokes_params
 
 
   ; *****************
-  ; 3.2.calc. rotation matrix E
+  ; 3.calc. rotation matrix E
   ; *****************
 
   split_vec, 'erg_mgf_l2_mag_64hz_sgi'
@@ -64,7 +64,7 @@ pro calc_stokes_params
 
 
   ; ************************************
-  ; 4.3.rotate OFA matrix E
+  ; 4.rotate OFA matrix E
   ; ************************************
 
 
@@ -78,7 +78,7 @@ pro calc_stokes_params
 
 
   ; ************************************
-  ; 5.2.auto-spectra E
+  ; 5.auto-spectra E
   ; ************************************
   get_data, pr_matrix + 'Ex_Ex_132',data=data, dlim=dlim, lim=lim
   store_data, pr_matrix + 'Ex_Ex_re', data={x:data.x,y:data.y[*,*,0],v:data.v2}, dlim=dlim, lim=lim ; *** modified (v->v2)
@@ -102,7 +102,7 @@ pro calc_stokes_params
 
 
   ; ************************************
-  ; 13.stokes parameter
+  ; 6.stokes parameter
   ; ************************************
 
   st_I = $
