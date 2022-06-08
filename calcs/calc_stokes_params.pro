@@ -17,7 +17,7 @@ pro calc_stokes_params
 
   ;OFA読み込み
   erg_load_pwe_ofa, datatype='matrix', uname=uname, pass=pass  
-
+  pr_matrix = 'erg_pwe_ofa_l2_matrix_'
 
   ; *****************
   ; 2.OFA-MATRIX E to spacrla matrix
