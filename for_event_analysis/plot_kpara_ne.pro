@@ -21,7 +21,7 @@ end
 ; plot_kpara_neはtimespanを設定してから使用！！
 pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_name, lsm=lsm, k_para_=k_para_, cut_f=cut_f, k_perp_range=k_perp_range, duct_wid_data_n=duct_wid_data_n, IorD=IorD
 
-  test = 1 ; 0: Fig保存あり、画面上plotなし　　　1: Fig保存なし、画面上plotあり
+  test = 0 ; 0: Fig保存あり、画面上plotなし　　　1: Fig保存なし、画面上plotあり
 
   if not keyword_set(duct_time) then duct_time = '2018-06-02/10:05:56'
   if not keyword_set(focus_f) then focus_f = [3., 4., 5., 6., 7.] ;Hz
@@ -74,7 +74,15 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   f = pol.v
 
 ;  read_f_uhr
-  tplot_restore, file=[UHR_file_name]
+
+  if UHR_file_name eq 'kuma' then begin
+    load_fufp_txt, /high
+    get_data, 'hfa_l3_fuh', data = data
+    store_data, 'f_UHR', data={x:data.x, y:data.y}
+  endif else begin
+    tplot_restore, file=[UHR_file_name]
+  endelse
+
   get_data, 'f_UHR', data=data
   ; store_data, 'test', data={x:data.x, y:data.y}, dlim={colors:5,thick:1,linestyle:1}
   tinterpol_mxn, 'f_UHR', 'polarization'+wave_params_
@@ -439,6 +447,8 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   tplot, UT_B_names
   tplot, N0_names, /oplot
   tplot_apply_databar
+
+  timebar, duct_time
   
   if test eq 0 then begin
     makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_UT_B'
@@ -665,7 +675,7 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   
   !p.multi=[0,1,2]
   plot, plot_f, Ne_0, xtitle='frequency [kHz]', ytitle='Ne0 [/cc]', yrange=[min([Ne_0,Ne_1])-5,max([Ne_0,Ne_1])+5]
-  oplot, plot_f, Ne_1
+  oplot, plot_f, Ne_1, linestyle='2'
   get_data, 'Ne', data=obs_Ne
   idx_t_Ne = where( obs_Ne.x lt time_+4.0 and obs_Ne.x gt time_-4.0, cnt )
   duct_obs_Ne = obs_Ne.y[idx_t_Ne-duct_wid_data_n:idx_t_Ne+duct_wid_data_n]

@@ -43,8 +43,12 @@ pro memo_decrease_duct_time
     timespan, '2017-07-03/04:25:00', 20, /minute
     plot_event_normal, UHR_file_name='/UHR_tplots/f_UHR_2017-07-03/040500.tplot' ; 042500-044500.pngを作成
 
-    
+    timespan, '2017-04-12/22:15:00', 20, /minute
+    plot_event_normal, UHR_file_name='kuma'
+    plot_kpara_ne, duct_time='2017-04-12/22:25:09', focus_f=[2., 3., 4., 5., 6.], UHR_file_name='kuma', duct_wid_data_n=2, IorD='D' ; D
+    plot_kpara_ne, duct_time='2017-04-12/22:26:03', focus_f=[2., 3., 4., 5., 6.], UHR_file_name='kuma', duct_wid_data_n=3, IorD='D' ; D
 
+    timespan, '2017-07-14/22:15:00', 20, /minute
 
 
 end

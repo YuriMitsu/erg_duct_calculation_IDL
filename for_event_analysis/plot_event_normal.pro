@@ -3,6 +3,8 @@
 ; .compile -v '/Users/ampuku/Documents/duct/code/IDL/for_event_analysis/plot_event_normal.pro'
 ; .compile -v '/Users/ampuku/Documents/duct/code/IDL/calcs/calc_ne.pro'
 
+; 熊本先生のuhrHtoolでUHRを読み取っていた場合、UHR_file_name='kuma'とすればOK
+
 
 pro plot_event_normal, UHR_file_name=UHR_file_name
 
@@ -35,7 +37,7 @@ pro plot_event_normal, UHR_file_name=UHR_file_name
     ; 3.calc. wave params
     ; *****************
 
-    calc_wave_params, moving_average=3, algebraic_SVD=0
+    calc_wave_params, moving_average=3, algebraic_SVD=1
 
     ; ************************************
     ; 13.stokes parameter
@@ -65,6 +67,11 @@ pro plot_event_normal, UHR_file_name=UHR_file_name
     data.y[where(data_ref.y LT cut_f)] = 'NaN'
     store_data, 'planarity_LASVD_ma3_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
 
+    ; kvec means
+    get_data, 'kvec_algebraicSVD_ma3', data=data, dlim=dlim, lim=lim
+    data.y[where(data_ref.y LT cut_f)] = 'NaN'
+    store_data, 'kvec_algebraicSVD_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
+
 
     ; ************************************
     ; 16.mepe
@@ -76,9 +83,17 @@ pro plot_event_normal, UHR_file_name=UHR_file_name
     ; 17-1.cal fce.etc
     ; ************************************
 
-    calc_fce_and_flhr
+    if UHR_file_name eq 'kuma' then begin
 
-    calc_Ne, UHR_file_name=UHR_file_name
+        load_fufp_txt, /high
+        calc_fufp_renames
+
+    endif else begin
+
+        calc_fce_and_flhr
+        calc_Ne, UHR_file_name=UHR_file_name
+
+    endelse
 
     calc_equatorial_fce
 
@@ -131,12 +146,11 @@ pro plot_event_normal, UHR_file_name=UHR_file_name
     options, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'ofa_b_Bmodels_correction'], 'color_table', 43
     ylim, [pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'ofa_b_Bmodels_correction'], 0.5, 10., 1
     ylim, 'Ne', 50, 500, 1
-    tplot, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'ofa_b_Bmodels_correction']
+    tplot, [pr_matrix+'Etotal_132_gyro', pr_matrix+'Btotal_132_gyro', 'Ne', 'kvec_mask_gyro']
 
     t = timerange(/current) 
     ret1 = strsplit(time_string(t[0]), '-/:', /extract)
     ret2 = strsplit(time_string(t[1]), '-/:', /extract)
-    makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret1[0]+ret1[1]+ret1[2]+'/'+ret1[3]+ret1[4]+ret1[5]+'-'+ret2[3]+ret2[4]+ret2[5]
+    makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret1[0]+ret1[1]+ret1[2]+'/'+ret1[3]+ret1[4]+ret1[5]+'-'+ret2[3]+ret2[4]+ret2[5], /mkdir
 
-    stop
 end
