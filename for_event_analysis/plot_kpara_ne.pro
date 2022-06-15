@@ -158,15 +158,22 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   tplot, ['erg_pwe_hfa', 'k_para'+wave_params_+'_mask']
 
   options, 'kvec'+wave_params_+'_mask', 'color_table', 43
-  ylim, 'Ne', 150, 400, 0
+  ; get_data, 'Ne', data=data
+  ; idx_duct_t = ( where( data.x lt time_double(duct_time)+5. and data.x gt time_double(duct_time)-5., cnt ) )[0]
+  ; Ne_max =  max( [FLOAT(data.y[idx_duct_t]+20.), Ne_k_para[0, 0], Ne_k_para[0, -1]] )
+  ; idx_duct_start = ( where( data.x lt time_double(time1)+5. and data.x gt time_double(time1)-5., cnt ) )[0]
+  ; idx_duct_end = ( where( data.x lt time_double(time2)+5. and data.x gt time_double(time2)-5., cnt ) )[0]
+  ; Ne_min_ = FLOAT( min(data.y[idx_duct_start:idx_duct_end]) )
+  ; Ne_min =  max( [min( [Ne_min_, Ne_k_para[0, 0], Ne_k_para[0, -1]] ), 0.] )
+  ; ylim, 'Ne', Ne_max, Ne_min, 0
   ylim, 'kvec'+wave_params_+'_mask', 1., 9.0, 0
   timespan, time_string(time_double(duct_time)-120. ), 4, /minute
-  tplot, ['Ne', 'kvec'+wave_params_+'_mask']
+  ; tplot, ['Ne', 'kvec'+wave_params_+'_mask']
 
   ret = strsplit(duct_time, '-/:', /extract)
-  if test eq 0 then begin
-    makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_hfa_kpara_mask'
-  endif
+  ; if test eq 0 then begin
+  ;   makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_hfa_kpara_mask'
+  ; endif
 
 
 
@@ -713,7 +720,7 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
 
   get_data, 'erg_pwe_ofa_l2_spec_B_spectra_132', data = Bdata
   time_ = time_double(duct_time)
-  idx_t = where( Bdata.x lt time_+0.6 and Bdata.x gt time_-0.6, cnt )
+  idx_t = where( Bdata.x lt time_+0.51 and Bdata.x gt time_-0.51, cnt )
   Bdata.y[idx_t,*] = mean(Bdata.y[idx_t-25:idx_t+25, *], DIMENSION=1, /nan)
 
   plot, Bdata.v, Bdata.y[idx_t,*], xtitle='frequency [kHz]', ytitle='OFA-SPEC B [pT^2/Hz]', xrange=[min(plot_f), max(plot_f)]
@@ -741,7 +748,29 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
     makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_f_Ne0_f_B'
   endif
 
-stop
+
+
+  ; *****************
+  ; 12.plot hfa_kpara_mask
+  ; *****************
+
+  get_data, 'Ne', data=data
+  idx_duct_t = ( where( data.x lt time_double(duct_time)+5. and data.x gt time_double(duct_time)-5., cnt ) )[0]
+  Ne_max =  max( [FLOAT(data.y[idx_duct_t]+20.), Ne_k_para[0, 0], Ne_k_para[0, -1]] )
+  idx_duct_start = ( where( data.x lt time_double(time1)+5. and data.x gt time_double(time1)-5., cnt ) )[0]
+  idx_duct_end = ( where( data.x lt time_double(time2)+5. and data.x gt time_double(time2)-5., cnt ) )[0]
+  Ne_min_ = FLOAT( min(data.y[idx_duct_start:idx_duct_end]) )
+  Ne_min =  max( [min( [Ne_min_, Ne_k_para[0, 0], Ne_k_para[0, -1]] ), 0.] )
+  ylim, 'Ne', Ne_min, Ne_max, 0
+  ylim, 'kvec'+wave_params_+'_mask', 0., 9.0, 0
+  timespan, time_string(time_double(duct_time)-120. ), 4, /minute
+  tplot, ['Ne', 'kvec'+wave_params_+'_mask']
+  timebar, duct_time
+
+  ret = strsplit(duct_time, '-/:', /extract)
+  if test eq 0 then begin
+    makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_hfa_kpara_mask'
+  endif
 
   ;
   ;
