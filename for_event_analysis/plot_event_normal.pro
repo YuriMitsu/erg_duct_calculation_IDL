@@ -72,6 +72,11 @@ pro plot_event_normal, UHR_file_name=UHR_file_name
     data.y[where(data_ref.y LT cut_f)] = 'NaN'
     store_data, 'kvec_algebraicSVD_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
 
+    ; kvec means
+    ; get_data, 'S', data=data, dlim=dlim, lim=lim
+    ; data.y[where(data_ref.y LT cut_f)] = 'NaN'
+    ; store_data, 'S_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
+
 
     ; ************************************
     ; 16.mepe
@@ -114,6 +119,9 @@ pro plot_event_normal, UHR_file_name=UHR_file_name
     options, 'polarization_mask_gyro', ytitle='polarization', ysubtitle='Frequency!C[kHz]', ztitle=''
     store_data, 'planarity_mask_gyro', data=['planarity_LASVD_ma3_mask', 'fce', 'fce_half','flhr']
     options, 'planarity_mask_gyro', ytitle='planarity', ysubtitle='Frequency!C[kHz]', ztitle=''
+    store_data, 'S_mask_gyro', data=['S_mask', 'fce', 'fce_half','flhr']
+    options, 'S_mask_gyro', ytitle='Poynting vector', ysubtitle='Frequency!C[kHz]', ztitle=''
+
 
     ylim, '*_gyro', 0.1, 20, 1 ; kHz
 
@@ -138,16 +146,16 @@ pro plot_event_normal, UHR_file_name=UHR_file_name
     ; ************************************
 
     SET_PLOT, 'Z'
-    DEVICE, SET_RESOLUTION = [1500,1800]
+    DEVICE, SET_RESOLUTION = [1500,2000]
     !p.BACKGROUND = 255
     !p.color = 0
 
     time_stamp, /off
-    options, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'ofa_b_Bmodels_correction'], 'color_table', 43
-    ylim, [pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'ofa_b_Bmodels_correction'], 0.5, 10., 1
-    ylim, 'Ne', 50, 500, 1
-    tplot, [pr_matrix+'Etotal_132_gyro', pr_matrix+'Btotal_132_gyro', 'Ne', 'kvec_mask_gyro']
-
+    options, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'S_mask_gyro', 'ofa_b_Bmodels_correction'], 'color_table', 43
+    ylim, [pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'S_mask_gyro', 'ofa_b_Bmodels_correction'], 0.5, 10., 1
+    ylim, 'Ne', 0, 500, 1
+    ; tplot, [pr_matrix+'Etotal_132_gyro', pr_matrix+'Btotal_132_gyro', 'Ne', 'kvec_mask_gyro']
+    tplot, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'Ne', 'kvec_algebraicSVD_mask', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'S_mask_gyro', 'ofa_b_Bmodels_correction']
     t = timerange(/current) 
     ret1 = strsplit(time_string(t[0]), '-/:', /extract)
     ret2 = strsplit(time_string(t[1]), '-/:', /extract)

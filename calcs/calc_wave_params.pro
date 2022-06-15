@@ -1,3 +1,6 @@
+; コンパイル 
+; .compile -v '/Users/ampuku/Documents/duct/code/IDL/calcs/calc_wave_params.pro'
+
 pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
 
   ; *****************
@@ -17,6 +20,7 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
   ;磁場読み込み
   erg_load_mgf, datatype='8sec', uname=uname, pass=pass
   erg_load_mgf, datatype='64hz', coord='sgi', uname=uname, pass=pass
+  erg_load_mgf, datatype='8sec', coord='sgi', uname=uname, pass=pass
 
   ;OFA読み込み
   erg_load_pwe_ofa, datatype='matrix', uname=uname, pass=pass  
@@ -284,7 +288,7 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
   endfor
 
   ; ************************************
-  ; 7.WNA, polarization and planarity 
+  ; 7.1.WNA, polarization and planarity 
   ; ************************************
   ;  erg_calc_pwe_wna.pro を参考に作成
 
@@ -384,8 +388,108 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
   ylim, 'lambda3-2_LASVD'+ma, 0.064, 20, 1 ; kHz
   zlim, 'lambda3-2_LASVD'+ma, 0., 0.1, 0
 
+  ; free allocated memory
+  r=!NULL & rr=!NULL
+  A=!NULL & W2=!NULL & V2=!NULL & W_SORT=!NULL & V_SORT=!NULL
+
+
   ; ************************************
-  ; 7*.WNA, polarization and planarity with Algebraic SVD? or Means et al 1972
+  ; 7.2.Poynting vector
+  ; ************************************
+  ;  https://ergsc.isee.nagoya-u.ac.jp/data/website/archives/documents/SPEDAS_training_session/SPEDAS_training_advanced_20180328.pdf を参考に作成
+
+  erg_load_pwe_ofa, datatype='complex', uname=uname, pass=pass
+  pr_complex = 'erg_pwe_ofa_l2_complex_'
+
+  get_data, pr_complex + 'Ex_132', data=data_ex, dlim=dlim, lim=lim
+  if size(data_ex,/type) eq 8 then begin
+    c_ex = dcomplex(data_ex.y[*,*,0]*1E-3, data_ex.y[*,*,1]*1E-3)
+    get_data, pr_complex + 'Ey_132', data=data, dlim=dlim, lim=lim
+    c_ey = dcomplex(data.y[*,*,0]*1E-3, data.y[*,*,1]*1E-3)
+    get_data, pr_complex + 'Bx_132', data=data_bx, dlim=dlim, lim=lim
+    c_bx = dcomplex(data_bx.y[*,*,0]*1E-12, data_bx.y[*,*,1]*1E-12)
+    get_data, pr_complex + 'By_132', data=data, dlim=dlim, lim=lim
+    c_by = dcomplex(data.y[*,*,0]*1E-12, data.y[*,*,1]*1E-12)
+    get_data, pr_complex + 'Bz_132', data=data, dlim=dlim, lim=lim
+    c_bz = dcomplex(data.y[*,*,0]*1E-12, data.y[*,*,1]*1E-12)
+
+    ; calc Ez
+    c_ez = dcindgen(n_elements(data_ex.x), n_elements(data_ex.v2))
+    idx = nn(data_bx.x, data_ex.x)
+
+    for i=0, n_elements(data_ex.x)-1 do begin
+      c_ez[i,*] = (-c_ex[i,*]*c_bx[idx[i],*] - c_ey[i,*]*c_by[idx[i],*]) / c_bz[idx[i],*]
+    endfor
+
+    Sx=dindgen(n_elements(data_bx.x),n_elements(data_bx.v2))
+    Sy=dindgen(n_elements(data_bx.x),n_elements(data_bx.v2))
+    Sz=dindgen(n_elements(data_bx.x),n_elements(data_bx.v2))
+
+    ; calc Poynting flux
+    idx = nn(data_ex.x, data_bx.x) 
+
+    for i=0, n_elements(data_bx.x)-1 do begin
+      for j=0, n_elements(data_bx.v2)-1 do begin
+        Sx[i,j]= double(c_ey[idx[i],j]*conj(c_bz[i,j])-c_ez[idx[i],j]*conj(c_by[i,j]))
+        Sy[i,j]=-double(c_ex[idx[i],j]*conj(c_bz[i,j])-c_ez[idx[i],j]*conj(c_bx[i,j]))
+        Sz[i,j]= double(c_ex[idx[i],j]*conj(c_by[i,j])-c_ey[idx[i],j]*conj(c_bx[i,j]))
+      endfor
+    endfor
+
+    ; analyze MGF data
+    split_vec, 'erg_mgf_l2_mag_64hz_sgi'
+    ; interpolation
+    tinterpol_mxn, 'erg_mgf_l2_mag_64hz_sgi_x', pr_complex + 'Bx_132'
+    tinterpol_mxn, 'erg_mgf_l2_mag_64hz_sgi_y', pr_complex + 'Bx_132'
+    tinterpol_mxn, 'erg_mgf_l2_mag_64hz_sgi_z', pr_complex + 'Bx_132'
+    get_data, 'erg_mgf_l2_mag_64hz_sgi_x_interp', data=data_x
+    get_data, 'erg_mgf_l2_mag_64hz_sgi_y_interp', data=data_y
+    get_data, 'erg_mgf_l2_mag_64hz_sgi_z_interp', data=data_z
+
+    rotmat=dblarr(3,3,n_elements(data_x.x))
+    rotmat_t=dblarr(3,3,n_elements(data_x.x))
+    for i=0, n_elements(data_x.x)-1 do begin
+      bvec=[data_x.y[i],data_y.y[i],data_z.y[i]]
+      zz=[0.,0.,1.]
+      yhat=crossp(zz,bvec)
+      xhat=crossp(yhat,bvec)
+      zhat=bvec
+      xhat=xhat/sqrt(xhat[0]^2+xhat[1]^2+xhat[2]^2)
+      yhat=yhat/sqrt(yhat[0]^2+yhat[1]^2+yhat[2]^2)
+      zhat=zhat/sqrt(zhat[0]^2+zhat[1]^2+zhat[2]^2)
+      rotmat[*,*,i]=([[xhat],[yhat],[zhat]])
+      rotmat_t[*,*,i]=transpose([[xhat],[yhat],[zhat]])
+    endfor
+
+    ; Poynting vector calculation
+
+    S=dindgen(n_elements(data_bx.x),n_elements(data_bx.v2),3)
+    for i=0, n_elements(data_bx.x)-1 do begin
+      for j=0, n_elements(data_bx.v2)-1 do begin
+        S[i,j,*] = rotmat[*,*,i] ## [Sx[i,j],Sy[i,j],Sz[i,j]]
+      endfor
+    endfor
+
+    theta=acos(S[*,*,2]/sqrt(S[*,*,0]^2+S[*,*,1]^2+S[*,*,2]^2))/!dtor
+    store_data, 'S', data={x:data_bx.x, y:theta, v:data_bx.v2}, dlim=dlim, lim=lim
+    ylim, [pr_complex + 'Etotal_132', pr_complex + 'Btotal_132', 'S'], 0.064, 20, 1
+    zlim, pr_complex + 'Etotal_132', 1E-7, 1E0, 1 ; mV^2/m^2/Hz
+    zlim, pr_complex + 'Btotal_132', 1E-2, 1E2, 1 ; pT^2/Hz
+    zlim, 'S', 0., 180., 0 ; degree
+    options, [pr_complex + 'Etotal_132', pr_complex+'Btotal_132', 'S'], $
+    ysubtitle='Frequency [kHz]'
+    options, pr_complex + 'Etotal_132', ytitle='E total', ztitle='[mV!U2!N/m!U2!N/Hz]'
+    options, pr_complex + 'Btotal_132', ytitle='B total', ztitle='[pT!U2!N/Hz]'
+    options, 'S', ytitle='Poynting vector', ztitle='[degree]'
+    tplot, [pr_complex + 'Etotal_132', pr_complex + 'Btotal_132', 'S']
+
+  endif else begin
+    print, 'No ofa_complex data.'
+  endelse
+
+
+  ; ************************************
+  ; 7.3*.WNA, polarization and planarity with Algebraic SVD? or Means et al 1972
   ; ************************************
 
   if algebraic_SVD then begin
