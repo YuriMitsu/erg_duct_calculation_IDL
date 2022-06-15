@@ -48,7 +48,10 @@ pro memo_decrease_duct_time
     plot_kpara_ne, duct_time='2017-04-12/22:25:09', focus_f=[2., 3., 4., 5., 6.], UHR_file_name='kuma', duct_wid_data_n=2, IorD='D' ; D
     plot_kpara_ne, duct_time='2017-04-12/22:26:03', focus_f=[2., 3., 4., 5., 6.], UHR_file_name='kuma', duct_wid_data_n=3, IorD='D' ; D
 
-    timespan, '2017-07-14/22:15:00', 20, /minute
+    timespan, '2017-07-14/02:40:00', 20, /minute
+    plot_event_normal, UHR_file_name='kuma'
+    plot_kpara_ne, duct_time='2017-07-14/02:51:50', focus_f=[2., 3., 4., 5.], UHR_file_name='kuma', duct_wid_data_n=6, IorD='D' ; D
+    plot_kpara_ne, duct_time='2017-07-14/02:53:50', focus_f=[0.4, 0.8, 1.2, 1.6], UHR_file_name='kuma', duct_wid_data_n=2, IorD='I' ; D
 
 
 end
