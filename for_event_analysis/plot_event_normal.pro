@@ -159,6 +159,8 @@ pro plot_event_normal, UHR_file_name=UHR_file_name
     t = timerange(/current) 
     ret1 = strsplit(time_string(t[0]), '-/:', /extract)
     ret2 = strsplit(time_string(t[1]), '-/:', /extract)
+
+    stop
     makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret1[0]+ret1[1]+ret1[2]+'/'+ret1[3]+ret1[4]+ret1[5]+'-'+ret2[3]+ret2[4]+ret2[5], /mkdir
 
 end

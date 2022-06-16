@@ -21,7 +21,7 @@ end
 ; plot_kpara_neはtimespanを設定してから使用！！
 pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_name, lsm=lsm, k_para_=k_para_, cut_f=cut_f, k_perp_range=k_perp_range, duct_wid_data_n=duct_wid_data_n, IorD=IorD
 
-  test = 0 ; 0: Fig保存あり、画面上plotなし　　　1: Fig保存なし、画面上plotあり
+  test = 1 ; 0: Fig保存あり、画面上plotなし　　　1: Fig保存なし、画面上plotあり
 
   if not keyword_set(duct_time) then duct_time = '2018-06-02/10:05:56'
   if not keyword_set(focus_f) then focus_f = [3., 4., 5., 6., 7.] ;Hz
@@ -771,6 +771,8 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   if test eq 0 then begin
     makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_hfa_kpara_mask'
   endif
+
+  stop
 
   ;
   ;

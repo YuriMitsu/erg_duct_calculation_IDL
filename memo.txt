@@ -29,18 +29,19 @@ plot_event_normal, UHR_file_name='/UHR_tplots/f_UHR_2018-06-02/100000.tplot'
 plot_kpara_ne, duct_time='2018-06-02/10:05:56', focus_f=[3., 4., 5., 6., 7., 8.] ;, lsm = [0.00018982743, 0.00018986984]
 
 timespan, '2018-06-02/10:03:00', 6, /minute
-ylim, ['erg_pwe_ofa_l2_matrix_Etotal_132_gyro', 'erg_pwe_ofa_l2_matrix_Btotal_132_gyro', 'k_para_LASVD_ma3_mask', 'kvec_LASVD_ma3_mask', 'polarization_LASVD_ma3_mask', 'planarity_LASVD_ma3_mask'], 3., 7., 0
+ylim, ['erg_pwe_ofa_l2_matrix_Etotal_132_gyro', 'erg_pwe_ofa_l2_matrix_Btotal_132_gyro', 'k_para_LASVD_ma3_mask', 'kvec_LASVD_ma3_mask', 'polarization_LASVD_ma3_mask', 'planarity_LASVD_ma3_mask'], 2., 5., 0
 zlim, 'erg_pwe_ofa_l2_matrix_Btotal_132_gyro', 0.001, 10.0, 1
-ylim, 'Ne', 0, 200, 0
+ylim, 'Ne', 100, 200, 0
 window, 0, xsize=500, ysize=600
 tplot, ['erg_pwe_ofa_l2_matrix_Etotal_132_gyro', 'erg_pwe_ofa_l2_matrix_Btotal_132_gyro', 'Ne', 'k_para_LASVD_ma3_mask', 'kvec_LASVD_ma3_mask', 'polarization_LASVD_ma3_mask', 'planarity_LASVD_ma3_mask']
 
 
 ; plot_event_normalのstop位置をmakepngされないようちょい上に書き換え
 erg_init
-timespan, '2018-06-06/11:20:00', 40, /minute
+timespan, '2018-06-06/11:28:00', 6, /minute
 .compile -v '/Users/ampuku/Documents/duct/code/IDL/for_event_analysis/plot_event_normal.pro'
 plot_event_normal, UHR_file_name='/Users/ampuku/Documents/duct/code/IDL/UHR_tplots/f_UHR_2018-06-06/112500.tplot'
+ylim, 'Ne', 150, 350, 0
 ; plot_kpara_ne 163行目に stop 追記
 plot_kpara_ne, duct_time='2018-06-06/11:31:25', focus_f=[1., 2., 3., 4., 5.], UHR_file_name='UHR_tplots/f_UHR_2018-06-06/112500.tplot', duct_wid_data_n=3 ; I
 
@@ -54,3 +55,44 @@ tplot, ['erg_pwe_ofa_l2_matrix_Etotal_132_gyro', 'erg_pwe_ofa_l2_matrix_Btotal_1
 
 window, 0, xsize=500, ysize=350
 window, 0, xsize=380, ysize=250
+
+
+timespan, '2017-07-14/02:49:00', 6, /minute
+plot_event_normal, UHR_file_name='kuma'
+tplot, ['erg_pwe_ofa_l2_matrix_Etotal_132_gyro', 'erg_pwe_ofa_l2_matrix_Btotal_132_gyro', 'Ne', 'k_para_LASVD_ma3_mask', 'kvec_LASVD_ma3_mask', 'polarization_LASVD_ma3_mask', 'planarity_LASVD_ma3_mask']
+
+
+
+; plot_kpara_ne.pro 実行後にいい感じに図を作成したいとき　Csemi用
+window, 0, xsize=500, ysize=350
+  !p.multi=[0,1,2]
+plot, plot_f, Ne_0, xtitle='frequency [kHz]', ytitle='Ne [/cc]', yrange=[min([Ne_0,Ne_1])-5,max([Ne_0,Ne_1])+5]
+  oplot, plot_f, Ne_1, linestyle='2'
+  oplot, [plot_f[0]-1,plot_f[-1]+1], [duct_obs_Ne_top,duct_obs_Ne_top]
+  i=0
+      duct_f = plot_f[idx_dif[i]]
+
+      oplot, [duct_f,duct_f], [min(Ne_0)-300,max(Ne_0)+300]
+i=1
+      duct_f = plot_f[idx_dif[i]]
+
+      oplot, [duct_f,duct_f], [min(Ne_0)-300,max(Ne_0)+300]
+  plot, Bdata.v, Bdata.y[idx_t,*], xtitle='frequency [kHz]', ytitle='OFA-SPEC B [pT^2/Hz]', xrange=[min(plot_f), max(plot_f)]
+
+  i=0
+      duct_f = plot_f[idx_dif[i]]
+
+      oplot, [duct_f,duct_f], [min(Bdata.y[idx_t,*])-0.1,max(Bdata.y[idx_t,*])+0.1]
+i=1
+      duct_f = plot_f[idx_dif[i]]
+      oplot, [duct_f,duct_f], [min(Bdata.y[idx_t,*])-0.1,max(Bdata.y[idx_t,*])+0.1]
+  oplot, [duct_equatorial_fce, duct_equatorial_fce], [min(Bdata.y[idx_t,*])-0.1,max(Bdata.y[idx_t,*])+0.1], linestyle=2
+
+
+
+  !p.multi=[0,1,1]
+window, 0, xsize=380, ysize=250
+  plot, obs_f/f_ce_ave_, gendrin_angle, xtitle='f/fce  '+'(fce = '+fce_loc_string+'kHz)', ytitle='theta [degree]', xrange=[ (min(focus_f)-0.5)/f_ce_ave_, (max(focus_f)+0.5)/f_ce_ave_ ]
+  oplot, obs_f/f_ce_ave_, gendrin_angle, color=6
+  oplot, f_kvec__/f_ce_ave_, kvec__, psym=4
+  oplot, [duct_equatorial_fce/f_ce_ave_, duct_equatorial_fce/f_ce_ave_], [min(gendrin_angle)-20.,max(gendrin_angle)+20.], linestyle=2
