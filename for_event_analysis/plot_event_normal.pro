@@ -2,11 +2,14 @@
 ; コンパイル 
 ; .compile -v '/Users/ampuku/Documents/duct/code/IDL/for_event_analysis/plot_event_normal.pro'
 ; .compile -v '/Users/ampuku/Documents/duct/code/IDL/calcs/calc_ne.pro'
+; http://adrastea.gp.tohoku.ac.jp/~erg/data/hfa_l3_h/
 
 ; 熊本先生のuhrHtoolでUHRを読み取っていた場合、UHR_file_name='kuma'とすればOK
 
 
-pro plot_event_normal, UHR_file_name=UHR_file_name
+pro plot_event_normal, UHR_file_name=UHR_file_name, desplay_on=desplay_on
+
+    if not keyword_set(desplay_on) then desplay_on = 1
 
     ; *****************
     ; plot event for meeting
@@ -141,25 +144,39 @@ pro plot_event_normal, UHR_file_name=UHR_file_name
     options, 'hfa_gyro', $
         ytitle='HFA E', ysubtitle='Frequency!C[kHz]', ztitle='[mV!U2!N/m!U2!N/Hz]'
 
+    if desplay_on eq 1 then begin
+        set_plot, 'X'
+        window, 0, xsize=850, ysize=600
+        !p.background = 255
+        !p.color = 0
+
+        ylim, ['kvec_mask_gyro', 'planarity_mask_gyro'], 1.0, 20.0, 1
+        ylim, 'Ne', 100, 1500, 1
+        tplot, [pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'Ne', 'kvec_mask_gyro', 'planarity_mask_gyro']
+        stop
+    endif
+
     ; ************************************
     ; 18.plot
     ; ************************************
 
-    SET_PLOT, 'Z'
-    DEVICE, SET_RESOLUTION = [1500,2000]
-    !p.BACKGROUND = 255
-    !p.color = 0
+    if desplay_on eq 0 then begin
+        SET_PLOT, 'Z'
+        DEVICE, SET_RESOLUTION = [1500,2000]
+        !p.BACKGROUND = 255
+        !p.color = 0
 
-    time_stamp, /off
-    options, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'S_mask_gyro', 'ofa_b_Bmodels_correction'], 'color_table', 43
-    ylim, [pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'S_mask_gyro', 'ofa_b_Bmodels_correction'], 0.5, 10., 1
-    ylim, 'Ne', 0, 500, 1
-    ; tplot, [pr_matrix+'Etotal_132_gyro', pr_matrix+'Btotal_132_gyro', 'Ne', 'kvec_mask_gyro']
-    tplot, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'Ne', 'kvec_algebraicSVD_mask', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'S_mask_gyro', 'ofa_b_Bmodels_correction']
-    t = timerange(/current) 
-    ret1 = strsplit(time_string(t[0]), '-/:', /extract)
-    ret2 = strsplit(time_string(t[1]), '-/:', /extract)
+        time_stamp, /off
+        options, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'S_mask_gyro', 'ofa_b_Bmodels_correction'], 'color_table', 43
+        ylim, [pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'S_mask_gyro', 'ofa_b_Bmodels_correction'], 0.5, 10., 1
+        ylim, 'Ne', 0, 500, 1
+        ; tplot, [pr_matrix+'Etotal_132_gyro', pr_matrix+'Btotal_132_gyro', 'Ne', 'kvec_mask_gyro']
+        tplot, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'Ne', 'kvec_algebraicSVD_mask', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'S_mask_gyro', 'ofa_b_Bmodels_correction']
+        t = timerange(/current) 
+        ret1 = strsplit(time_string(t[0]), '-/:', /extract)
+        ret2 = strsplit(time_string(t[1]), '-/:', /extract)
 
-    makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret1[0]+ret1[1]+ret1[2]+'/'+ret1[3]+ret1[4]+ret1[5]+'-'+ret2[3]+ret2[4]+ret2[5], /mkdir
+        makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret1[0]+ret1[1]+ret1[2]+'/'+ret1[3]+ret1[4]+ret1[5]+'-'+ret2[3]+ret2[4]+ret2[5], /mkdir
+    endif
 
 end
