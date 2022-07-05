@@ -1,7 +1,7 @@
 ; コンパイル 
 ; .compile -v '/Users/ampuku/Documents/duct/code/IDL/calcs/calc_wave_params.pro'
 
-pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
+pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD, cut_f=cut_f
 
   ; *****************
   ; calculate wave params
@@ -9,6 +9,7 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
 
   if not keyword_set(moving_average) then moving_average = 3
   if not keyword_set(algebraic_SVD) then algebraic_SVD = 0 ; algebraic_SVD=1 だと algebraic SVD も計算する
+  if not keyword_set(cut_f) then cut_f = 1E-2 ;nT
 
   uname = 'erg_project'
   pass = 'geospace'
@@ -523,6 +524,26 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
     zlim, 'polarization_algebraicSVD'+ma, -1., 1., 0 ;
 
   endif
+
+  ; ************************************
+  ; 8. musk
+  ; ************************************
+
+  ; ここはcalc_wave_paramsに持たせるべき
+  get_data, 'erg_pwe_ofa_l2_matrix_Btotal_132', data=data_ref; *** modified (B_total_132 -> Btotal_132)
+  ; kvec
+  get_data, 'kvec_LASVD'+ma, data=data, dlim=dlim, lim=lim
+  data.y[where(data_ref.y LT cut_f)] = 'NaN'
+  store_data, 'kvec_LASVD'+ma+'_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
+  ; polarization
+  get_data, 'polarization_LASVD'+ma, data=data, dlim=dlim, lim=lim
+  data.y[where(data_ref.y LT cut_f)] = 'NaN'
+  store_data, 'polarization_LASVD'+ma+'_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
+  ; k_para
+  get_data, 'kpara_LASVD'+ma, data=data, dlim=dlim, lim=lim
+  data.y[where(data_ref.y LT cut_f)] = 'NaN'
+  store_data, 'kpara_LASVD'+ma+'_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
+  
 
 
 

@@ -30,8 +30,6 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   if not keyword_set(k_perp_range) then k_perp_range = 40 ;nT
 
 
-  ; timespan, '2018-06-02/10:00:00', 20, /minute
-
   ; *****************
   ; 1.load data
   ; *****************
@@ -53,14 +51,20 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
 
 
   ; *****************
-  ; 2.calc. wave palams
+  ; 2.calc.
+  ; *****************
+  ; 1. load data で読み込んだデータを使って各物理量を計算する
+  ; 計算した値は全てtplot変数にして記録する
+
+  ; *****************
+  ; 2.1.calc. wave palams
   ; *****************
 
-  calc_wave_params
+  calc_wave_params, cut_f=cut_f
   wave_params_ = '_LASVD_ma3'
   
   ; *****************
-  ; 3.calc. k_para
+  ; 2.2.calc. k_para
   ; *****************
 
   if test eq 1 then begin
@@ -74,198 +78,30 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
     !p.color = 0
   endelse
 
-  tinterpol_mxn, 'erg_mgf_l2_magt_8sec', 'polarization'+wave_params_
-  get_data, 'erg_mgf_l2_magt_8sec_interp', data=magt
-  get_data, 'polarization'+wave_params_, data=pol
+  calc_fce_and_flhr
 
-  f = pol.v
+  calc_Ne, UHR_file_name=UHR_file_name
 
-;  read_f_uhr
-
-  if UHR_file_name eq 'kuma' then begin
-    load_fufp_txt, /high
-    get_data, 'hfa_l3_fuh', data = data
-    store_data, 'f_UHR', data={x:data.x, y:data.y}
-  endif else begin
-    tplot_restore, file=[UHR_file_name]
-  endelse
-
-  get_data, 'f_UHR', data=data
-  ; store_data, 'test', data={x:data.x, y:data.y}, dlim={colors:5,thick:1,linestyle:1}
-  tinterpol_mxn, 'f_UHR', 'polarization'+wave_params_
-  options, 'f_UHR_interp', linestyles=0
-  get_data, 'f_UHR_interp', data=f_UHR
-  store_data, 'erg_pwe_hfa', data=['erg_pwe_hfa_l2_high_spectra_e_mix', 'f_UHR_interp']
-  ylim, 'erg_pwe_hfa', 20.0, 200.0, 0
-  tplot, 'erg_pwe_hfa'
-
-  f_ce = magt.y / 10^(9.) * 1.6 * 10^(-19.) / (9.1093D * 10^(-31.)) / 2. / !pi ; in Hz ,DはDOUBLEのD
-  f_pe = sqrt( (f_UHR.y*10^(3.))^2. - f_ce^2. ) ; Hz
-;  f_pe_test = sqrt( (f_UHR.y)^2. - f_ce^2./10^(6.) ) * 10^(3.) ; Hz
-  Ne_ = (f_pe * 2 * !pi)^2 * (9.1093D * 10^(-31.)) * (8.854D * 10^(-12.)) /  (1.602D * 10^(-19.))^2 / 10^(6.) ;cm-3
-
-
-  ; 観測した伝搬角
-  get_data, 'kvec'+wave_params_, data=data
-  wna = data.y
-
-  alpha = wna / 180 * !pi
-  store_data, 'Ne', data={x:data.x, y:Ne_} ;, v:s00.v2}
-  ylim, 'Ne', 10.0, 1000.0, 1
-  ;  erg_load_pwe_hfa, level='l3', uname='erg_project', pass='geospace' ; neの参考 桁の一致を確認済み
-  store_data, 'f_pe', data={x:data.x, y:f_pe}
-
-  k_para = fltarr(n_elements(alpha[*,0]), n_elements(alpha[0,*])) ;[timerange, freqrange]
-  for i=0,n_elements(alpha[0,*])-1 do begin
-    alpha_ = alpha[*,i] 
-    c = 2.99 * 10^(8.)
-    a1 = 4 * !pi^2 * f_pe^2 / c^2
-    a2 = f_ce / (f[i] * 10^(3.)) / cos(alpha_)
-    a3 = 1 / (cos(alpha_))^2
-    k_para[*,i] = sqrt( a1 / (a2-a3) )
-  endfor
-
-  store_data, 'f_ce', data={x:data.x, y:f_ce, v:data.v}
-  store_data, 'k_para'+wave_params_, data={x:data.x, y:k_para, v:data.v}
-  options, 'k_para'+wave_params_, ytitle='k_para', ysubtitle='Frequency [kHz]', spec = 1
-  ylim, 'k_para'+wave_params_, focus_f[0]-0.5, focus_f[-1]+0.5, 0 ; kHz
-  zlim, 'k_para'+wave_params_, 1.e-4, 5.e-3, 1 ;適宜ここ決める！
+  calc_k_para
 
 
   ; *****************
-  ; 4.mask
+  ; 3.plot
   ; *****************
 
-  get_data, pr_matrix + 'Btotal_132', data=data_ref; *** modified (B_total_132 -> Btotal_132)
-  ; kvec
-  get_data, 'kvec'+wave_params_, data=data, dlim=dlim, lim=lim
-  data.y[where(data_ref.y LT cut_f)] = 'NaN'
-  store_data, 'kvec'+wave_params_+'_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
-  ; polarization
-  get_data, 'polarization'+wave_params_, data=data, dlim=dlim, lim=lim
-  data.y[where(data_ref.y LT cut_f)] = 'NaN'
-  store_data, 'polarization'+wave_params_+'_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
-  ; k_para
-  get_data, 'k_para'+wave_params_, data=data, dlim=dlim, lim=lim
-  data.y[where(data_ref.y LT cut_f)] = 'NaN'
-  store_data, 'k_para'+wave_params_+'_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
-  
-    ; 保存するplotのwindowを用意
-  if test eq 0 then begin
-    SET_PLOT, 'Z'
-    DEVICE, SET_RESOLUTION = [1000,600]
-    !p.BACKGROUND = 255
-    !p.color = 0
-  endif
-
-
-  options, 'erg_pwe_hfa', 'color_table', 43
-  options, 'k_para'+wave_params_+'_mask', 'color_table', 43
-  timespan, time_string(time_double(duct_time)-120. ), 4, /minute
-  tplot, ['erg_pwe_hfa', 'k_para'+wave_params_+'_mask']
-
-  options, 'kvec'+wave_params_+'_mask', 'color_table', 43
-  ; get_data, 'Ne', data=data
-  ; idx_duct_t = ( where( data.x lt time_double(duct_time)+5. and data.x gt time_double(duct_time)-5., cnt ) )[0]
-  ; Ne_max =  max( [FLOAT(data.y[idx_duct_t]+20.), Ne_k_para[0, 0], Ne_k_para[0, -1]] )
-  ; idx_duct_start = ( where( data.x lt time_double(time1)+5. and data.x gt time_double(time1)-5., cnt ) )[0]
-  ; idx_duct_end = ( where( data.x lt time_double(time2)+5. and data.x gt time_double(time2)-5., cnt ) )[0]
-  ; Ne_min_ = FLOAT( min(data.y[idx_duct_start:idx_duct_end]) )
-  ; Ne_min =  max( [min( [Ne_min_, Ne_k_para[0, 0], Ne_k_para[0, -1]] ), 0.] )
-  ; ylim, 'Ne', Ne_max, Ne_min, 0
-  ylim, 'kvec'+wave_params_+'_mask', 1., 9.0, 0
-  timespan, time_string(time_double(duct_time)-120. ), 4, /minute
-  ; tplot, ['Ne', 'kvec'+wave_params_+'_mask']
-
-  ret = strsplit(duct_time, '-/:', /extract)
-  ; if test eq 0 then begin
-  ;   makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_hfa_kpara_mask'
-  ; endif
-
-
-
   ; *****************
-  ; 5.get k_para(freq)
+  ; 3.1. k_para(freq)
   ; *****************
-  ;2018-06-02/10:05:56のk_paraを試しに周波数方向に切り出してみる
-  
-  ; 保存するplotのwindowを用意
-  if test eq 0 then begin
-    SET_PLOT, 'Z'
-    DEVICE, SET_RESOLUTION = [1000,600]
-    !p.BACKGROUND = 255
-    !p.color = 0
-  endif
-  
-  get_data, 'k_para'+wave_params_+'_mask', data = k_paradata
-  k_paradata.y[*, where(k_paradata.v lt focus_f[0]-0.1) ] = 'NaN'
-  k_paradata.y[*, where(k_paradata.v gt focus_f[-1]+0.1) ] = 'NaN'
 
-  time_ = time_double(duct_time)
-  idx_t = where( k_paradata.x lt time_+4. and k_paradata.x gt time_-4., cnt )
-
-
-
-
-  ; ダクトに合わせて変える or 消す！！！
-  ; k_paradata.y[idx_t[0], *] = mean(k_paradata.y[idx_t[0]-3:idx_t[0]+3, *], DIMENSION=1, /nan)
-  k_paradata.y[idx_t[0], *] = mean(k_paradata.y[idx_t[0]-duct_wid_data_n:idx_t[0]+duct_wid_data_n, *], DIMENSION=1, /nan)
-  ; print, k_paradata.x[idx_t[0]+10]-k_paradata.x[idx_t[0]-10]
-  ; print, time_string(k_paradata.x[idx_t[0]+10])
-  ; print, time_string(k_paradata.x[idx_t[0]-10])
-
-  ; stop
-
-
-
-
-  if idx_t eq -1 then begin
-    print, '!!!!Caution!!!! /n Duct time is not selected correctly. Check the code.'
-    stop
-  endif
-  !p.multi=0
-  plot, k_paradata.v, k_paradata.y[idx_t[0], *], psym=-4, xtitle='f (kHz)', ytitle='k_para (/m)'
-
-  ; 最小二乗法でダクト中心でのk_paraを直線に当てはめる
-  if not keyword_set(lsm) then begin
-    lsm = least_squares_method(k_paradata.v, k_paradata.y[idx_t[0], *]) ;外れ値に左右され過ぎてしまう 余裕があったらロバスト回帰を導入？
-
-    ; 適宜次行 lt あとの数字を書き換えて外れ値を除去、その時のlsmをメモって使用...
-    ; res = where(k_paradata.y[idx_t[0], *]-lsm[0]*k_paradata.v+lsm[1] lt 0.0008, count)
-    ; if count gt 0 then begin
-      ; lsm = least_squares_method(k_paradata.v[res], (k_paradata.y[idx_t[0], *])[res])
-    ; endif
-  endif
-;  k_para_ = [ 0.00072889862, 0.00084289216, 0.0010308567, 0.0013732987, 0.0016690817] ; 3,4,5,6,7
-;  k_para_ = [0.00074098376,    0.0012041943,    0.0016674048,    0.0019,    0.00235]
-;  f_ = [3000., 4000., 5000., 6000., 7000.] ;Hz
-  
-  ; if not keyword_set(k_para_) then k_para_ = lsm[0] * focus_f + lsm[1]
-  k_para_ = lsm[0] * focus_f + lsm[1]
-
-  plot, [0., 15.], lsm[0] * [0., 15.] + lsm[1], xtitle='f (kHz)', ytitle='k_para (/m)'
-
-  oplot, k_paradata.v, k_paradata.y[idx_t[0], *], psym=-4
-  tvlct, 255,0,0,1
-  oplot, focus_f, k_para_, psym=2, color=1
-  lsm_f = [min(k_paradata.v), max(k_paradata.v)]
-  lsm_k_para = lsm[0] * lsm_f + lsm[1]
-  oplot, lsm_f, lsm_k_para, color=1
-
-  ; 保存
-  ret = strsplit(duct_time, '-/:', /extract)
-  if test eq 0 then begin
-    makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_f_kpara'
-  endif
-
+  plot_f_kpara, focus_f=focus_f, duct_time=duct_time, duct_wid_data_n=duct_wid_data_n, test=test ,lsm=lsm
 
   ; *****************
   ; 6.1.calculate Ne(k_perp)
   ; *****************
   if 0 then begin
-    get_data, 'f_ce', data=f_cedata
-    idx_t_ = where( f_cedata.x lt time_+5. and f_cedata.x gt time_-5., cnt )
-    f_ce_ave = f_cedata.y[idx_t_[0]]
+    get_data, 'fce', data=fcedata
+    idx_t_ = where( fcedata.x lt time_+5. and fcedata.x gt time_-5., cnt )
+    fce_ave = fcedata.y[idx_t_[0]]
   ;  f_chorus = [3000., 4000., 5000., 6000., 7000.] ;Hz
     
     k_perp = dindgen(k_perp_range, increment=0.0001, start=0.0)
@@ -275,7 +111,7 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
     for i=0, n_elements( focus_f )-1 do begin
       f_ = focus_f[i] * 1000. ;kHz -> Hz
       b1 = (9.1093D * 10^(-31.)) / (1.25D * 10^(-6.)) / (1.6 * 10^(-19.))^2
-      b2 = - k_perp^2 + f_ce_ave / f_ * k_para_[i] * sqrt( k_para_[i]^2 + k_perp^2 ) - k_para_[i]^2
+      b2 = - k_perp^2 + fce_ave / f_ * k_para_[i] * sqrt( k_para_[i]^2 + k_perp^2 ) - k_para_[i]^2
       Ne_k_para[*, i] = b1 * b2 / 10^(6.) ;cm-3
     endfor
   endif
@@ -283,9 +119,9 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   ; *****************
   ; 6.2.calculate Ne(theta)
   ; *****************
-  get_data, 'f_ce', data=f_cedata
-  idx_t_ = where( f_cedata.x lt time_+5. and f_cedata.x gt time_-5., cnt )
-  f_ce_ave = f_cedata.y[idx_t_[0]] ; ここ、あとでindex変えて試す！！
+  get_data, 'fce', data=fcedata
+  idx_t_ = where( fcedata.x lt time_+5. and fcedata.x gt time_-5., cnt )
+  fce_ave = fcedata.y[idx_t_[0]] ; ここ、あとでindex変えて試す！！
 ;  f_chorus = [3000., 4000., 5000., 6000., 7000.] ;Hz
   
   k_perp = dindgen(k_perp_range, increment=0.0001, start=0.0)
@@ -297,12 +133,12 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   for i=0, n_elements( focus_f )-1 do begin
     f_ = focus_f[i] * 1000. ;kHz -> Hz
     b1 = (9.1093D * 10^(-31.)) / (1.25D * 10^(-6.)) / (1.6 * 10^(-19.))^2
-    b2 = - k_perp^2 + f_ce_ave / f_ * k_para_[i] * sqrt( k_para_[i]^2 + k_perp^2 ) - k_para_[i]^2
+    b2 = - k_perp^2 + fce_ave / f_ * k_para_[i] * sqrt( k_para_[i]^2 + k_perp^2 ) - k_para_[i]^2
     Ne_k_para[*, i] = b1 * b2 / 10^(6.) ;cm-3
 
     k_perp_theta = k_para_[i] * tan( theta / 180 * !pi ) ; tan([radian])
     b1_theta = (9.1093D * 10^(-31.)) / (1.25D * 10^(-6.)) / (1.6 * 10^(-19.))^2
-    b2_theta = - k_perp_theta^2 + f_ce_ave / f_ * k_para_[i] * sqrt( k_para_[i]^2 + k_perp_theta^2 ) - k_para_[i]^2
+    b2_theta = - k_perp_theta^2 + fce_ave / f_ * k_para_[i] * sqrt( k_para_[i]^2 + k_perp_theta^2 ) - k_para_[i]^2
     Ne_theta[*, i] = b1_theta * b2_theta / 10^(6.) ;cm-3
   endfor
 
@@ -344,7 +180,7 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
       xyouts, k_perp[-8], min([max(Ne_k_para)+5, 600.])-25-25*i, string(focus_f[i], FORMAT='(f0.1)')+'kHz', color=i+10, CHARSIZE=2
     endfor
 
-    get_data, 'f_ce', data = data
+    get_data, 'fce', data = data
     idx_t = where( data.x lt time_+4. and data.x gt time_-4., cnt )
     xyouts, k_perp[-12], max([min(Ne_k_para)-5, 0.])+25, 'fce/2 = '+string(data.y[idx_t]/1000/2, FORMAT='(f0.1)')+'kHz', color=4, CHARSIZE=2
     fce_loc_string = string(data.y[idx_t]/1000, FORMAT='(f0.1)')
@@ -380,7 +216,7 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
     xyouts, theta[-16], min([max(Ne_k_para)+5, 600.])-25-25*i, string(focus_f[i], FORMAT='(f0.1)')+'kHz', color=i+10, CHARSIZE=2
   endfor
 
-  get_data, 'f_ce', data = data
+  get_data, 'fce', data = data
   idx_t = where( data.x lt time_+4. and data.x gt time_-4., cnt )
   xyouts, theta[-24], max([min(Ne_k_para)-5, 0.])+25, 'fce/2 = '+string(data.y[idx_t]/1000/2, FORMAT='(f0.1)')+'kHz', color=4, CHARSIZE=2
   
@@ -567,7 +403,7 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
 
   obs_f = kvec__data.v
   gendrin_angle = fltarr(n_elements(obs_f))
-  gendrin_angle = acos( 2.0 * obs_f*1000.0 / f_ce_ave ) / !pi * 180.0
+  gendrin_angle = acos( 2.0 * obs_f*1000.0 / fce_ave ) / !pi * 180.0
   kvec__gendrin_diff = fltarr(n_elements(kvec__[*,0]),n_elements(kvec__[0,*]))
   f_kvec__ = fltarr(n_elements(kvec__[*,0]),n_elements(kvec__[0,*]))
 
@@ -593,17 +429,17 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
 
 
   ; t: t方向に潰してplotしたので変数にしてないが、idx_tの前後nデータ分, freq: obs_f, theta-theta_gendrin: kvec__gendrin_diff
-  f_ce_ave_ = f_ce_ave / 1000.
-  plot, obs_f/f_ce_ave_, gendrin_angle, xtitle='f/fce  '+'(fce = '+fce_loc_string+'kHz)', ytitle='theta [degree]', xrange=[ (min(focus_f)-0.5)/f_ce_ave_, (max(focus_f)+0.5)/f_ce_ave_ ]
-  oplot, obs_f/f_ce_ave_, gendrin_angle, color=6
-  oplot, f_kvec__/f_ce_ave_, kvec__, psym=4
+  fce_ave_ = fce_ave / 1000.
+  plot, obs_f/fce_ave_, gendrin_angle, xtitle='f/fce  '+'(fce = '+fce_loc_string+'kHz)', ytitle='theta [degree]', xrange=[ (min(focus_f)-0.5)/fce_ave_, (max(focus_f)+0.5)/fce_ave_ ]
+  oplot, obs_f/fce_ave_, gendrin_angle, color=6
+  oplot, fkvec__/fce_ave_, kvec__, psym=4
 
 
 
-  ; plot, f_kvec__/f_ce_ave_, kvec__
+  ; plot, f_kvec__/fce_ave_, kvec__
   ; colorbar
-  ; plots, f_kvec__/f_ce_ave_, kvec__, color=polarization_color, psym=4
-  xyouts, max(focus_f/f_ce_ave_)-0.04, min(kvec__)+5, 'Gendrin Angle', color=6, CHARSIZE=1.5
+  ; plots, f_kvec__/fce_ave_, kvec__, color=polarization_color, psym=4
+  xyouts, max(focus_f/fce_ave_)-0.04, min(kvec__)+5, 'Gendrin Angle', color=6, CHARSIZE=1.5
 
 
   calc_equatorial_fce
@@ -613,8 +449,8 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   idx_t = where( equatorial_fce.x lt time_+0.6 and equatorial_fce.x gt time_-0.6, cnt )
   duct_equatorial_fce = equatorial_fce.y[idx_t]
 
-  oplot, [duct_equatorial_fce/f_ce_ave_, duct_equatorial_fce/f_ce_ave_], [min(gendrin_angle)-20.,max(gendrin_angle)+20.], linestyle=2
-  xyouts, duct_equatorial_fce/f_ce_ave_+0.1, min(kvec__)+1, 'fce_eq/2 = '+string(duct_equatorial_fce/f_ce_ave_, format='(f0.1)')+'kHz', CHARSIZE=1.5
+  oplot, [duct_equatorial_fce/fce_ave_, duct_equatorial_fce/fce_ave_], [min(gendrin_angle)-20.,max(gendrin_angle)+20.], linestyle=2
+  xyouts, duct_equatorial_fce/fce_ave_+0.1, min(kvec__)+1, 'fce_eq/2 = '+string(duct_equatorial_fce/fce_ave_, format='(f0.1)')+'kHz', CHARSIZE=1.5
 
 
   ;
@@ -640,11 +476,11 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   tvlct, 255, 204, 0, 27
   tvlct, 255, 153, 0, 28
 
-  oplot, obs_f/f_ce_ave_, gendrin_angle
-  xyouts, max(focus_f/f_ce_ave_)-0.04, min(kvec__)+5, 'Gendrin Angle', CHARSIZE=1.5
-  for i=0, n_elements(kvec__[*,0])-1 do oplot, obs_f/f_ce_ave_, kvec__[i,*], color=i+20, psym=4
+  oplot, obs_f/fce_ave_, gendrin_angle
+  xyouts, max(focus_f/fce_ave_)-0.04, min(kvec__)+5, 'Gendrin Angle', CHARSIZE=1.5
+  for i=0, n_elements(kvec__[*,0])-1 do oplot, obs_f/fce_ave_, kvec__[i,*], color=i+20, psym=4
   xyouts, max(focus_f), 65, 'obs t', CHARSIZE=1.5
-  for i=0, n_elements(kvec__[*,0])-1 do xyouts, max(focus_f/f_ce_ave_)-0.04, 60-5*i, string(i, format='(i0)'), color=i+20
+  for i=0, n_elements(kvec__[*,0])-1 do xyouts, max(focus_f/fce_ave_)-0.04, 60-5*i, string(i, format='(i0)'), color=i+20
 
   if test eq 0 then begin
     makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_f_theta_witht'
@@ -675,9 +511,9 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   b1 = (9.1093D * 10^(-31.)) / (1.25D * 10^(-6.)) / (1.6 * 10^(-19.))^2
   for i=0, n_elements( plot_f )-1 do begin
     f_ = plot_f[i] * 1000. ;kHz -> Hz
-    b2 = k_para_Ne0[i]^2 * (f_ce_ave / f_ - 1 )
+    b2 = k_para_Ne0[i]^2 * (fce_ave / f_ - 1 )
     Ne_0[i] = b1 * b2 / 10^(6.) ;cm-3
-    b3 = k_para_Ne0[i]^2 * (f_ce_ave / (2*f_))^2
+    b3 = k_para_Ne0[i]^2 * (fce_ave / (2*f_))^2
     Ne_1[i] = b1 * b3 / 10^(6.) ;cm-3
   endfor
 

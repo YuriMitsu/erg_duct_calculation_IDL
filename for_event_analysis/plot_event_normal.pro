@@ -75,7 +75,7 @@ pro plot_event_normal, UHR_file_name=UHR_file_name, desplay_on=desplay_on
     data.y[where(data_ref.y LT cut_f)] = 'NaN'
     store_data, 'kvec_algebraicSVD_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
 
-    ; kvec means
+    ; Poynting vector
     ; get_data, 'S', data=data, dlim=dlim, lim=lim
     ; data.y[where(data_ref.y LT cut_f)] = 'NaN'
     ; store_data, 'S_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
@@ -88,7 +88,7 @@ pro plot_event_normal, UHR_file_name=UHR_file_name, desplay_on=desplay_on
     ; calc_mepe
 
     ; ************************************
-    ; 17-1.cal fce.etc
+    ; 17-1.cal fce,Ne.etc
     ; ************************************
 
     if UHR_file_name eq 'kuma' then begin
@@ -110,19 +110,19 @@ pro plot_event_normal, UHR_file_name=UHR_file_name, desplay_on=desplay_on
     ; ************************************
 
     store_data, pr_matrix + 'Etotal_132_gyro' $
-        , data=[pr_matrix + 'Etotal_132', 'fce', 'fce_half','flhr']
+        , data=[pr_matrix + 'Etotal_132', 'fce', 'fce_half', 'flhr']
     store_data, pr_matrix + 'Btotal_132_gyro' $
-        , data=[pr_matrix + 'Btotal_132', 'fce', 'fce_half','flhr']
+        , data=[pr_matrix + 'Btotal_132', 'fce', 'fce_half', 'flhr']
     
-    store_data, 'planarity_gyro', data=['planarity_LASVD_ma3', 'fce', 'fce_half','flhr']
+    store_data, 'planarity_gyro', data=['planarity_LASVD_ma3', 'fce', 'fce_half', 'flhr']
     options, 'kvec_mask_gyro', ytitle='WNA', ysubtitle='Frequency!C[kHz]', ztitle='[degree]'
-    store_data, 'kvec_mask_gyro', data=['kvec_LASVD_ma3_mask', 'fce', 'fce_half','flhr']
+    store_data, 'kvec_mask_gyro', data=['kvec_LASVD_ma3_mask', 'fce', 'fce_half', 'flhr']
     options, 'kvec_mask_gyro', ytitle='WNA', ysubtitle='Frequency!C[kHz]', ztitle='[degree]'
-    store_data, 'polarization_mask_gyro', data=['polarization_LASVD_ma3_mask', 'fce', 'fce_half','flhr']
+    store_data, 'polarization_mask_gyro', data=['polarization_LASVD_ma3_mask', 'fce', 'fce_half', 'flhr']
     options, 'polarization_mask_gyro', ytitle='polarization', ysubtitle='Frequency!C[kHz]', ztitle=''
-    store_data, 'planarity_mask_gyro', data=['planarity_LASVD_ma3_mask', 'fce', 'fce_half','flhr']
+    store_data, 'planarity_mask_gyro', data=['planarity_LASVD_ma3_mask', 'fce', 'fce_half', 'flhr']
     options, 'planarity_mask_gyro', ytitle='planarity', ysubtitle='Frequency!C[kHz]', ztitle=''
-    store_data, 'S_mask_gyro', data=['S_mask', 'fce', 'fce_half','flhr']
+    store_data, 'S_mask_gyro', data=['S_mask', 'fce', 'fce_half', 'flhr']
     options, 'S_mask_gyro', ytitle='Poynting vector', ysubtitle='Frequency!C[kHz]', ztitle=''
 
 

@@ -1,3 +1,6 @@
+; コンパイル 
+; .compile -v '/Users/ampuku/Documents/duct/code/IDL/calcs/calc_fce_and_flhr.pro'
+
 pro calc_fce_and_flhr
 
     ; *****************
