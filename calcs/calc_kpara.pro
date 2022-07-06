@@ -1,6 +1,6 @@
 
 ; コンパイル 
-; .compile -v '/Users/ampuku/Documents/duct/code/IDL/calcs/calc_k_para.pro'
+; .compile -v '/Users/ampuku/Documents/duct/code/IDL/calcs/calc_kpara.pro'
 
 ; TPLOT variables that need to be prepared in advance
 ;     'kvec_*' : calc_wave_params.pro
@@ -10,13 +10,16 @@
 ; TPLOT variables created
 ;     'k_para'
 
-pro calc_k_para
+pro calc_kpara, cut_f=cut_f
+
+  if not keyword_set(cut_f) then cut_f = 1E-2 ;nT
 
   ; ************************************
   ; 1.get data kvec,fce.etc
   ; ************************************
 
   kvec_tname = tnames('kvec_LASVD_???')
+  ma = strmid(kvec_tname, strlen(kvec_tname)-4, 4)
 
   tinterpol_mxn, 'fce', kvec_tname
   tinterpol_mxn, 'fpe', kvec_tname
@@ -50,11 +53,16 @@ pro calc_k_para
   ; 3.store data k_para
   ; ************************************
 
-  store_data, 'kpara', data={x:kvec_data.x, y:kpara, v:kvec_data.v}
-  options, 'kpara', ytitle='kpara', ysubtitle='Frequency [kHz]', spec = 1
-  zlim, 'kpara', 1.e-4, 5.e-3, 1
+  store_data, 'kpara_LASVD'+ma, data={x:kvec_data.x, y:kpara, v:kvec_data.v}
+  options, 'kpara_LASVD'+ma, ytitle='kpara_LASVD', ysubtitle='Frequency [kHz]', spec = 1
+  zlim, 'kpara_LASVD'+ma, 1.e-4, 5.e-3, 1
 
-  stop
+  ; mask
+  get_data, 'erg_pwe_ofa_l2_matrix_Btotal_132', data=data_ref
+
+  get_data, 'kpara_LASVD'+ma, data=data, dlim=dlim, lim=lim
+  data.y[where(data_ref.y LT cut_f)] = 'NaN'
+  store_data, 'kpara_LASVD'+ma+'_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
 
   ; ここはplot_kpara_neで設定した方が良い
   ; ylim, 'k_para', focus_f[0]-0.5, focus_f[-1]+0.5, 0 ; kHz

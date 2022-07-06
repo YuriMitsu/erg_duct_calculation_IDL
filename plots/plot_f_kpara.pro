@@ -1,9 +1,10 @@
-
+; コンパイル 
+; .compile -v '/Users/ampuku/Documents/duct/code/IDL/plots/plot_f_kpara.pro'
 
 ; 入力データは
-;   get_data, 'k_para'+wave_params_+'_mask', data = k_paradata
-;   k_paradata.y[*, where(k_paradata.v lt focus_f[0]-0.1) ] = 'NaN'
-;   k_paradata.y[*, where(k_paradata.v gt focus_f[-1]+0.1) ] = 'NaN'
+;   get_data, 'k_para'+wave_params_+'_mask', data = kpara_data
+;   kpara_data.y[*, where(kpara_data.v lt focus_f[0]-0.1) ] = 'NaN'
+;   kpara_data.y[*, where(kpara_data.v gt focus_f[-1]+0.1) ] = 'NaN'
 ;   focus_f=focus_f, duct_time=duct_time, duct_wid_data_n=duct_wid_data_n, test=test, lsm=lsm
 
 
@@ -12,15 +13,15 @@
 
 pro plot_f_kpara, focus_f=focus_f, duct_time=duct_time, duct_wid_data_n=duct_wid_data_n, test=test, lsm=lsm
 
-  get_data, 'k_para_LASVD_ma3_mask', data = k_paradata
-  k_paradata.y[*, where(k_paradata.v lt focus_f[0]-0.1) ] = 'NaN'
-  k_paradata.y[*, where(k_paradata.v gt focus_f[-1]+0.1) ] = 'NaN'
+  get_data, 'kpara_LASVD_ma3_mask', data = kpara_data
+  kpara_data.y[*, where(kpara_data.v lt focus_f[0]-0.1) ] = 'NaN'
+  kpara_data.y[*, where(kpara_data.v gt focus_f[-1]+0.1) ] = 'NaN'
 
   time_ = time_double(duct_time)
-  time_res =  k_paradata.x[100]- k_paradata.x[99]
-  idx_t = where( k_paradata.x lt time_+time_res/2 and k_paradata.x gt time_-time_res/2, cnt )
+  time_res =  kpara_data.x[100]- kpara_data.x[99]
+  idx_t = where( kpara_data.x lt time_+time_res/2 and kpara_data.x gt time_-time_res/2, cnt )
 
-  k_paradata.y[idx_t[0], *] = mean(k_paradata.y[idx_t[0]-duct_wid_data_n:idx_t[0]+duct_wid_data_n, *], DIMENSION=1, /nan)
+  kpara_data.y[idx_t[0], *] = mean(kpara_data.y[idx_t[0]-duct_wid_data_n:idx_t[0]+duct_wid_data_n, *], DIMENSION=1, /nan)
 
   if idx_t eq -1 then begin
     print, '!!!!Caution!!!! /n Duct time is not selected correctly. Check the code.'
@@ -33,7 +34,7 @@ pro plot_f_kpara, focus_f=focus_f, duct_time=duct_time, duct_wid_data_n=duct_wid
     !p.color = 0
   endif else begin
     SET_PLOT, 'Z'
-    DEVICE, SET_RESOLUTION = [1500,2000]
+    DEVICE, SET_RESOLUTION = [1000,600]
     !p.BACKGROUND = 255
     !p.color = 0
   endelse
@@ -42,17 +43,20 @@ pro plot_f_kpara, focus_f=focus_f, duct_time=duct_time, duct_wid_data_n=duct_wid
 
   ; 最小二乗法でダクト中心でのk_paraを直線に当てはめる
   if not keyword_set(lsm) then begin
-    lsm = least_squares_method(k_paradata.v, k_paradata.y[idx_t[0], *])
+    lsm = least_squares_method(kpara_data.v, kpara_data.y[idx_t[0], *])
   endif
 
   k_para_ = lsm[0] * focus_f + lsm[1]
 
-  plot, [0., 15.], lsm[0] * [0., 15.] + lsm[1], xtitle='f (kHz)', ytitle='k_para (/m)'
+  xmin = max([0., focus_f[0]]-1.5)
+  xmax = focus_f[-1] + 1.5
 
-  oplot, k_paradata.v, k_paradata.y[idx_t[0], *], psym=-4
+  plot, [xmin, xmax], lsm[0] * [xmin, xmax] + lsm[1], xtitle='f (kHz)', ytitle='k_para (/m)'
+
+  oplot, kpara_data.v, kpara_data.y[idx_t[0], *], psym=-4
   tvlct, 255,0,0,1
   oplot, focus_f, k_para_, psym=2, color=1
-  lsm_f = [min(k_paradata.v), max(k_paradata.v)]
+  lsm_f = [min(kpara_data.v), max(kpara_data.v)]
   lsm_k_para = lsm[0] * lsm_f + lsm[1]
   oplot, lsm_f, lsm_k_para, color=1
 

@@ -67,23 +67,11 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   ; 2.2.calc. k_para
   ; *****************
 
-  if test eq 1 then begin
-    SET_PLOT, 'X'
-    !p.BACKGROUND = 255
-    !p.color = 0
-  endif else begin
-    SET_PLOT, 'Z'
-    DEVICE, SET_RESOLUTION = [1500,2000]
-    !p.BACKGROUND = 255
-    !p.color = 0
-  endelse
-
   calc_fce_and_flhr
 
   calc_Ne, UHR_file_name=UHR_file_name
 
-  calc_k_para
-
+  calc_kpara, cut_f=cut_f
 
   ; *****************
   ; 3.plot
@@ -94,9 +82,10 @@ pro plot_kpara_ne, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_
   ; *****************
 
   plot_f_kpara, focus_f=focus_f, duct_time=duct_time, duct_wid_data_n=duct_wid_data_n, test=test ,lsm=lsm
+  stop
 
   ; *****************
-  ; 6.1.calculate Ne(k_perp)
+  ; 3.1.calculate Ne(k_perp)
   ; *****************
   if 0 then begin
     get_data, 'fce', data=fcedata

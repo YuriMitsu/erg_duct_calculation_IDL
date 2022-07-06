@@ -529,8 +529,7 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
   ; 8. musk
   ; ************************************
 
-  ; ここはcalc_wave_paramsに持たせるべき
-  get_data, 'erg_pwe_ofa_l2_matrix_Btotal_132', data=data_ref; *** modified (B_total_132 -> Btotal_132)
+  get_data, 'erg_pwe_ofa_l2_matrix_Btotal_132', data=data_ref
   ; kvec
   get_data, 'kvec_LASVD'+ma, data=data, dlim=dlim, lim=lim
   data.y[where(data_ref.y LT cut_f)] = 'NaN'
@@ -539,11 +538,11 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
   get_data, 'polarization_LASVD'+ma, data=data, dlim=dlim, lim=lim
   data.y[where(data_ref.y LT cut_f)] = 'NaN'
   store_data, 'polarization_LASVD'+ma+'_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
-  ; k_para
-  get_data, 'kpara_LASVD'+ma, data=data, dlim=dlim, lim=lim
+  ; planarity
+  get_data, 'planarity_LASVD'+ma, data=data, dlim=dlim, lim=lim
   data.y[where(data_ref.y LT cut_f)] = 'NaN'
-  store_data, 'kpara_LASVD'+ma+'_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
-  
+  store_data, 'planarity_LASVD'+ma+'_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
+
 
 
 
