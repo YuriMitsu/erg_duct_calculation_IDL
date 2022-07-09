@@ -2,17 +2,22 @@
 ; .compile -v '/Users/ampuku/Documents/duct/code/IDL/plots/plot_Ne_theta.pro'
 
 ; input
-;   tplot 'fce'
-;   ver test, lsm
+;   ver  duct_time, focus_f, test, lsm, data__Ne_theta
 
 ; output
 ;   fig Ne_theta
 
-pro plot_Ne_theta, test=test, lsm=lsm, kperp_range=kperp_range
-
+pro plot_Ne_theta, duct_time=duct_time, focus_f=focus_f, test=test, lsm=lsm, data__Ne_theta=data__Ne_theta
 
     ; ******************************
-    ; 7.plot
+    ; 1.get data
+    ; ******************************
+
+    theta = data__Ne_theta.x
+    Ne_theta = data__Ne_theta.y
+
+    ; ******************************
+    ; 2.set color translation tables
     ; ******************************
 
     tvlct, 255,0,0,1
@@ -26,73 +31,60 @@ pro plot_Ne_theta, test=test, lsm=lsm, kperp_range=kperp_range
     tvlct, 252,15,192,14
     tvlct, 255,0,0,15
 
-
     ; ******************************
-    ; 7.1.plot Ne(kpara)
-    ; ******************************
-
-    plot, kperp, Ne_k_para[*, 0], color=4, yrange=[max([min(Ne_k_para)-5, 0.]), min([max(Ne_k_para)+5, 600.])] $
-    ; plot, kperp, Ne_k_para[*, 0], color=4, yrange=[0, 300] $
-        , xtitle='k_perp [/m]', ytitle='Ne [/cc]'
-    oplot, kperp, Ne_k_para[*, 0], color=10
-    oplot, [kperp[0]], [Ne_k_para[0, 0]], psym=4, color=6
-    ; xyouts, kperp[2], Ne_k_para[0, 0], string(fix(Ne_k_para[0, 0]), format='(i0)'), color=10, CHARSIZE=2
-    xyouts, kperp[2], min([max(Ne_k_para)+5, 600.])-25, string(fix(Ne_k_para[0, 0]), format='(i0)'), color=10, CHARSIZE=2
-    xyouts, kperp[-8], min([max(Ne_k_para)+5, 600.])-25, string(focus_f[0], FORMAT='(f0.1)')+'kHz', color=10, CHARSIZE=2
-    for i = 1, n_elements(focus_f)-1 do begin
-    oplot, kperp, Ne_k_para[*, i], color=i+10
-    oplot, [kperp[0]], [Ne_k_para[0, i]], psym=4, color=6
-    ; xyouts, kperp[2], Ne_k_para[0, i], string(fix(Ne_k_para[0, i]), format='(i0)'), color=i+10, CHARSIZE=2
-    xyouts, kperp[2], min([max(Ne_k_para)+5, 600.])-25-25*i, string(fix(Ne_k_para[0, i]), format='(i0)'), color=i+10, CHARSIZE=2
-    xyouts, kperp[-8], min([max(Ne_k_para)+5, 600.])-25-25*i, string(focus_f[i], FORMAT='(f0.1)')+'kHz', color=i+10, CHARSIZE=2
-    endfor
-
-    xyouts, kperp[-12], max([min(Ne_k_para)-5, 0.])+25, 'fce/2 = '+string(data.y[idx_t]/1000/2, FORMAT='(f0.1)')+'kHz', color=4, CHARSIZE=2
-    fce_loc_string = string(data.y[idx_t]/1000, FORMAT='(f0.1)')
-
-    if test eq 0 then begin
-    makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_Ne_kpara'
-    endif
-
-    print, ' n_0'
-    print, Ne_k_para[0, *]
-    
-    print, ' n_max'
-    for i=0,n_elements(focus_f)-1 do begin
-    print, max(Ne_k_para[*, i])
-    endfor
-
-
-    ; ******************************
-    ; 7.2.plot Ne(theta)
+    ; 3.get plot range
     ; ******************************
 
-    plot, theta, Ne_theta[*, 0], color=4, yrange=[max([min(Ne_k_para)-5, 0.]), min([max(Ne_k_para)+5, 600.])] $
-    ; plot, theta, Ne_theta[*, 0], color=4, yrange=[0, 300] $
-            , xtitle='theta [degree]', ytitle='Ne [/cc]'
+    ; xmin = 
+    ; xmax = 
+    ymin = max([min(Ne_theta)-5, 0.])
+    ymax = min([max(Ne_theta)+5, 600.])
+
+    ; ******************************
+    ; 4.plot Ne(theta)
+    ; ******************************
+
+    if test eq 1 then begin
+        SET_PLOT, 'X'
+        !p.BACKGROUND = 255
+        !p.color = 0
+    endif else begin
+        SET_PLOT, 'Z'
+        DEVICE, SET_RESOLUTION = [1000,600]
+        !p.BACKGROUND = 255
+        !p.color = 0
+    endelse
+
+    !p.multi=0
+
+    plot, theta, Ne_theta[*, 0], color=4, yrange=[ymin, ymax], xtitle='theta [degree]', ytitle='Ne [/cc]'
     oplot, theta, Ne_theta[*, 0], color=10
     oplot, [theta[0]], [Ne_theta[0, 0]], psym=4, color=6
-    xyouts, theta[4], min([max(Ne_k_para)+5, 600.])-25, string(fix(Ne_theta[0, 0]), format='(i0)'), color=10, CHARSIZE=2
-    xyouts, theta[-16], min([max(Ne_k_para)+5, 600.])-25, string(focus_f[0], FORMAT='(f0.1)')+'kHz', color=10, CHARSIZE=2
+    xyouts, theta[4], ymax-25, string(fix(Ne_theta[0, 0]), format='(i0)'), color=10, CHARSIZE=2
+    xyouts, theta[-16], ymax-25, string(focus_f[0], FORMAT='(f0.1)')+'kHz', color=10, CHARSIZE=2
     for i = 1, n_elements(focus_f)-1 do begin
         oplot, theta, Ne_theta[*, i], color=i+10
         oplot, [theta[0]], [Ne_theta[0, i]], psym=4, color=6
-        xyouts, theta[4], min([max(Ne_k_para)+5, 600.])-25-25*i, string(fix(Ne_theta[0, i]), format='(i0)'), color=i+10, CHARSIZE=2
-        xyouts, theta[-16], min([max(Ne_k_para)+5, 600.])-25-25*i, string(focus_f[i], FORMAT='(f0.1)')+'kHz', color=i+10, CHARSIZE=2
+        xyouts, theta[4], ymax-25*(1+i), string(fix(Ne_theta[0, i]), format='(i0)'), color=i+10, CHARSIZE=2
+        xyouts, theta[-16], ymax-25*(1+i), string(focus_f[i], FORMAT='(f0.1)')+'kHz', color=i+10, CHARSIZE=2
     endfor
 
-    xyouts, theta[-24], max([min(Ne_k_para)-5, 0.])+25, 'fce/2 = '+string(data.y[idx_t]/1000/2, FORMAT='(f0.1)')+'kHz', color=4, CHARSIZE=2
+    get_data, 'fce', data=fce_data
+    duct_time_double = time_double(duct_time)
+    time_res =  fce_data.x[100]- fce_data.x[99]
+    idx_t = where( fce_data.x lt duct_time_double+time_res/2 and fce_data.x gt duct_time_double-time_res/2, cnt )
 
+    xyouts, theta[-24], ymin+25, 'fce/2 = '+string(fce_data.y[idx_t]/2, FORMAT='(f0.1)')+'kHz', color=4, CHARSIZE=2
+
+
+    ; ******************************
+    ; 5.save fig
+    ; ******************************
+
+    ret = strsplit(duct_time, '-/:', /extract)
     if test eq 0 then begin
         makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_Ne_theta'
     endif
 
-    print, ' n_0'
-    print, Ne_theta[0, *]
-
-    print, ' n_max'
-    for i=0,n_elements(focus_f)-1 do begin
-        print, max(Ne_theta[*, i])
-    endfor
 
 end

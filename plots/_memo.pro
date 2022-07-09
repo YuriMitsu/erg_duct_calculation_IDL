@@ -5,14 +5,36 @@ timespan, '2017-07-14/02:40:00', 20, /minute
 .compile -v '/Users/ampuku/Documents/duct/code/IDL/calcs/calc_fce_and_flhr.pro'
 .compile -v '/Users/ampuku/Documents/duct/code/IDL/calcs/calc_Ne.pro'
 .compile -v '/Users/ampuku/Documents/duct/code/IDL/calcs/calc_kpara.pro'
+.compile -v '/Users/ampuku/Documents/duct/code/IDL/calcs/calc__f_kpara.pro'
 .compile -v '/Users/ampuku/Documents/duct/code/IDL/plots/plot_f_kpara.pro'
-.compile -v '/Users/ampuku/Documents/duct/code/IDL/plots/plot_Ne_kpara.pro'
+.compile -v '/Users/ampuku/Documents/duct/code/IDL/calcs/calc__Ne_kperp.pro'
+.compile -v '/Users/ampuku/Documents/duct/code/IDL/plots/plot_Ne_kperp.pro'
+.compile -v '/Users/ampuku/Documents/duct/code/IDL/calcs/calc__Ne_theta.pro'
 .compile -v '/Users/ampuku/Documents/duct/code/IDL/plots/plot_Ne_theta.pro'
+.compile -v '/Users/ampuku/Documents/duct/code/IDL/plots/plot_UT_B.pro'
+.compile -v '/Users/ampuku/Documents/duct/code/IDL/plots/plot_f_theta.pro'
 .compile -v '/Users/ampuku/Documents/duct/code/IDL/for_event_analysis/event_analysis_duct.pro'
 event_analysis_duct, duct_time='2017-07-14/02:51:50', focus_f=[2., 3., 4., 5.], UHR_file_name='kuma', duct_wid_data_n=6, IorD='D' ; D
 
 
 
+
+  .RESET_SESSION
+  timespan, '2017-07-14/02:40:00', 20, /minute
+  duct_time='2017-07-14/02:51:50'& focus_f=[2., 3., 4., 5.]& UHR_file_name='kuma'& duct_wid_data_n=6& IorD='D'& k_perp_range = 40&cut_f = 1E-2 &test=0
+  uname = 'erg_project'&pass = 'geospace'
+  erg_load_mgf, datatype='8sec', uname=uname, pass=pass
+  erg_load_mgf, datatype='64hz', coord='sgi', uname=uname, pass=pass
+  erg_load_pwe_hfa, level='l2', mode=['l','h'], uname=uname, pass=pass
+  erg_load_pwe_ofa, datatype='matrix', uname=uname, pass=pass
+  pr_matrix = 'erg_pwe_ofa_l2_matrix_' 
+  calc_wave_params, cut_f=cut_f
+  wave_params_ = '_LASVD_ma3'
+  calc_fce_and_flhr
+  calc_Ne, UHR_file_name=UHR_file_name
+  calc_kpara, cut_f=cut_f
+  calc__f_kpara, focus_f=focus_f, duct_time=duct_time, duct_wid_data_n=duct_wid_data_n, lsm=lsm, data__f_kpara=data__f_kpara
+  calc__Ne_kperp, duct_time=duct_time, focus_f=focus_f, test=test, lsm=lsm, k_perp_range=k_perp_range, data__Ne_kperp=data__Ne_kperp
 
 
 
