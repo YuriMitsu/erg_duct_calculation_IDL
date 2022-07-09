@@ -1,5 +1,5 @@
 ; コンパイル 
-; .compile -v '/Users/ampuku/Documents/duct/code/IDL/plots/plot_UT_B.pro'
+; .compile -v '/Users/ampuku/Documents/duct/code/IDL/calcs/calc__UT_B.pro'
 
 ; input
 ;   tplot 'erg_pwe_ofa_l2_spec_B_spectra_132', 'Ne'
@@ -9,8 +9,7 @@
 ;   fig UT_B
 
 
-pro plot_UT_B, duct_time=duct_time, focus_f=focus_f, duct_wid_data_n=duct_wid_data_n
-; duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_name, lsm=lsm, k_para_=k_para_, cut_f=cut_f, k_perp_range=k_perp_range, duct_wid_data_n=duct_wid_data_n, IorD=IorD
+pro calc__UT_B, duct_time=duct_time, focus_f=focus_f, duct_wid_data_n=duct_wid_data_n
 
   ; ******************************
   ; 1.get data
@@ -71,32 +70,8 @@ pro plot_UT_B, duct_time=duct_time, focus_f=focus_f, duct_wid_data_n=duct_wid_da
     ; tplot_apply_databar
 ;    options, N0_names[i], 'databar', {yval:N0_obs[i], linestyle:1, color:i+10, thick:2}
 ;    tplot_apply_databar
-    
-  endfor
-  
-  time_stamp, /off
-  tplot, UT_B_names
-  tplot, N0_names, /oplot
-  tplot_apply_databar
 
-  timebar, duct_time
-  
-  if test eq 0 then begin
-    makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_UT_B'
-  endif
 
-;  store_data, 'UT_B_f3', data={x:Bspec_data.x, y:Bspec_data.y[*,idx_f[0]]}
-;  ylim, 'UT_B_f3', 0.0, 0.01, 0
-;  options, 'UT_B_f3', 'ystyle', 9
-;
-;  options, 'N0_f', 'databar', {yval:Ne_k_para[0,0], linestyle:2, color:i, thick:2}
-;  options, 'N0_f', 'databar', {yval:N0_obe[0], linestyle:1, color:i, thick:2}
-;
-;  ylim, 'N0_f', 0.0, 160.0, 0
-;  options, 'N0_f', axis={yaxis:1, yrange:[0., 160.], ystyle:1, color:6}, ystyle=5
-;  options, 'N0_f', colors=6
-; 
-;  tplot, 'UT_B_f3'
-;  tplot, 'N0_f', /oplot
-;  tplot_apply_databar
+
+
 end
