@@ -1,7 +1,6 @@
 
 ; コンパイル 
 ; .compile -v '/Users/ampuku/Documents/duct/code/IDL/for_event_analysis/event_analysis_duct.pro'
-; .compile -v '/Users/ampuku/Documents/duct/code/IDL/calcs/calc_ave_WNA.pro'
 
 ; duct中心の時刻がduct_time
 ; このproとcalc_ave_WNAは未完成！！
