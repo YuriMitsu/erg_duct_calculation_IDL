@@ -3,11 +3,10 @@
 
 ; input
 ;   tplot 'kpara_LASVD_ma3_mask'
-;   ver focus_f, duct_time, duct_wid_data_n, test, lsm
+;   ver focus_f, duct_time, duct_wid_data_n, test
 
 ; output
-;   fig f_kpara
-;   ver lsm
+;   ver lsm, kpara_data_idx_t
 
 
 function least_squares_method,x,y
@@ -20,7 +19,7 @@ function least_squares_method,x,y
 end
 
 
-pro calc__f_kpara, focus_f=focus_f, duct_time=duct_time, duct_wid_data_n=duct_wid_data_n, lsm=lsm, 
+pro calc__f_kpara, focus_f=focus_f, duct_time=duct_time, duct_wid_data_n=duct_wid_data_n, lsm=lsm, data__f_kpara=data__f_kpara
 
     ; ******************************
     ; 1.get data
@@ -52,5 +51,6 @@ pro calc__f_kpara, focus_f=focus_f, duct_time=duct_time, duct_wid_data_n=duct_wi
         lsm = least_squares_method(kpara_data.v, kpara_data_idx_t)
     endif
 
+    data__f_kpara = kpara_data_idx_t
 
 end

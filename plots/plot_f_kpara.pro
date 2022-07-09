@@ -3,7 +3,7 @@
 
 ; input
 ;   tplot 'kpara_LASVD_ma3_mask'
-;   ver focus_f, duct_time, duct_wid_data_n, test, lsm
+;   ver focus_f, duct_time, duct_wid_data_n, test, lsm, kpara_data_idx_t
 
 
 ; output
@@ -11,8 +11,7 @@
 ;   ver lsm
 
 
-pro plot_f_kpara, focus_f=focus_f, duct_time=duct_time, duct_wid_data_n=duct_wid_data_n, test=test, lsm=lsm
-
+pro plot_f_kpara, focus_f=focus_f, duct_time=duct_time, duct_wid_data_n=duct_wid_data_n, test=test, lsm=lsm, data__f_kpara=data__f_kpara
 
   ; ******************************
   ; 3.make fig
@@ -46,7 +45,7 @@ pro plot_f_kpara, focus_f=focus_f, duct_time=duct_time, duct_wid_data_n=duct_wid
 
   plot, [xmin, xmax], lsm[0] * [xmin, xmax] + lsm[1], xtitle='f (kHz)', ytitle='k_para (/m)'
 
-  oplot, kpara_data.v, kpara_data.y[idx_t[0], *], psym=-4
+  oplot, kpara_data.v, data__f_kpara, psym=-4
   tvlct, 255,0,0,1
   oplot, focus_f, kpara_linear, psym=2, color=1
   lsm_f = [min(kpara_data.v), max(kpara_data.v)]
