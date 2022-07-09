@@ -6,7 +6,10 @@ timespan, '2017-07-14/02:40:00', 20, /minute
 .compile -v '/Users/ampuku/Documents/duct/code/IDL/calcs/calc_Ne.pro'
 .compile -v '/Users/ampuku/Documents/duct/code/IDL/calcs/calc_kpara.pro'
 .compile -v '/Users/ampuku/Documents/duct/code/IDL/plots/plot_f_kpara.pro'
-plot_kpara_ne, duct_time='2017-07-14/02:51:50', focus_f=[2., 3., 4., 5.], UHR_file_name='kuma', duct_wid_data_n=6, IorD='D' ; D
+.compile -v '/Users/ampuku/Documents/duct/code/IDL/plots/plot_Ne_kpara.pro'
+.compile -v '/Users/ampuku/Documents/duct/code/IDL/plots/plot_Ne_theta.pro'
+.compile -v '/Users/ampuku/Documents/duct/code/IDL/for_event_analysis/event_analysis_duct.pro'
+event_analysis_duct, duct_time='2017-07-14/02:51:50', focus_f=[2., 3., 4., 5.], UHR_file_name='kuma', duct_wid_data_n=6, IorD='D' ; D
 
 
 
@@ -19,22 +22,22 @@ plot_kpara_ne, duct_time='2017-07-14/02:51:50', focus_f=[2., 3., 4., 5.], UHR_fi
 
 
 ;
-  ; *****************
+  ; ******************************
   ; 2.calc.
-  ; *****************
+  ; ******************************
   ; 1. load data で読み込んだデータを使って各物理量を計算する
   ; 計算した値は全てtplot変数にして記録する
 
-  ; *****************
+  ; ******************************
   ; 2.calc. wave palams
-  ; *****************
+  ; ******************************
 
   calc_wave_params
   wave_params_ = '_LASVD_ma3'
   
-  ; *****************
+  ; ******************************
   ; 3.calc. k_para
-  ; *****************
+  ; ******************************
 
   if test eq 1 then begin
     SET_PLOT, 'X'
@@ -105,9 +108,9 @@ plot_kpara_ne, duct_time='2017-07-14/02:51:50', focus_f=[2., 3., 4., 5.], UHR_fi
   zlim, 'k_para'+wave_params_, 1.e-4, 5.e-3, 1 ;適宜ここ決める！
 
 
-  ; *****************
+  ; ******************************
   ; 4.mask
-  ; *****************
+  ; ******************************
 
   get_data, pr_matrix + 'Btotal_132', data=data_ref; *** modified (B_total_132 -> Btotal_132)
   ; kvec
