@@ -55,8 +55,7 @@ pro plot_UT_B, duct_time=duct_time, focus_f=focus_f, duct_wid_data_n=duct_wid_da
     options, UT_B_names[i], 'ytitle', 'f' + string(focus_f[i], FORMAT='(f0.1)') + '!COFA B [nT]'
     
     store_data, N0_names[i], data={x:Ne_data.x, y:Ne_data.y}
-;    options, N0_names[i], 'databar', {yval:Ne_thetaG[i], linestyle:2, color:i+10, thick:2}
-;    options, N0_names[i], 'databar', {yval:N0_obs[i], linestyle:1, color:i+10, thick:2}
+
     
     idx_duct_t = ( where( Ne_data.x lt time_double(duct_time)+5. and Ne_data.x gt time_double(duct_time)-5., cnt ) )[0]
     Ne_max =  max( [FLOAT(Ne_data.y[idx_duct_t]+20.), Ne_thetaG[0], Ne_thetaG[-1]] )
@@ -68,13 +67,8 @@ pro plot_UT_B, duct_time=duct_time, focus_f=focus_f, duct_wid_data_n=duct_wid_da
     options, N0_names[i], axis={yaxis:1, yrange:[Ne_min, Ne_max], ystyle:1, color:6}, ystyle=5
     options, N0_names[i], colors=6
     
-    
-    ; tplot, UT_B_names[i]
-    ; tplot, N0_names[i], /oplot
     options, N0_names[i], 'databar', {yval:Ne_thetaG[i], linestyle:2, color:i+10, thick:2}
-    ; tplot_apply_databar
-;    options, N0_names[i], 'databar', {yval:N0_obs[i], linestyle:1, color:i+10, thick:2}
-;    tplot_apply_databar
+
     
   endfor
 
@@ -100,21 +94,8 @@ pro plot_UT_B, duct_time=duct_time, focus_f=focus_f, duct_wid_data_n=duct_wid_da
 
   ret = strsplit(duct_time, '-/:', /extract)
   if test eq 0 then begin
-    makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_UT_B'
+    makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_UT_B', /mkdir
   endif
 
-;  store_data, 'UT_B_f3', data={x:Bspec_data.x, y:Bspec_data.y[*,idx_f[0]]}
-;  ylim, 'UT_B_f3', 0.0, 0.01, 0
-;  options, 'UT_B_f3', 'ystyle', 9
-;
-;  options, 'N0_f', 'databar', {yval:Ne_thetaG[0], linestyle:2, color:i, thick:2}
-;  options, 'N0_f', 'databar', {yval:N0_obe[0], linestyle:1, color:i, thick:2}
-;
-;  ylim, 'N0_f', 0.0, 160.0, 0
-;  options, 'N0_f', axis={yaxis:1, yrange:[0., 160.], ystyle:1, color:6}, ystyle=5
-;  options, 'N0_f', colors=6
-; 
-;  tplot, 'UT_B_f3'
-;  tplot, 'N0_f', /oplot
-;  tplot_apply_databar
+
 end

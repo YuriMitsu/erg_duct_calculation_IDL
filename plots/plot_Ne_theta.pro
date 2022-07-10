@@ -83,7 +83,7 @@ pro plot_Ne_theta, duct_time=duct_time, focus_f=focus_f, test=test, lsm=lsm, dat
 
     ret = strsplit(duct_time, '-/:', /extract)
     if test eq 0 then begin
-        makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_Ne_theta'
+        makepng, '/Users/ampuku/Documents/duct/fig/event_plots/'+ret[0]+ret[1]+ret[2]+'/'+ret[3]+ret[4]+ret[5]+'_Ne_theta', /mkdir
     endif
 
 
