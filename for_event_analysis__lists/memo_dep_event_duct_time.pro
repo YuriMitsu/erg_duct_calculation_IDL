@@ -6,9 +6,9 @@
 
 pro memo_dep_event_duct_time
 
-    timespan, '2018-06-06/11:25:00', 20.0, /minute 
+    ; timespan, '2018-06-06/11:25:00', 20.0, /minute 
     ;plot_event_normal, UHR_file_name='/Users/ampuku/Documents/duct/code/IDL/UHR_tplots/f_UHR_2018-06-06/112500.tplot'
-    event_analysis_duct, duct_time='2018-06-06/11:41:33', focus_f=[2., 3., 4., 5., 6.], UHR_file_name='/Users/ampuku/Documents/duct/code/IDL/UHR_tplots/f_UHR_2018-06-06/112500.tplot', duct_wid_data_n=7.0, IorD='D'', lsm=[0.00037287, 0.000200686]
+    ; event_analysis_duct, duct_time='2018-06-06/11:41:33', focus_f=[2., 3., 4., 5., 6.], UHR_file_name='/Users/ampuku/Documents/duct/code/IDL/UHR_tplots/f_UHR_2018-06-06/112500.tplot', duct_wid_data_n=7.0, IorD='D'', lsm=[0.00037287, 0.000200686]
 
     timespan, '2017-04-12/22:15:00', 20.0, /minute 
     ;plot_event_normal, UHR_file_name='kuma'

@@ -13,7 +13,7 @@ pro event_analysis_duct, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR
 
   if not keyword_set(duct_time) then duct_time = '2018-06-02/10:05:56'
   if not keyword_set(focus_f) then focus_f = [3., 4., 5., 6., 7.] ;Hz
-  if not keyword_set(UHR_file_name) then UHR_file_name = 'UHR_tplots/f_UHR_2018-06-02/100000-102000.tplot' ;Hz
+  if not keyword_set(UHR_file_name) then UHR_file_name = 'kuma' ;Hz
   if not keyword_set(cut_f) then cut_f = 1E-2 ;nT
   if not keyword_set(k_perp_range) then k_perp_range = 40 ;nT
 

@@ -1,9 +1,12 @@
 
 pro test_20220711
 
+    if not keyword_set(cut_f) then cut_f = 1E-2 ;nT
+    if not keyword_set(UHR_file_name) then UHR_file_name = 'kuma'
     ; ******************************
     ; 1.load data
     ; ******************************
+
 
     uname = 'erg_project'
     pass = 'geospace'
@@ -32,6 +35,19 @@ pro test_20220711
     ; ******************************
 
     calc_wave_params, cut_f=cut_f
+
+    calc_fce_and_flhr
+
+    calc_Ne, UHR_file_name=UHR_file_name
+
+    calc_kpara, cut_f=cut_f
+
+    set_plot, 'X'
+    window, 0, xsize=1000, ysize=600
+    !p.background = 255
+    !p.color = 0
+
+    tplot, 'kpara_LASVD_ma3_mask'
 
         t = timerange(/current) 
         ret = strsplit(time_string(t[0]), '-/:', /extract)
