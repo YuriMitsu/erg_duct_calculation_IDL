@@ -9,7 +9,8 @@
 
 pro plot_event_normal, UHR_file_name=UHR_file_name, desplay_on=desplay_on
 
-    if not keyword_set(desplay_on) then desplay_on = 1
+    if not keyword_set(UHR_file_name) then UHR_file_name = 'kuma'
+    if not keyword_set(desplay_on) then desplay_on = 0
 
     ; *****************
     ; plot event for meeting
@@ -76,9 +77,9 @@ pro plot_event_normal, UHR_file_name=UHR_file_name, desplay_on=desplay_on
     store_data, 'kvec_algebraicSVD_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
 
     ; Poynting vector
-    ; get_data, 'S', data=data, dlim=dlim, lim=lim
-    ; data.y[where(data_ref.y LT cut_f)] = 'NaN'
-    ; store_data, 'S_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
+    get_data, 'S', data=data, dlim=dlim, lim=lim
+    data.y[where(data_ref.y LT cut_f)] = 'NaN'
+    store_data, 'S_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
 
 
     ; ************************************
