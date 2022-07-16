@@ -1,13 +1,14 @@
 
 ; .compile -v '/Users/ampuku/Documents/duct/code/IDL/for_event_search/one_day_plot.pro'
 ; 2018/10/13以降は磁場の成分がなくなっている
+; 2017-04~07, 12~2018-07
 
 pro one_day_plot
 
 
-  ; *****************
-  ; 2017-04
-  ; *****************
+  ; ; *****************
+  ; ; 2017-04
+  ; ; *****************
 
   ; timespan, '2017-04-01'
   ; day_plot
@@ -389,7 +390,391 @@ pro one_day_plot
 
   ; timespan, '2017-07-31'
   ; day_plot
-  
+
+  ; *****************
+  ; 2017-12
+  ; *****************
+
+
+  timespan, '2017-12-01'
+  day_plot
+
+  timespan, '2017-12-02'
+  day_plot
+
+  timespan, '2017-12-03'
+  day_plot
+
+  timespan, '2017-12-04'
+  day_plot
+
+  timespan, '2017-12-05'
+  day_plot
+
+  timespan, '2017-12-06'
+  day_plot
+
+  timespan, '2017-12-07'
+  day_plot
+
+  timespan, '2017-12-08'
+  day_plot
+
+  timespan, '2017-12-09'
+  day_plot
+
+  timespan, '2017-12-10'
+  day_plot
+
+  timespan, '2017-12-11'
+  day_plot
+
+  timespan, '2017-12-12'
+  day_plot
+
+  timespan, '2017-12-13'
+  day_plot
+
+  timespan, '2017-12-14'
+  day_plot
+
+  timespan, '2017-12-15'
+  day_plot
+
+  timespan, '2017-12-16'
+  day_plot
+
+  timespan, '2017-12-17'
+  day_plot
+
+  timespan, '2017-12-18'
+  day_plot
+
+  timespan, '2017-12-19'
+  day_plot
+
+  timespan, '2017-12-20'
+  day_plot
+
+  timespan, '2017-12-21'
+  day_plot
+
+  timespan, '2017-12-22'
+  day_plot
+
+  timespan, '2017-12-23'
+  day_plot
+
+  timespan, '2017-12-24'
+  day_plot
+
+  timespan, '2017-12-25'
+  day_plot
+
+  timespan, '2017-12-26'
+  day_plot
+
+  timespan, '2017-12-27'
+  day_plot
+
+  timespan, '2017-12-28'
+  day_plot
+
+  timespan, '2017-12-29'
+  day_plot
+
+  timespan, '2017-12-30'
+  day_plot
+
+  timespan, '2017-12-31'
+  day_plot
+
+
+  ; *****************
+  ; 2018-01
+  ; *****************
+
+  timespan, '2018-01-01'
+  day_plot
+
+  timespan, '2018-01-02'
+  day_plot
+
+  timespan, '2018-01-03'
+  day_plot
+
+  timespan, '2018-01-04'
+  day_plot
+
+  timespan, '2018-01-05'
+  day_plot
+
+  timespan, '2018-01-06'
+  day_plot
+
+  timespan, '2018-01-07'
+  day_plot
+
+  timespan, '2018-01-08'
+  day_plot
+
+  timespan, '2018-01-09'
+  day_plot
+
+  timespan, '2018-01-10'
+  day_plot
+
+  timespan, '2018-01-11'
+  day_plot
+
+  timespan, '2018-01-12'
+  day_plot
+
+  timespan, '2018-01-13'
+  day_plot
+
+  timespan, '2018-01-14'
+  day_plot
+
+  timespan, '2018-01-15'
+  day_plot
+
+  timespan, '2018-01-16'
+  day_plot
+
+  timespan, '2018-01-17'
+  day_plot
+
+  timespan, '2018-01-18'
+  day_plot
+
+  timespan, '2018-01-19'
+  day_plot
+
+  timespan, '2018-01-20'
+  day_plot
+
+  timespan, '2018-01-21'
+  day_plot
+
+  timespan, '2018-01-22'
+  day_plot
+
+  timespan, '2018-01-23'
+  day_plot
+
+  timespan, '2018-01-24'
+  day_plot
+
+  timespan, '2018-01-25'
+  day_plot
+
+  timespan, '2018-01-26'
+  day_plot
+
+  timespan, '2018-01-27'
+  day_plot
+
+  timespan, '2018-01-28'
+  day_plot
+
+  timespan, '2018-01-29'
+  day_plot
+
+  timespan, '2018-01-30'
+  day_plot
+
+  timespan, '2018-01-31'
+  day_plot
+
+
+  ; *****************
+  ; 2018-05
+  ; *****************
+
+  timespan, '2018-02-01'
+  day_plot
+
+  timespan, '2018-02-02'
+  day_plot
+
+  timespan, '2018-02-03'
+  day_plot
+
+  timespan, '2018-02-04'
+  day_plot
+
+  timespan, '2018-02-05'
+  day_plot
+
+  timespan, '2018-02-06'
+  day_plot
+
+  timespan, '2018-02-07'
+  day_plot
+
+  timespan, '2018-02-08'
+  day_plot
+
+  timespan, '2018-02-09'
+  day_plot
+
+  timespan, '2018-02-10'
+  day_plot
+
+  timespan, '2018-02-11'
+  day_plot
+
+  timespan, '2018-02-12'
+  day_plot
+
+  timespan, '2018-02-13'
+  day_plot
+
+  timespan, '2018-02-14'
+  day_plot
+
+  timespan, '2018-02-15'
+  day_plot
+
+  timespan, '2018-02-16'
+  day_plot
+
+  timespan, '2018-02-17'
+  day_plot
+
+  timespan, '2018-02-18'
+  day_plot
+
+  timespan, '2018-02-19'
+  day_plot
+
+  timespan, '2018-02-20'
+  day_plot
+
+  timespan, '2018-02-21'
+  day_plot
+
+  timespan, '2018-02-22'
+  day_plot
+
+  timespan, '2018-02-23'
+  day_plot
+
+  timespan, '2018-02-24'
+  day_plot
+
+  timespan, '2018-02-25'
+  day_plot
+
+  timespan, '2018-02-26'
+  day_plot
+
+  timespan, '2018-02-27'
+  day_plot
+
+  timespan, '2018-02-28'
+  day_plot
+
+
+
+  ; *****************
+  ; 2018-03
+  ; *****************
+
+  timespan, '2018-03-01'
+  day_plot
+
+  timespan, '2018-03-02'
+  day_plot
+
+  timespan, '2018-03-03'
+  day_plot
+
+  timespan, '2018-03-04'
+  day_plot
+
+  timespan, '2018-03-05'
+  day_plot
+
+  timespan, '2018-03-06'
+  day_plot
+
+  timespan, '2018-03-07'
+  day_plot
+
+  timespan, '2018-03-08'
+  day_plot
+
+  timespan, '2018-03-09'
+  day_plot
+
+  timespan, '2018-03-10'
+  day_plot
+
+  timespan, '2018-03-11'
+  day_plot
+
+  timespan, '2018-03-12'
+  day_plot
+
+  timespan, '2018-03-13'
+  day_plot
+
+  timespan, '2018-03-14'
+  day_plot
+
+  timespan, '2018-03-15'
+  day_plot
+
+  timespan, '2018-03-16'
+  day_plot
+
+  timespan, '2018-03-17'
+  day_plot
+
+  timespan, '2018-03-18'
+  day_plot
+
+  timespan, '2018-03-19'
+  day_plot
+
+  timespan, '2018-03-20'
+  day_plot
+
+  timespan, '2018-03-21'
+  day_plot
+
+  timespan, '2018-03-22'
+  day_plot
+
+  timespan, '2018-03-23'
+  day_plot
+
+  timespan, '2018-03-24'
+  day_plot
+
+  timespan, '2018-03-25'
+  day_plot
+
+  timespan, '2018-03-26'
+  day_plot
+
+  timespan, '2018-03-27'
+  day_plot
+
+  timespan, '2018-03-28'
+  day_plot
+
+  timespan, '2018-03-29'
+  day_plot
+
+  timespan, '2018-03-30'
+  day_plot
+
+  timespan, '2018-03-31'
+  day_plot
+
 
 
   ; ; *****************
@@ -587,9 +972,9 @@ pro one_day_plot
   ; day_plot
 
 
-  ; *****************
-  ; 2018-06
-  ; *****************
+  ; ; *****************
+  ; ; 2018-06
+  ; ; *****************
 
   ; timespan, '2018-06-01'
   ; day_plot
@@ -733,152 +1118,162 @@ pro one_day_plot
   ; timespan, '2018-07-16'
   ; day_plot
 
-  timespan, '2018-07-17'
-  day_plot
+  ; timespan, '2018-07-17'
+  ; day_plot
 
-  timespan, '2018-07-18'
-  day_plot
+  ; timespan, '2018-07-18'
+  ; day_plot
 
-  timespan, '2018-07-19'
-  day_plot
+  ; timespan, '2018-07-19'
+  ; day_plot
 
-  timespan, '2018-07-20'
-  day_plot
+  ; timespan, '2018-07-20'
+  ; day_plot
 
-  timespan, '2018-07-21'
-  day_plot
+  ; timespan, '2018-07-21'
+  ; day_plot
 
-  timespan, '2018-07-22'
-  day_plot
+  ; timespan, '2018-07-22'
+  ; day_plot
 
-  timespan, '2018-07-23'
-  day_plot
+  ; timespan, '2018-07-23'
+  ; day_plot
 
-  timespan, '2018-07-24'
-  day_plot
+  ; timespan, '2018-07-24'
+  ; day_plot
 
-  timespan, '2018-07-25'
-  day_plot
+  ; timespan, '2018-07-25'
+  ; day_plot
 
-  timespan, '2018-07-26'
-  day_plot
+  ; timespan, '2018-07-26'
+  ; day_plot
 
-  timespan, '2018-07-27'
-  day_plot
+  ; timespan, '2018-07-27'
+  ; day_plot
 
-  timespan, '2018-07-28'
-  day_plot
+  ; timespan, '2018-07-28'
+  ; day_plot
 
-  timespan, '2018-07-29'
-  day_plot
+  ; timespan, '2018-07-29'
+  ; day_plot
 
-  timespan, '2018-07-30'
-  day_plot
+  ; timespan, '2018-07-30'
+  ; day_plot
 
-  timespan, '2018-07-31'
-  day_plot
-  
-    
-  ; *****************
-  ; 2018-08
-  ; *****************
-  
-
-  timespan, '2018-08-01'
-  day_plot
-
-  timespan, '2018-08-02'
-  day_plot
-
-  timespan, '2018-08-03'
-  day_plot
-
-  timespan, '2018-08-04'
-  day_plot
-
-  timespan, '2018-08-05'
-  day_plot
-
-  timespan, '2018-08-06'
-  day_plot
-
-  timespan, '2018-08-07'
-  day_plot
-
-  timespan, '2018-08-08'
-  day_plot
-
-  timespan, '2018-08-09'
-  day_plot
-
-  timespan, '2018-08-10'
-  day_plot
-
-  timespan, '2018-08-11'
-  day_plot
-
-  timespan, '2018-08-12'
-  day_plot
-
-  timespan, '2018-08-13'
-  day_plot
-
-  timespan, '2018-08-14'
-  day_plot
-
-  timespan, '2018-08-15'
-  day_plot
-
-  timespan, '2018-08-16'
-  day_plot
-
-  timespan, '2018-08-17'
-  day_plot
-
-  timespan, '2018-08-18'
-  day_plot
-
-  timespan, '2018-08-19'
-  day_plot
-
-  timespan, '2018-08-20'
-  day_plot
-
-  timespan, '2018-08-21'
-  day_plot
-
-  timespan, '2018-08-22'
-  day_plot
-
-  timespan, '2018-08-23'
-  day_plot
-
-  timespan, '2018-08-24'
-  day_plot
-
-  timespan, '2018-08-25'
-  day_plot
-
-  timespan, '2018-08-26'
-  day_plot
-
-  timespan, '2018-08-27'
-  day_plot
-
-  timespan, '2018-08-28'
-  day_plot
-
-  timespan, '2018-08-29'
-  day_plot
-
-  timespan, '2018-08-30'
-  day_plot
-
-  timespan, '2018-08-31'
-  day_plot
+  ; timespan, '2018-07-31'
+  ; day_plot
   
   
-  print, '!!DONE!!'
+  ; ; *****************
+  ; ; 2018-08
+  ; ; *****************
+  
+
+  ; timespan, '2018-08-01'
+  ; day_plot
+
+  ; timespan, '2018-08-02'
+  ; day_plot
+
+  ; timespan, '2018-08-03'
+  ; day_plot
+
+  ; timespan, '2018-08-04'
+  ; day_plot
+
+  ; timespan, '2018-08-05'
+  ; day_plot
+
+  ; timespan, '2018-08-06'
+  ; day_plot
+
+  ; timespan, '2018-08-07'
+  ; day_plot
+
+  ; timespan, '2018-08-08'
+  ; day_plot
+
+  ; timespan, '2018-08-09'
+  ; day_plot
+
+  ; timespan, '2018-08-10'
+  ; day_plot
+
+  ; timespan, '2018-08-11'
+  ; day_plot
+
+  ; timespan, '2018-08-12'
+  ; day_plot
+
+  ; timespan, '2018-08-13'
+  ; day_plot
+
+  ; timespan, '2018-08-14'
+  ; day_plot
+
+  ; timespan, '2018-08-15'
+  ; day_plot
+
+  ; timespan, '2018-08-16'
+  ; day_plot
+
+  ; timespan, '2018-08-17'
+  ; day_plot
+
+  ; timespan, '2018-08-18'
+  ; day_plot
+
+  ; timespan, '2018-08-19'
+  ; day_plot
+
+  ; timespan, '2018-08-20'
+  ; day_plot
+
+  ; timespan, '2018-08-21'
+  ; day_plot
+
+  ; timespan, '2018-08-22'
+  ; day_plot
+
+  ; timespan, '2018-08-23'
+  ; day_plot
+
+  ; timespan, '2018-08-24'
+  ; day_plot
+
+  ; timespan, '2018-08-25'
+  ; day_plot
+
+  ; timespan, '2018-08-26'
+  ; day_plot
+
+  ; timespan, '2018-08-27'
+  ; day_plot
+
+  ; timespan, '2018-08-28'
+  ; day_plot
+
+  ; timespan, '2018-08-29'
+  ; day_plot
+
+  ; timespan, '2018-08-30'
+  ; day_plot
+
+  ; timespan, '2018-08-31'
+  ; day_plot
+  
+  
+  print, ''
+  print, ''
+  print, '************************************************************'
+  print, ''
+  print, ''
+  print, '                 !!! one day plot DONE !!!'
+  print, ''
+  print, ''
+  print, '************************************************************'
+  print, ''
+  print, ''
 
 
 

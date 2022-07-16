@@ -96,3 +96,21 @@ window, 0, xsize=380, ysize=250
   oplot, obs_f/f_ce_ave_, gendrin_angle, color=6
   oplot, f_kvec__/f_ce_ave_, kvec__, psym=4
   oplot, [duct_equatorial_fce/f_ce_ave_, duct_equatorial_fce/f_ce_ave_], [min(gendrin_angle)-20.,max(gendrin_angle)+20.], linestyle=2
+
+
+20220717 すぐ消すやつ 
+　まず今のイベントの中から磁場強度の強いものを探す
+.compile -v '/Users/ampuku/Documents/duct/code/IDL/for_event_analysis__lists/memo_dep_event_duct_time.pro'
+memo_dep_event_duct_time
+なんでかうまくいかない日がある..
+ここまで済み
+
+　plotが終わったら、今までplotしてなかった期間のday_plotを作成する
+
+ dayplotがうまくいくかテスト
+ .compile -v '/Users/ampuku/Documents/duct/code/IDL/for_event_search/day_plot.pro'
+   timespan, '2017-12-01'
+  day_plot
+
+　まず今まで見てなかった17/12-18/03を見てみる
+.compile -v '/Users/ampuku/Documents/duct/code/IDL/for_event_search/one_day_plot.pro'
