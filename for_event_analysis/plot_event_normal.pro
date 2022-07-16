@@ -106,6 +106,8 @@ pro plot_event_normal, UHR_file_name=UHR_file_name, desplay_on=desplay_on
 
     calc_equatorial_fce
 
+    calc_EBrate
+
     ; ************************************
     ; 17-2.overplot fce.etc
     ; ************************************
@@ -129,8 +131,8 @@ pro plot_event_normal, UHR_file_name=UHR_file_name, desplay_on=desplay_on
 
     ylim, '*_gyro', 0.1, 20, 1 ; kHz
 
-    zlim, pr_matrix + 'Etotal_132_gyro', 1e-10, 1, 1
-    zlim, pr_matrix + 'Btotal_132_gyro', 1E-2, 1E2, 1 ; pT^2/Hz
+    zlim, pr_matrix + 'Etotal_132_gyro', 1E-9, 1E-1, 1
+    zlim, pr_matrix + 'Btotal_132_gyro', 1E-4, 1E2, 1 ; pT^2/Hz
 
     options, pr_matrix + 'Etotal_132_gyro', $
         ytitle='OFA E total', ysubtitle='Frequency!C[kHz]', ztitle='[mV!U2!N/m!U2!N/Hz]'
@@ -140,7 +142,7 @@ pro plot_event_normal, UHR_file_name=UHR_file_name, desplay_on=desplay_on
     store_data, 'hfa_gyro' $
         , data=['erg_pwe_hfa_l2_low_spectra_e_mix', 'erg_pwe_hfa_l2_high_spectra_e_mix', 'fce', 'fce_half','flhr', 'f_UHR_interp']
     ylim,  'hfa_gyro', 20.0, 400.0, 1
-    zlim,  'hfa_gyro', 1e-10, 1, 1
+    zlim,  'hfa_gyro', 1E-10, 1E-3, 1
 
     options, 'hfa_gyro', $
         ytitle='HFA E', ysubtitle='Frequency!C[kHz]', ztitle='[mV!U2!N/m!U2!N/Hz]'
@@ -163,16 +165,16 @@ pro plot_event_normal, UHR_file_name=UHR_file_name, desplay_on=desplay_on
 
     if desplay_on eq 0 then begin
         SET_PLOT, 'Z'
-        DEVICE, SET_RESOLUTION = [1500,2000]
+        DEVICE, SET_RESOLUTION = [1500,2500]
         !p.BACKGROUND = 255
         !p.color = 0
 
         time_stamp, /off
-        options, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'S_mask_gyro', 'ofa_b_Bmodels_correction'], 'color_table', 43
-        ylim, [pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'S_mask_gyro', 'ofa_b_Bmodels_correction'], 0.5, 10., 1
+        options, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'EBrate', 'kvec_algebraicSVD_ma3', 'kvec_algebraicSVD_mask', 'kvec_LASVD_ma3', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'S_mask_gyro', 'ofa_b_Bmodels_correction'], 'color_table', 43
+        ylim, [pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'EBrate', 'kvec_algebraicSVD_ma3', 'kvec_algebraicSVD_mask', 'kvec_LASVD_ma3', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'S_mask_gyro', 'ofa_b_Bmodels_correction'], 0.0, 16.0, 0
         ylim, 'Ne', 0, 500, 1
         ; tplot, [pr_matrix+'Etotal_132_gyro', pr_matrix+'Btotal_132_gyro', 'Ne', 'kvec_mask_gyro']
-        tplot, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'Ne', 'kvec_algebraicSVD_mask', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'S_mask_gyro', 'ofa_b_Bmodels_correction']
+        tplot, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'EBrate', 'Ne', 'kvec_algebraicSVD_ma3', 'kvec_algebraicSVD_mask', 'kvec_LASVD_ma3', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S', 'S_mask_gyro', 'ofa_b_Bmodels_correction']
         t = timerange(/current) 
         ret1 = strsplit(time_string(t[0]), '-/:', /extract)
         ret2 = strsplit(time_string(t[1]), '-/:', /extract)
