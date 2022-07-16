@@ -543,6 +543,9 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
   data.y[where(data_ref.y LT cut_f)] = 'NaN'
   store_data, 'planarity_LASVD'+ma+'_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
 
+
+  tinterpol_mxn, 'erg_pwe_ofa_l2_matrix_Btotal_132', 'S'
+  get_data, 'erg_pwe_ofa_l2_matrix_Btotal_132_interp', data=data_ref
   ; S
   get_data, 'S', data=data, dlim=dlim, lim=lim
   data.y[where(data_ref.y LT cut_f)] = 'NaN'
