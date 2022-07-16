@@ -14,7 +14,9 @@ pro calc_EBrate
     ; 1.get data
     ; ******************************
 
-    get_data, 'erg_pwe_ofa_l2_matrix_Etotal_132', data=E_data
+    tinterpol_mxn, 'erg_pwe_ofa_l2_matrix_Etotal_132', 'erg_pwe_ofa_l2_matrix_Btotal_132'
+
+    get_data, 'erg_pwe_ofa_l2_matrix_Etotal_132_interp', data=E_data
     get_data, 'erg_pwe_ofa_l2_matrix_Btotal_132', data=B_data
 
     ; ******************************

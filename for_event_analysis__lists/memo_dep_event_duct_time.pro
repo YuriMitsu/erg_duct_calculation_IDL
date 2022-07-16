@@ -43,15 +43,15 @@ pro memo_dep_event_duct_time
     ; plot_event_normal, UHR_file_name='kuma'
     ;event_analysis_duct, duct_time='2017-05-15/22:37:41', focus_f=[3.,4.,5.,6.,7.], UHR_file_name='kuma', duct_wid_data_n=10.0, IorD='D', lsm=[0.00027869147852899927, 0.0005865891262814288]
 
-    timespan, '2017-05-26/07:25:00', 20.0, /minute 
-    plot_event_normal, UHR_file_name='kuma'
+    ; timespan, '2017-05-26/07:25:00', 20.0, /minute 
+    ; plot_event_normal, UHR_file_name='kuma'
     ;event_analysis_duct, duct_time='2017-05-26/07:30:44', focus_f=[8.,10.,12.,14.,16.], UHR_file_name='kuma', duct_wid_data_n=7.0, IorD='D', lsm=[0.0005548292959752806, -0.0013075375454726203]
     ;event_analysis_duct, duct_time='2017-05-26/07:34:03', focus_f=[8.,10.,12.,14.], UHR_file_name='kuma', duct_wid_data_n=2.0, IorD='D', lsm=[0.0006467058244379748, -0.0014308087255944042]
     ;event_analysis_duct, duct_time='2017-05-26/07:35:48', focus_f=[8.,10.,12.,14.], UHR_file_name='kuma', duct_wid_data_n=9.0, IorD='D', lsm=[0.0006096636659383255, -0.0012371973084091996]
     ;event_analysis_duct, duct_time='2017-05-26/07:40:12', focus_f=[6.,8.,10.,12.,14.], UHR_file_name='kuma', duct_wid_data_n=3.0, IorD='D', lsm=[0.0006731023521796008, -0.0012952956062034899]
 
-    timespan, '2017-05-30/15:25:00', 20.0, /minute 
-    plot_event_normal, UHR_file_name='kuma'
+    ; timespan, '2017-05-30/15:25:00', 20.0, /minute 
+    ; plot_event_normal, UHR_file_name='kuma'
     ;event_analysis_duct, duct_time='2017-05-30/15:36:22', focus_f=[5.,6.,7.,8.,9.], UHR_file_name='kuma', duct_wid_data_n=1.0, IorD='D', lsm=[0.00013625921018883117, 0.0009291982997271811]
     ;event_analysis_duct, duct_time='2017-05-30/15:39:34', focus_f=[5.,6.,7.,8.,9.], UHR_file_name='kuma', duct_wid_data_n=1.0, IorD='D', lsm=[0.00022281190447744314, -8.880490311452296e-05]
     ;event_analysis_duct, duct_time='2017-05-30/15:41:31', focus_f=[5.,6.,7.,8.,9.], UHR_file_name='kuma', duct_wid_data_n=1.0, IorD='D', lsm=[0.00022800258169935385, 0.00025948342726687354]
@@ -97,5 +97,16 @@ pro memo_dep_event_duct_time
     timespan, '2018-05-26/10:35:00', 20.0, /minute 
     plot_event_normal, UHR_file_name='kuma'
 
+    print, ''
+    print, ''
+    print, '************************************************************'
+    print, ''
+    print, ''
+    print, '                !!! duct event plot DONE !!!'
+    print, ''
+    print, ''
+    print, '************************************************************'
+    print, ''
+    print, ''
 
 end
