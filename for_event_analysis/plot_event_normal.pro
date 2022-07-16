@@ -106,7 +106,7 @@ pro plot_event_normal, UHR_file_name=UHR_file_name, desplay_on=desplay_on
 
     calc_equatorial_fce
 
-    calc_EBrate
+    calc_BErate
 
     ; ************************************
     ; 17-2.overplot fce.etc
@@ -170,11 +170,11 @@ pro plot_event_normal, UHR_file_name=UHR_file_name, desplay_on=desplay_on
         !p.color = 0
 
         time_stamp, /off
-        options, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'EBrate', 'kvec_algebraicSVD_ma3', 'kvec_algebraicSVD_mask', 'kvec_LASVD_ma3', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'S_mask_gyro', 'ofa_b_Bmodels_correction'], 'color_table', 43
-        ylim, [pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'EBrate', 'kvec_algebraicSVD_ma3', 'kvec_algebraicSVD_mask', 'kvec_LASVD_ma3', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'S_mask_gyro', 'ofa_b_Bmodels_correction'], 0.0, 16.0, 0
+        options, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'BErate', 'kvec_algebraicSVD_ma3', 'kvec_algebraicSVD_mask', 'kvec_LASVD_ma3', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'S_mask_gyro', 'ofa_b_Bmodels_correction'], 'color_table', 43
+        ylim, [pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'BErate', 'kvec_algebraicSVD_ma3', 'kvec_algebraicSVD_mask', 'kvec_LASVD_ma3', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'S_mask_gyro', 'ofa_b_Bmodels_correction'], 0.0, 16.0, 0
         ylim, 'Ne', 0, 500, 1
         ; tplot, [pr_matrix+'Etotal_132_gyro', pr_matrix+'Btotal_132_gyro', 'Ne', 'kvec_mask_gyro']
-        tplot, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'EBrate', 'Ne', 'kvec_algebraicSVD_ma3', 'kvec_algebraicSVD_mask', 'kvec_LASVD_ma3', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S', 'S_mask_gyro', 'ofa_b_Bmodels_correction']
+        tplot, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'BErate', 'Ne', 'kvec_algebraicSVD_ma3', 'kvec_algebraicSVD_mask', 'kvec_LASVD_ma3', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S', 'S_mask_gyro', 'ofa_b_Bmodels_correction']
         t = timerange(/current) 
         ret1 = strsplit(time_string(t[0]), '-/:', /extract)
         ret2 = strsplit(time_string(t[1]), '-/:', /extract)

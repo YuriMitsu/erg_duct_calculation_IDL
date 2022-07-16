@@ -543,6 +543,11 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
   data.y[where(data_ref.y LT cut_f)] = 'NaN'
   store_data, 'planarity_LASVD'+ma+'_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
 
+  ; S
+  get_data, 'S', data=data, dlim=dlim, lim=lim
+  data.y[where(data_ref.y LT cut_f)] = 'NaN'
+  store_data, 'S_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
+
 
 
 
