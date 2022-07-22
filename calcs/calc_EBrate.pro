@@ -22,7 +22,7 @@ pro calc_EBrate
     ; 2.calc E/B rate
     ; ******************************
 
-    EB_rate = E_data.y/B_data.y
+    EB_rate = E_data.y/B_data.y * 10000.
 
     ; ******************************
     ; 3.return data
@@ -30,7 +30,8 @@ pro calc_EBrate
 
     store_data, 'EBrate', data = {x:E_data.x, y:EB_rate, v:E_data.v}
     options, 'EBrate', spec=1
-    zlim, 'EBrate', 0., 0.2, 0
+    ylim, 'EBrate', 0.064, 20, 1 ; kHz
+    zlim, 'EBrate', 0., 0.05, 1
 
 
 end

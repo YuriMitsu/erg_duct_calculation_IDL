@@ -174,7 +174,7 @@ pro day_plot, span=span, hour_plot=hour_plot
   store_data, 'planarity_mask_gyro', data=['planarity_LASVD_mask', 'fce', 'fce_half','flhr']
   store_data, 'kvec_algebraicSVD_mask_gyro', data=['kvec_algebraicSVD_mask', 'fce', 'fce_half','flhr']
   ylim, '*_gyro', 0.064, 20, 1 ; kHz
-  zlim, 'Btotal_132_gyro', 1E-2, 1E2, 1 ; pT^2/Hz
+  zlim, 'Btotal_132_gyro', 1E-4, 1E2, 1 ; pT^2/Hz
   options, 'erg_pwe_ofa_l2_Btotal_132_gyro', $
     ytitle='B total', ysubtitle='Frequency [kHz]', ztitle='[pT!U2!N/Hz]'
 
@@ -186,7 +186,7 @@ pro day_plot, span=span, hour_plot=hour_plot
   options, 'ofa_e_gyro', 'zbtitle', '[mV^2/m^2/Hz]'
   ylim,  'hfa_e_gyro', 20.0, 400.0, 1
   ylim,  'ofa_e_gyro', 0.064, 20.0, 1
-  zlim,  ['hfa','ofa']+'_e_gyro', 1e-10, 1, 1
+  zlim,  ['hfa','ofa']+'_e_gyro', 1e-9, 1e2, 1
 
   options, 'Btotal_132_gyro', 'ytitle', 'OFA-B'
   options, 'Btotal_132_gyro', 'ysubtitle', 'frequency [kHz]'
