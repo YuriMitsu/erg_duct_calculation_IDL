@@ -53,33 +53,33 @@ pro plot_event_normal, UHR_file_name=UHR_file_name, desplay_on=desplay_on
     ; 14.mask
     ; ************************************
 
-    get_data, pr_matrix + 'Btotal_132', data=data_ref; *** modified (B_total_132 -> Btotal_132)
-    cut_f = 1E-2
+    ; get_data, pr_matrix + 'Btotal_132', data=data_ref; *** modified (B_total_132 -> Btotal_132)
+    ; cut_f = 1E-2
 
-    ; kvec
-    get_data, 'kvec_LASVD_ma3', data=data, dlim=dlim, lim=lim
-    data.y[where(data_ref.y LT cut_f)] = 'NaN'
-    store_data, 'kvec_LASVD_ma3_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
+    ; ; kvec
+    ; get_data, 'kvec_LASVD_ma3', data=data, dlim=dlim, lim=lim
+    ; data.y[where(data_ref.y LT cut_f)] = 'NaN'
+    ; store_data, 'kvec_LASVD_ma3_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
 
-    ; polarization
-    get_data, 'polarization_LASVD_ma3', data=data, dlim=dlim, lim=lim
-    data.y[where(data_ref.y LT cut_f)] = 'NaN'
-    store_data, 'polarization_LASVD_ma3_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
+    ; ; polarization
+    ; get_data, 'polarization_LASVD_ma3', data=data, dlim=dlim, lim=lim
+    ; data.y[where(data_ref.y LT cut_f)] = 'NaN'
+    ; store_data, 'polarization_LASVD_ma3_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
 
-    ; planarity
-    get_data, 'planarity_LASVD_ma3', data=data, dlim=dlim, lim=lim
-    data.y[where(data_ref.y LT cut_f)] = 'NaN'
-    store_data, 'planarity_LASVD_ma3_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
+    ; ; planarity
+    ; get_data, 'planarity_LASVD_ma3', data=data, dlim=dlim, lim=lim
+    ; data.y[where(data_ref.y LT cut_f)] = 'NaN'
+    ; store_data, 'planarity_LASVD_ma3_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
 
-    ; kvec means
-    get_data, 'kvec_algebraicSVD_ma3', data=data, dlim=dlim, lim=lim
-    data.y[where(data_ref.y LT cut_f)] = 'NaN'
-    store_data, 'kvec_algebraicSVD_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
+    ; ; kvec means
+    ; get_data, 'kvec_algebraicSVD_ma3', data=data, dlim=dlim, lim=lim
+    ; data.y[where(data_ref.y LT cut_f)] = 'NaN'
+    ; store_data, 'kvec_algebraicSVD_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
 
-    ; Poynting vector
-    get_data, 'S', data=data, dlim=dlim, lim=lim
-    data.y[where(data_ref.y LT cut_f)] = 'NaN'
-    store_data, 'S_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
+    ; ; Poynting vector
+    ; get_data, 'S', data=data, dlim=dlim, lim=lim
+    ; data.y[where(data_ref.y LT cut_f)] = 'NaN'
+    ; store_data, 'S_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
 
 
     ; ************************************
@@ -106,7 +106,7 @@ pro plot_event_normal, UHR_file_name=UHR_file_name, desplay_on=desplay_on
 
     calc_equatorial_fce
 
-    calc_BErate
+    ; calc_BErate
 
     ; ************************************
     ; 17-2.overplot fce.etc
@@ -125,6 +125,8 @@ pro plot_event_normal, UHR_file_name=UHR_file_name, desplay_on=desplay_on
     options, 'polarization_mask_gyro', ytitle='polarization', ysubtitle='Frequency!C[kHz]', ztitle=''
     store_data, 'planarity_mask_gyro', data=['planarity_LASVD_ma3_mask', 'fce', 'fce_half', 'flhr']
     options, 'planarity_mask_gyro', ytitle='planarity', ysubtitle='Frequency!C[kHz]', ztitle=''
+    store_data, 'S_gyro', data=['S', 'fce', 'fce_half', 'flhr']
+    options, 'S_gyro', ytitle='Poynting vector', ysubtitle='Frequency!C[kHz]', ztitle=''
     store_data, 'S_mask_gyro', data=['S_mask', 'fce', 'fce_half', 'flhr']
     options, 'S_mask_gyro', ytitle='Poynting vector', ysubtitle='Frequency!C[kHz]', ztitle=''
 
@@ -171,11 +173,11 @@ pro plot_event_normal, UHR_file_name=UHR_file_name, desplay_on=desplay_on
         !p.color = 0
 
         time_stamp, /off
-        options, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'BErate', 'BErate_mask', 'kvec_algebraicSVD_ma3', 'kvec_algebraicSVD_mask', 'kvec_LASVD_ma3', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'S_mask_gyro', 'ofa_b_Bmodels_correction'], 'color_table', 43
-        ylim, [pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'BErate', 'BErate_mask', 'kvec_algebraicSVD_ma3', 'kvec_algebraicSVD_mask', 'kvec_LASVD_ma3', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'S_mask_gyro', 'ofa_b_Bmodels_correction'], 0.0, 16.0, 0
+        options, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'kvec_algebraicSVD_ma3', 'kvec_algebraicSVD_mask', 'kvec_LASVD_ma3', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'S', 'S_mask_gyro', 'ofa_b_Bmodels_correction'], 'color_table', 43
+        ylim, [pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'kvec_algebraicSVD_ma3', 'kvec_algebraicSVD_mask', 'kvec_LASVD_ma3', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'S', 'S_mask_gyro', 'ofa_b_Bmodels_correction'], 0.0, 16.0, 0
         ylim, 'Ne', 0, 500, 1
         ; tplot, [pr_matrix+'Etotal_132_gyro', pr_matrix+'Btotal_132_gyro', 'Ne', 'kvec_mask_gyro']
-        tplot, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'BErate', 'Ne', 'kvec_algebraicSVD_ma3', 'kvec_algebraicSVD_mask', 'kvec_LASVD_ma3', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S', 'S_mask_gyro', 'ofa_b_Bmodels_correction']
+        tplot, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'Ne', 'kvec_algebraicSVD_ma3', 'kvec_algebraicSVD_mask', 'kvec_LASVD_ma3', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S', 'S_mask_gyro', 'ofa_b_Bmodels_correction']
         t = timerange(/current) 
         ret1 = strsplit(time_string(t[0]), '-/:', /extract)
         ret2 = strsplit(time_string(t[1]), '-/:', /extract)
