@@ -31,11 +31,13 @@ pro plot_event_normal, UHR_file_name=UHR_file_name, desplay_on=desplay_on
     set_erg_var_label
 
     ; *****************
-    ; 3.load HFA
+    ; 3.load HFA, wfc info
     ; *****************
 
     erg_load_pwe_hfa, level='l2', mode=['l','h'], uname=uname, pass=pass
     pr_matrix = 'erg_pwe_ofa_l2_matrix_'  ; *** modified
+
+    erg_load_pwe_wfc_info, uname=uname, pass=pass
 
     ; *****************
     ; 3.calc. wave params
@@ -177,7 +179,7 @@ pro plot_event_normal, UHR_file_name=UHR_file_name, desplay_on=desplay_on
         ylim, [pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'kvec_algebraicSVD_ma3', 'kvec_algebraicSVD_mask', 'kvec_LASVD_ma3', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'S', 'S_mask_gyro', 'ofa_b_Bmodels_correction'], 0.0, 16.0, 0
         ylim, 'Ne', 0, 500, 1
         ; tplot, [pr_matrix+'Etotal_132_gyro', pr_matrix+'Btotal_132_gyro', 'Ne', 'kvec_mask_gyro']
-        tplot, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'Ne', 'kvec_algebraicSVD_ma3', 'kvec_algebraicSVD_mask', 'kvec_LASVD_ma3', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S', 'S_mask_gyro', 'ofa_b_Bmodels_correction']
+        tplot, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'Ne', 'kvec_algebraicSVD_ma3', 'kvec_algebraicSVD_mask', 'kvec_LASVD_ma3', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S', 'S_mask_gyro', 'ofa_b_Bmodels_correction', 'erg_pwe_wfc_l2_info_stat_chorus']
         t = timerange(/current) 
         ret1 = strsplit(time_string(t[0]), '-/:', /extract)
         ret2 = strsplit(time_string(t[1]), '-/:', /extract)

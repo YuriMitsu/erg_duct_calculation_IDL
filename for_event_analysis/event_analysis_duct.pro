@@ -128,7 +128,7 @@ pro event_analysis_duct, duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR
   print, '************************************************************'
   print, ''
   print, ''
-  if IorD eq 'I' then print, '            Inc duct ' + duct_time + ' fin.'
+  if IorD eq 'I' then print, '            Enh duct ' + duct_time + ' fin.'
   if IorD eq 'D' then print, '            Dep duct ' + duct_time + ' fin.'
   print, ''
   print, ''

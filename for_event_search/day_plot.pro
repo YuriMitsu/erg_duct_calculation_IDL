@@ -39,10 +39,12 @@ pro day_plot, span=span, hour_plot=hour_plot
 
   ; *** added ***
   ; *****************
-  ; 3.load HFA
+  ; 3.load HFA, OFA, WFC_INFO
   ; *****************
   erg_load_pwe_hfa, level='l2', mode=['l','h'], uname=uname, pass=pass
   pr_matrix = 'erg_pwe_ofa_l2_matrix_'  ; *** modified
+  erg_load_pwe_ofa, level='l3', uname=uname, pass=pass
+  erg_load_pwe_wfc_info, uname=uname, pass=pass
 
   ; *****************
   ; 3.calc. wave params
@@ -202,7 +204,7 @@ pro day_plot, span=span, hour_plot=hour_plot
   ; ************************************
 
   SET_PLOT, 'Z'
-  DEVICE, SET_RESOLUTION = [1500,1800]
+  DEVICE, SET_RESOLUTION = [1500,2000]
   !p.BACKGROUND = 255
   !p.color = 0
 
@@ -217,7 +219,7 @@ pro day_plot, span=span, hour_plot=hour_plot
   ; makepng, 'erg_ofa_matrix_mepe_'+ret[0]+ret[1]+ret[2]
   
   ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'Btotal_132_gyro', 'kvec_algebraicSVD_mask_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_mask_gyro', 'mepe_PA_0-3', 'mepe_PA_177-188', 'mepe_PA_3-37', 'mepe_ET']
-  tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'Btotal_132_gyro', 'kvec_LASVD_ma3', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S', 'S_mask']
+  tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'Btotal_132_gyro', 'kvec_LASVD_ma3', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'erg_pwe_ofa_l3_property_Pvec_angle_132', 'S', 'S_mask', 'erg_pwe_wfc_l2_info_stat_chorus']
 
   ; makepng, '/Users/ampuku/Documents/duct/Fig/event_plots_v2/days/erg_ofa_matrix_mepe_wna_'+ret[0]+ret[1]+ret[2]
   ; makepng, '/Users/ampuku/Documents/duct/Fig/day_plots/'+ret[0]+'/'+ret[1]+'/days/erg_ofa_matrix_mepe_wna_'+ret[0]+ret[1]+ret[2], /mkdir
@@ -231,7 +233,7 @@ pro day_plot, span=span, hour_plot=hour_plot
       ; makepng, 'erg_ofa_matrix_mepe_'+ret[0]+ret[1]+ret[2]+'_'+string(span*i,format='(i2.2)')
       
       ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'Btotal_132_gyro', 'kvec_algebraicSVD_mask_gyro', 'kvec_mask_gyro', 'kvec_LASVD_ma3', 'polarization_mask_gyro', 'planarity_mask_gyro', 'planarity_gyro', 'mepe_PA_0-3', 'mepe_PA_177-188', 'mepe_PA_3-37', 'mepe_ET']
-      tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'Btotal_132_gyro', 'kvec_LASVD_ma3', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S', 'S_mask']
+      tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'Btotal_132_gyro', 'kvec_LASVD_ma3', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'erg_pwe_ofa_l3_property_Pvec_angle_132', 'S', 'S_mask', 'erg_pwe_wfc_l2_info_stat_chorus']
 
       ; makepng, '/Users/ampuku/Documents/duct/Fig/event_plots_v2/hours/erg_ofa_matrix_mepe_wna_'+ret[0]+ret[1]+ret[2]+'_'+string(span*i,format='(i2.2)')
       ; makepng, '/Users/ampuku/Documents/duct/Fig/day_plots/'+ret[0]+'/'+ret[1]+'/hours/erg_ofa_matrix_mepe_wna_'+ret[0]+ret[1]+ret[2]+'_'+string(span*i,format='(i2.2)'), /mkdir

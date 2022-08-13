@@ -1,3 +1,7 @@
+オートコンパイルできない問題
+→解決!!!ファイル名を全て小文字にすればOK!!
+
+
 .compile -v '/Users/ampuku/Desktop/M1_spring/Arase/IDL/day_plot.pro'
 .compile -v 'plot_kpara_ne.pro'
 

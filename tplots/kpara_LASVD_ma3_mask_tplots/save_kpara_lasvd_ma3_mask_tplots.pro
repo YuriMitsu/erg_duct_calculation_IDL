@@ -1,5 +1,8 @@
 
-pro test_20220711
+; to make kpara_LASVD_ma3_mask_tplots
+; .compile '/Users/ampuku/Documents/duct/code/IDL/tplots/kpara_LASVD_ma3_mask_tplots/save_kpara_LASVD_ma3_mask_tplots.pro'
+
+pro save_kpara_LASVD_ma3_mask_tplots
 
     if not keyword_set(cut_f) then cut_f = 1E-2 ;nT
     if not keyword_set(UHR_file_name) then UHR_file_name = 'kuma'
