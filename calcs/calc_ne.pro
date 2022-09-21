@@ -1,7 +1,10 @@
 ; コンパイル 
 ; .compile -v '/Users/ampuku/Documents/duct/code/IDL/calcs/calc_Ne.pro'
 
-pro calc_Ne, UHR_file_name=UHR_file_name
+pro calc_Ne, UHR_file_name=UHR_file_name, wfc=wfc
+
+    if not keyword_set(wfc) then wfc=0
+
 
     ; ************************************
     ; load fuhr and calc Ne
@@ -31,24 +34,39 @@ pro calc_Ne, UHR_file_name=UHR_file_name
         tplot_restore, file=[UHR_file_name]
     endelse
 
-    tinterpol_mxn, 'fUHR', 'erg_mgf_l2_magt_8sec'
-    ; options, 'fUHR_interp', linestyles=0
-    ; get_data, 'fUHR_interp', data=f_UHR
+    if not wfc then begin
+        tinterpol_mxn, 'fUHR', 'erg_mgf_l2_magt_8sec'
+        ; options, 'fUHR_interp', linestyles=0
+        ; get_data, 'fUHR_interp', data=f_UHR
 
-    get_data, 'fUHR', data=data
-    get_data, 'fUHR_interp', data=data_interp
 
-    mask1 = ( data_interp.x lt data.x[0] )
-    idx1 = UINT( TOTAL(mask1) )
-    data_interp.y[0:idx1-1] = !VALUES.F_NAN
 
-    mask2 = ( data_interp.x lt data.x[-1] )
-    idx2 = UINT( TOTAL(mask2) )
-    data_interp.y[idx2:-1] = !VALUES.F_NAN
+        get_data, 'fUHR', data=data
+        get_data, 'fUHR_interp', data=data_interp
+
+        mask1 = ( data_interp.x lt data.x[0] )
+        idx1 = UINT( TOTAL(mask1) )
+        data_interp.y[0:idx1-1] = !VALUES.F_NAN
+
+        mask2 = ( data_interp.x lt data.x[-1] )
+        idx2 = UINT( TOTAL(mask2) )
+        data_interp.y[idx2:-1] = !VALUES.F_NAN
+
+    endif else begin
+
+        tinterpol_mxn, 'erg_mgf_l2_magt_8sec', 'bspec'
+        get_data, 'erg_mgf_l2_magt_8sec_interp', data=magt
+
+        tinterpol_mxn, 'fUHR', 'bspec'
+
+        get_data, 'fUHR_interp', data=data_interp
+
+    endelse
 
     store_data, 'fUHR_interp_nan', data={x:data_interp.x, y:data_interp.y}
     options, 'fUHR_interp_nan', linestyles=0
     get_data, 'fUHR_interp_nan', data=f_UHR
+
 
     ; ************************************
     ; 2.calc. Ne

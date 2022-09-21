@@ -94,8 +94,8 @@ pro plot_f_theta, duct_time=duct_time, focus_f=focus_f, test=test, duct_wid_data
     plot, f_obs/fce_ave, gendrin_angle,$
         xtitle='f/fce  '+'(fce = '+string(fce_ave, FORMAT='(f0.1)')+'kHz)', ytitle='theta [degree]',$
         xrange=[xmin, xmax], yrange=[ymin, ymax]
-    oplot, f_obs/fce_ave, gendrin_angle, color=6
     oplot, f_kvec_obs/fce_ave, kvec_obs, psym=4
+    oplot, f_obs/fce_ave, gendrin_angle, color=6
 
     xyouts, xmax-0.04, ymin+8, 'Gendrin Angle', color=6, CHARSIZE=1.5
 

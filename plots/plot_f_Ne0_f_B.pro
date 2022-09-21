@@ -8,8 +8,10 @@
 ; output
 ;   fig figname
 
-pro plot_f_Ne0_f_B, duct_time=duct_time, focus_f=focus_f, lsm=lsm,  duct_wid_data_n=duct_wid_data_n, IorD=IorD, test=test
+pro plot_f_Ne0_f_B, duct_time=duct_time, focus_f=focus_f, lsm=lsm,  duct_wid_data_n=duct_wid_data_n, IorD=IorD, test=test, wfc=wfc
 ; duct_time=duct_time, focus_f=focus_f, UHR_file_name=UHR_file_name, lsm=lsm, cut_f=cut_f, k_perp_range=k_perp_range, duct_wid_data_n=duct_wid_data_n, IorD=IorD
+
+    if not keyword_set(wfc) then wfc=0
 
     ; ******************************
     ; 1.1.get data
@@ -58,14 +60,25 @@ pro plot_f_Ne0_f_B, duct_time=duct_time, focus_f=focus_f, lsm=lsm,  duct_wid_dat
     ; 1.2.get data
     ; ******************************
 
-    get_data, 'erg_pwe_ofa_l2_spec_B_spectra_132', data = B_data
+    if not wfc then begin
+        get_data, 'erg_pwe_ofa_l2_spec_B_spectra_132', data = B_data
+    endif else begin
+        get_data, 'bspec', data = B_data
+        B_data.v /= 1000
+    endelse
+
     time_res =  B_data.x[100]- B_data.x[99]
     idx_t = where( B_data.x lt duct_time_double+time_res/2 and B_data.x gt duct_time_double-time_res/2, cnt )
 
     B_obs = mean(B_data.y[idx_t-duct_wid_data_n:idx_t+duct_wid_data_n, *], DIMENSION=1, /nan) ; obs.y
 
-    tinterpol_mxn, 'fce_TS04_half', 'erg_pwe_ofa_l2_spec_B_spectra_132'
+    if not wfc then begin
+        tinterpol_mxn, 'fce_TS04_half', 'erg_pwe_ofa_l2_spec_B_spectra_132'
+    endif else begin
+        tinterpol_mxn, 'fce_TS04_half', 'bspec'
+    endelse
     get_data, 'fce_TS04_half_interp', data=eqfce_data
+
 
     time_res =  eqfce_data.x[100]- eqfce_data.x[99]
     idx_t = where( eqfce_data.x lt duct_time_double+time_res/2 and eqfce_data.x gt duct_time_double-time_res/2, cnt )
@@ -149,9 +162,13 @@ pro plot_f_Ne0_f_B, duct_time=duct_time, focus_f=focus_f, lsm=lsm,  duct_wid_dat
     ; ******************************
     ; 4.2.plot B(f)
     ; ******************************
+    
 
-    plot, B_data.v, B_obs, xtitle='frequency [kHz]', ytitle='OFA-SPEC B [pT^2/Hz]', xrange=[xmin, xmax]
-
+    if not wfc then begin
+        plot, B_data.v, B_obs, xtitle='frequency [kHz]', ytitle='OFA-SPEC B [pT^2/Hz]', xrange=[xmin, xmax]
+    endif else begin
+        plot, B_data.v, B_obs, xtitle='frequency [kHz]', ytitle='WFC-SPEC B [pT^2/Hz]', xrange=[xmin, xmax]
+    endelse
     ; Ne_m=[Ne_min, Ne_max]
 
     for i=0,1 do begin

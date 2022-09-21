@@ -5,13 +5,13 @@
 
 pro memo_dep_201704_event_list
 
-    timespan, '2017-04-01/01:45:00', 15.0, /minute 
+    timespan, '2017-04-01/01:45:00', 15.0, /minute
     ;plot_event_normal, UHR_file_name='kuma'
     event_analysis_duct, duct_time='2017-04-01/01:48:12', focus_f=[7.,9.,11.,13.,15.], UHR_file_name='kuma', duct_wid_data_n=1, IorD='D', lsm=[0.0001445828931184357, 0.000333513615533033]
     event_analysis_duct, duct_time='2017-04-01/01:51:10', focus_f=[7.,9.,11.,13.,15.], UHR_file_name='kuma', duct_wid_data_n=2, IorD='D', lsm=[6.843270033739466e-05, 0.0011029826700924526]
     event_analysis_duct, duct_time='2017-04-01/01:52:37', focus_f=[7.,9.,11.,13.,15.], UHR_file_name='kuma', duct_wid_data_n=2, IorD='D', lsm=[0.00015834195017224554, -0.000117070622975287]
 
-    timespan, '2017-04-03/10:25:00', 40.0, /minute 
+    timespan, '2017-04-03/10:25:00', 40.0, /minute
     ;plot_event_normal, UHR_file_name='kuma'
     event_analysis_duct, duct_time='2017-04-03/10:29:35', focus_f=[8.,10.,12.,14.,16.], UHR_file_name='kuma', duct_wid_data_n=4, IorD='D', lsm=[0.00010580251984096746, -5.345693013296855e-05]
     event_analysis_duct, duct_time='2017-04-03/10:32:05', focus_f=[6.,8.,10.,12.,14.,16.], UHR_file_name='kuma', duct_wid_data_n=1, IorD='D', lsm=[0.00010996022723548395, 6.701354868999998e-06]
