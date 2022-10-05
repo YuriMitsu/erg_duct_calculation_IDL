@@ -130,9 +130,9 @@ pro plot_f_Ne0_f_B, duct_time=duct_time, focus_f=focus_f, lsm=lsm,  duct_wid_dat
     oplot, plot_f, Ne_1, linestyle='2'
 
     oplot, [plot_f[0]-1,plot_f[-1]+1], [Ne_min,Ne_min]
-    xyouts, plot_f[-1]-0.5, Ne_min+2., string(Ne_min, format='(i0)'), CHARSIZE=1.5
+    ; xyouts, plot_f[-1]-0.5, Ne_min+2., string(Ne_min, format='(i0)'), CHARSIZE=1.5
     oplot, [plot_f[0]-1,plot_f[-1]+1], [Ne_max,Ne_max]
-    xyouts, plot_f[-1]-0.5, Ne_max+2., string(Ne_max, format='(i0)'), CHARSIZE=1.5
+    ; xyouts, plot_f[-1]-0.5, Ne_max+2., string(Ne_max, format='(i0)'), CHARSIZE=1.5
 
     Ne_m=[Ne_min, Ne_max]
 
@@ -194,8 +194,8 @@ pro plot_f_Ne0_f_B, duct_time=duct_time, focus_f=focus_f, lsm=lsm,  duct_wid_dat
     endfor
 
     oplot, [eqfce_duct, eqfce_duct], [ymin2-0.1,ymax2+0.1], linestyle=4
-    xyouts, eqfce_duct+0.1, min(B_obs)+0.0005, 'fce_eq/2 = '+string(eqfce_duct, format='(f0.1)'), CHARSIZE=1.5
-
+    ; xyouts, eqfce_duct+0.1, min(B_obs)+0.0005, 'fce_eq/2 = '+string(eqfce_duct, format='(f0.1)'), CHARSIZE=1.5
+stop
 
     ; ******************************
     ; 5.save fig

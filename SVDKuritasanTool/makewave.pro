@@ -1,7 +1,11 @@
 ; Created by Satoshi Kurita!!
 ; Added by Ampuku.
+; .compile '/Users/ampuku/Documents/duct/code/IDL/SVDKuritasanTool/makewave.pro'
 
-pro makewave,wna=wna,phi=phi,rmode=rmode,lmode=lmode
+; 560 Hｚに波動ができる...どうして...
+; enr=enr,bnr=bnrに0.を入れてもノイズ0にはならない！ if not keyword_setに引っかかって数値が代入されてしまうので注意！
+
+pro makewave,wna=wna,phi=phi,rmode=rmode,lmode=lmode,enr=enr,bnr=bnr
 
 if not keyword_set(rmode) and not keyword_set(lmode) then rmode=1
 
@@ -39,7 +43,7 @@ if keyword_set(rmode) then nr=sqrt((bb-ff)/(2.0*aa))
 
 ; For test use
 ; Square root of approximate dispersion relation for whistler-mode waves
-;nr=sqrt(wpe*wpe/(ww*(wce*cos(wna)-ww))) 
+; nr=sqrt(wpe*wpe/(ww*(wce*cos(wna)-ww))) 
 
 
 ; calcuration of wave amplitude based on Mosier and Gurnett, JGR, 1971
@@ -60,14 +64,18 @@ bxamp=-nr*cos(wna)*dp/vc/(sp-nr*nr)
 byamp=nr*cos(wna)*pp/vc/(pp-nr*nr*sin(wna)*sin(wna))
 bzamp=nr*sin(wna)*dp/vc/(sp-nr*nr)
 
-; creating waveforms of electromagnetic waves with noise (0.1 % in amplitude)
-ex_base=examp*(cos(-ww*tt)+0.01*randomu(s,n_elements(tt))-0.005)
-ey_base=eyamp*(sin(-ww*tt)+0.01*randomu(s,n_elements(tt))-0.005)
-ez_base=ezamp*(cos(-ww*tt)+0.01*randomu(s,n_elements(tt))-0.005)
+; creating waveforms of electromagnetic waves with noise (noise_rate*100 % in amplitude)
+; randomu(seed, D)  0~1のランダムなfloatを返す  seed: 未定義の変数を入れると適当なシードを使用、今回は異なるシード値でノイズを作りたいので未定義の変数を入れればOK  D: 配列のサイズ
+if not keyword_set(enr) then enr=1e-3*(8192L/2)
+if not keyword_set(bnr) then bnr=1e-2*(8192L/2)
 
-bx_base=bxamp*(sin(-ww*tt)+0.01*randomu(s,n_elements(tt))-0.005)
-by_base=byamp*(cos(-ww*tt)+0.01*randomu(s,n_elements(tt))-0.005)
-bz_base=bzamp*(sin(-ww*tt)+0.01*randomu(s,n_elements(tt))-0.005)
+ex_base=examp*(cos(-ww*tt)+enr*randomu(s,n_elements(tt))-0.005)
+ey_base=eyamp*(sin(-ww*tt)+enr*randomu(s,n_elements(tt))-0.005)
+ez_base=ezamp*(cos(-ww*tt)+enr*randomu(s,n_elements(tt))-0.005)
+
+bx_base=bxamp*(sin(-ww*tt)+bnr*randomu(s,n_elements(tt))-0.005)
+by_base=byamp*(cos(-ww*tt)+bnr*randomu(s,n_elements(tt))-0.005)
+bz_base=bzamp*(sin(-ww*tt)+bnr*randomu(s,n_elements(tt))-0.005)
 
 ; rotation of wave fields, considering the rotation of k-vector around the z-axis,
 ; i.e., ambient magnetic field.

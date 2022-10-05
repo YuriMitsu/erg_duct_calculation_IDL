@@ -14,7 +14,6 @@ pro event_analysis_duct__wfc, duct_time=duct_time, focus_f=focus_f, UHR_file_nam
   if not keyword_set(UHR_file_name) then UHR_file_name = 'kuma' ;Hz
   if not keyword_set(cut_f) then cut_f = 1E-2 ;nT
   if not keyword_set(k_perp_range) then k_perp_range = 40 ;nT
-21:00
 
   ; ******************************
   ; 1.load data
@@ -123,14 +122,15 @@ pro event_analysis_duct__wfc, duct_time=duct_time, focus_f=focus_f, UHR_file_nam
   ; ******************************
   ; 11.plot f_theta
   ; ******************************
-
   plot_f_theta, duct_time=duct_time, focus_f=focus_f, test=test, duct_wid_data_n=duct_wid_data_n
 
   ; ******************************
   ; 12.plot f_Ne0, f_B
   ; ******************************
 
+  stop
   plot_f_Ne0_f_B, duct_time=duct_time, focus_f=focus_f, lsm=lsm,  duct_wid_data_n=duct_wid_data_n, IorD=IorD, test=test, wfc=1
+  plot_f_Ne0_f_B, duct_time=duct_time, focus_f=focus_f, lsm=lsm,  duct_wid_data_n=duct_wid_data_n, IorD=IorD, test=1, wfc=1
 
   ; ******************************
   ; 12.plot hfa(t), kpara(t)

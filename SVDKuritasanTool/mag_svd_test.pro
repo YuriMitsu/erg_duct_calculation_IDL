@@ -1,10 +1,20 @@
 ; Created by Satoshi Kurita!!
 ; Added by Ampuku.
+; .compile '/Users/ampuku/Documents/duct/code/IDL/SVDKuritasanTool/mag_svd_test.pro'
+; mag_svd_test,wna_inp=30,phi_inp=0,rate_inp=0,enr=1e-3*(8192L/2),bnr=1e-2*(8192L/2)
+; mag_svd_test,wna_inp=[10,60],phi_inp=[0,0],rate_inp=[1., 1.],enr=1e-3*(8192L/2),bnr=1e-2*(8192L/2)
 
-pro mag_svd_test,wna_inp=wna_inp,phi_inp=phi_inp,rate_inp=rate_inp
 
-makewave_multiple,wna=wna_inp,phi=phi_inp,rate=rate_inp
-; makewave,wna=wna_inp,phi=phi_inp
+
+pro mag_svd_test,wna_inp=wna_inp,phi_inp=phi_inp,rate_inp=rate_inp,enr=enr,bnr=bnr
+
+if ISA(wna_inp, /ARRAY) eq 0 then begin
+        makewave,wna=wna_inp,phi=phi_inp,enr=enr,bnr=bnr
+        print, 'use makewave'
+endif else begin
+        makewave_multiple,wna=wna_inp,phi=phi_inp,rate=rate_inp,enr=enr,bnr=bnr
+        print, 'use makewave_multiple'
+endelse
 
 get_data,'bfield',data=scw
 
@@ -27,6 +37,7 @@ if size(scw,/type) eq 8 then begin
             i++
         endfor
 
+        ; 最後のデータを使わないのはなぜ？
         npt=n_elements(scw_fft[0:long(ndata-nfft)/stride-1,0,0])
         t_s=scw.x[0]+(dindgen(i-1)*stride+nfft/2)/8192.
         freq=findgen(nfft/2)*8192/nfft
@@ -40,17 +51,20 @@ if size(scw,/type) eq 8 then begin
         fft_z=abs(scw_fft[0:npt-1,0:nfft/2-1,2])^2/bw
         store_data,'scw_fft_x',data={x:t_s,y:fft_x,v:freq},lim=scwlim
         ; zlim,'scw_fft_x',[min(fft_x),max(fft_x)]
-        zlim,'scw_fft_x',[1e-25, 1e-20]
+        ; zlim,'scw_fft_x',[1e-25, 1e-20]
         store_data,'scw_fft_y',data={x:t_s,y:fft_y,v:freq},lim=scwlim
         ; zlim,'scw_fft_y',[min(fft_y),max(fft_y)]
-        zlim,'scw_fft_y',[1e-25, 1e-20]
+        ; zlim,'scw_fft_y',[1e-25, 1e-20]
         store_data,'scw_fft_z',data={x:t_s,y:fft_z,v:freq},lim=scwlim
         ; zlim,'scw_fft_z',[min(fft_z),max(fft_z)]
-        zlim,'scw_fft_z',[1e-25, 1e-20]
+        ; zlim,'scw_fft_z',[1e-25, 1e-20]
         store_data,'scw_fft_all',data={x:t_s,y:scw_fft_tot,v:freq},lim=scwlim
-        zlim,'scw_fft_all',[1e-24, 1e-15]
-        ; scw_names=tnames('scw_*')
-        ; ylim, scw_names, 400, 600, 0
+
+
+        scw_tnames=tnames('scw_*')
+        ylim, scw_tnames, 0, 4000, 0
+        ; zlim, scw_tnames, 1e-23, 1e-21, 1
+        ; zlim,'scw_fft_all', 1e-22, 1e-20
 
 ;===============================
 ; Magnetic SVD analysis
@@ -131,7 +145,7 @@ if size(scw,/type) eq 8 then begin
 ; mask
 ;===============================
         get_data,'scw_fft_all',data=scw_fft_all_data
-        cut_f=max(scw_fft_all_data.y)*0.9
+        cut_f=5e-16
 
         get_data, 'waveangle_th_msvd', data=data, dlim=dlim, lim=lim
         data.y[where(scw_fft_all_data.y LT cut_f)] = 'NaN'
@@ -146,8 +160,8 @@ if size(scw,/type) eq 8 then begin
         data.y[where(scw_fft_all_data.y LT cut_f)] = 'NaN'
         store_data, 'elipricity_msvd_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
 
-        ; mask_tname = tnames('*_mask')
-        ; ylim, mask_tname, 550, 600, 0
+        mask_tname = tnames('*_mask')
+        ylim, mask_tname, 550, 600, 0
         scw_names=tnames('scw_*')
         ylim, scw_names, 550, 600, 0
         all_tnames = tnames('*_msvd*')
@@ -156,3 +170,4 @@ if size(scw,/type) eq 8 then begin
 endif
 
 end
+

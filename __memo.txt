@@ -117,4 +117,19 @@ memo_dep_event_duct_time
   day_plot
 
 　まず今まで見てなかった17/12-18/03を見てみる
-.compile -v '/Users/ampuku/Documents/duct/code/IDL/for_event_search/one_day_plot.pro'
+.compile -v '/Users/ampuku/Documents/duct/code/IDL/for_event
+
+
+
+; ergサイエンス会議用 イベント図の作成
+window, 0, xsize=900, ysize=1000 
+
+ylim,  'Ne', 100, 300, 0
+
+ylim, [pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro'], 0, 10, 0
+tplot, ['hfa_gyro', pr_matrix+'Btotal_132_gyro', pr_matrix+'Etotal_132_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro']
+ylim, ['hfa_gyro', 'espec', 'bspec', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity', 'planarity_mask_gyro'], 
+ylim, ['hfa_gyro', 'espec', 'bspec', 'Ne', 'kvec_mask_gyro', 'polarization_plot', 'planarity', 'planarity_plot'],0, 10, 0
+ylim, 'hfa_gyro', 10, 200, 1
+ylim, ['espec', 'bspec', 'polarization_plot', 'planarity', 'planarity_plot'],0, 10000, 0
+tplot, ['hfa_gyro', 'espec', 'bspec', 'Ne', 'kvec_mask_gyro', 'polarization_plot', 'planarity', 'planarity_plot']

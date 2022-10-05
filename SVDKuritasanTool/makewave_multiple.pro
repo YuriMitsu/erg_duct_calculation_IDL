@@ -1,7 +1,8 @@
 ; Created by Satoshi Kurita!!
 ; Added by Ampuku.
+; .compile '/Users/ampuku/Documents/duct/code/IDL/SVDKuritasanTool/makewave_multiple.pro'
 
-pro makewave_multiple,wna=wna,phi=phi,rate=rate,rmode=rmode,lmode=lmode
+pro makewave_multiple,wna=wna,phi=phi,rate=rate,rmode=rmode,lmode=lmode,enr=enr,bnr=bnr
 
 if n_elements(wna) ne n_elements(phi) then begin
     print, 'Make wna and phi an array of the same length.' 
@@ -13,8 +14,8 @@ if n_elements(wna) ne n_elements(rate) then begin
 endif
 if not keyword_set(rmode) and not keyword_set(lmode) then rmode=1
 
-wna=wna*!dtor ;[degree] to [rad]
-phi=phi*!dtor ;[degree] to [rad]
+wna_rad=wna*!dtor ;[degree] to [rad]
+phi_rad=phi*!dtor ;[degree] to [rad]
 
 vc=3.0e8 ;speed of light
 
@@ -39,10 +40,10 @@ bx=0.0D
 by=0.0D
 bz=0.0D
 
-for i=0,n_elements(wna)-1 do begin
+for i=0,n_elements(wna_rad)-1 do begin
 
-    wna_=wna[i]
-    phi_=phi[i]
+    wna_=wna_rad[i]
+    phi_=phi_rad[i]
     rate_=rate[i]
 
     sp=1.0-wpe*wpe/(ww*ww-wce*wce)-wpi*wpi/(ww*ww-wci*wci) ; Stix S parameter
@@ -61,7 +62,7 @@ for i=0,n_elements(wna)-1 do begin
 
     ; For test use
     ; Square root of approximate dispersion relation for whistler-mode waves
-    ;nr=sqrt(wpe*wpe/(ww*(wce*cos(wna)-ww))) 
+    ;nr=sqrt(wpe*wpe/(ww*(wce*cos(wna_rad)-ww))) 
 
 
     ; calcuration of wave amplitude based on Mosier and Gurnett, JGR, 1971
@@ -83,13 +84,16 @@ for i=0,n_elements(wna)-1 do begin
     bzamp=nr*sin(wna_)*dp/vc/(sp-nr*nr)
 
     ; creating waveforms of electromagnetic waves with noise (0.1 % in amplitude)
-    ex_base=examp*(cos(-ww*tt)+0.01*randomu(s,n_elements(tt))-0.005)
-    ey_base=eyamp*(sin(-ww*tt)+0.01*randomu(s,n_elements(tt))-0.005)
-    ez_base=ezamp*(cos(-ww*tt)+0.01*randomu(s,n_elements(tt))-0.005)
+    if not keyword_set(enr) then enr=1e-3*(8192L/2)
+    if not keyword_set(bnr) then bnr=1e-2*(8192L/2)
 
-    bx_base=bxamp*(sin(-ww*tt)+0.01*randomu(s,n_elements(tt))-0.005)
-    by_base=byamp*(cos(-ww*tt)+0.01*randomu(s,n_elements(tt))-0.005)
-    bz_base=bzamp*(sin(-ww*tt)+0.01*randomu(s,n_elements(tt))-0.005)
+    ex_base=examp*(cos(-ww*tt)+enr*randomu(s,n_elements(tt))-0.005)
+    ey_base=eyamp*(sin(-ww*tt)+enr*randomu(s,n_elements(tt))-0.005)
+    ez_base=ezamp*(cos(-ww*tt)+enr*randomu(s,n_elements(tt))-0.005)
+
+    bx_base=bxamp*(sin(-ww*tt)+bnr*randomu(s,n_elements(tt))-0.005)
+    by_base=byamp*(cos(-ww*tt)+bnr*randomu(s,n_elements(tt))-0.005)
+    bz_base=bzamp*(sin(-ww*tt)+bnr*randomu(s,n_elements(tt))-0.005)
 
     ; rotation of wave fields, considering the rotation of k-vector around the z-axis,
     ; i.e., ambient magnetic field.
