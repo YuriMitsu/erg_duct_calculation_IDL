@@ -1,8 +1,9 @@
 ; Created by Satoshi Kurita!!
 ; Added by Ampuku.
-; .compile '/Users/ampuku/Documents/duct/code/IDL/SVDKuritasanTool/makewave_multiple.pro'
+; .compile '/Users/ampuku/Documents/duct/code/IDL/SVDKuritasanTool/makewave_mul_ver_ofa.pro'
 
-pro makewave_multiple,wna=wna,phi=phi,rate=rate,rmode=rmode,lmode=lmode,enr=nlevel_e,bnr=nlevel_b
+
+pro makewave_mul_ver_ofa,wna=wna,phi=phi,rate=rate,rmode=rmode,lmode=lmode,enr=nlevel_e,bnr=nlevel_b
 
 if n_elements(wna) ne n_elements(phi) then begin
     print, 'Make wna and phi an array of the same length.' 
@@ -40,18 +41,19 @@ bx=0.0D
 by=0.0D
 bz=0.0D
 
+
+sp=1.0-wpe*wpe/(ww*ww-wce*wce)-wpi*wpi/(ww*ww-wci*wci) ; Stix S parameter
+dp=-wce*wpe*wpe/(ww^3-ww*wce*wce)+wpi*wpi*wci/(ww^3-ww*wci*wci) ; Stix D parameter
+pp=1.0-wpe*wpe/ww^2-wpi*wpi/ww^2 ; Stix P parameter
+
+rr=sp+dp
+ll=sp-dp
+
 for i=0,n_elements(wna_rad)-1 do begin
 
     wna_=wna_rad[i]
     phi_=phi_rad[i]
     rate_=rate[i]
-
-    sp=1.0-wpe*wpe/(ww*ww-wce*wce)-wpi*wpi/(ww*ww-wci*wci) ; Stix S parameter
-    dp=-wce*wpe*wpe/(ww^3-ww*wce*wce)+wpi*wpi*wci/(ww^3-ww*wci*wci) ; Stix D parameter
-    pp=1.0-wpe*wpe/ww^2-wpi*wpi/ww^2 ; Stix P parameter
-
-    rr=sp+dp
-    ll=sp-dp
 
     aa=sp*sin(wna_)*sin(wna_)+pp*cos(wna_)*cos(wna_)
     bb=rr*ll*sin(wna_)*sin(wna_)+pp*sp*(1.0+cos(wna_)*cos(wna_))
@@ -60,9 +62,10 @@ for i=0,n_elements(wna_rad)-1 do begin
     if keyword_set(lmode) then nr=sqrt((bb+ff)/(2.0*aa))
     if keyword_set(rmode) then nr=sqrt((bb-ff)/(2.0*aa))
 
+
     ; For test use
     ; Square root of approximate dispersion relation for whistler-mode waves
-    ;nr=sqrt(wpe*wpe/(ww*(wce*cos(wna_rad)-ww))) 
+    ;nr=sqrt(wpe*wpe/(ww*(wce*cos(wna_)-ww))) 
 
 
     ; calcuration of wave amplitude based on Mosier and Gurnett, JGR, 1971
@@ -74,6 +77,7 @@ for i=0,n_elements(wna_rad)-1 do begin
     ; x: complete right-hand coordinate system (y x z)
     ; in this coordinate, k-vector lies in x-z plane
     ; ===
+
 
     examp=1.0D*rate_
     eyamp=dp/(sp-nr*nr)*rate_
@@ -91,6 +95,7 @@ for i=0,n_elements(wna_rad)-1 do begin
     bx_base=bxamp*(sin(-ww*tt));+nlevel_b*randomu(s,n_elements(tt))-0.005)
     by_base=byamp*(cos(-ww*tt));+nlevel_b*randomu(s,n_elements(tt))-0.005)
     bz_base=bzamp*(sin(-ww*tt));+nlevel_b*randomu(s,n_elements(tt))-0.005)
+
 
     ; rotation of wave fields, considering the rotation of k-vector around the z-axis,
     ; i.e., ambient magnetic field.
@@ -118,7 +123,6 @@ ez+=etot*(nlevel_e*randomu(s,n_elements(tt))-0.5*nlevel_e)
 bx+=btot*(nlevel_b*randomu(s,n_elements(tt))-0.5*nlevel_b)
 by+=btot*(nlevel_b*randomu(s,n_elements(tt))-0.5*nlevel_b)
 bz+=btot*(nlevel_b*randomu(s,n_elements(tt))-0.5*nlevel_b)
-
 
 store_data,'efield',data={x:tt,y:[[ex],[ey],[ez]]},dlim={colors:[2,4,6],labels:['x','y','z'],labflag:-1}
 store_data,'bfield',data={x:tt,y:[[bx],[by],[bz]]},dlim={colors:[2,4,6],labels:['x','y','z'],labflag:-1}

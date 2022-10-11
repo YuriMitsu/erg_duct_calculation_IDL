@@ -82,4 +82,6 @@ pro calc_Ne, UHR_file_name=UHR_file_name, wfc=wfc
     store_data, 'Ne', data={x:magt.x, y:Ne_}
     ylim, 'Ne', 10.0, 1000.0, 1
 
+    stop
+
 end
