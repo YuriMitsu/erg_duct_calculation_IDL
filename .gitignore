@@ -1,1 +1,5 @@
 tplots/
+for_paper_figure/tplots/
+MiniimumVarianceAnalysis
+for_paper_figure/event_tplots/
+*.tplot
