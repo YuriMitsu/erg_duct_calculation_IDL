@@ -45,7 +45,8 @@ pro calc_resonance_energy_from_UHR_file, UHR_file_name=UHR_file_name
     ; 2.calc.
     ; *****************
 
-    f = [0.5, 1.0, 1.5, 2.0, 2.5]
+    ; f = [0.5, 1.0, 1.5, 2.0, 2.5]
+    f = [2.0, 4.0, 6.0, 8.0]
     ; rate = [0.3, 0.5, 0.8]
     names = 'resonance_energy_f' + string(f, FORMAT='(f0.1)')
     ; names = 'resonance_energy_f' + string(rate, FORMAT='(f0.1)')
@@ -66,7 +67,7 @@ pro calc_resonance_energy_from_UHR_file, UHR_file_name=UHR_file_name
         ; color: 0黒 1ピンク 2青 3シアン 4黄緑 5黄色 6赤 7以降黒
         ; linestyle: 0棒線 1破線(細) 2破線(長) 3破線(細＆長) 4破線(細*3＆長) 5以降破線(長)
 
-        get_data, 'f_UHR', data=data
+        get_data, 'fUHR', data=data
 
         mask1 = ( magt.x lt data.x[0] )
         idx1 = UINT( TOTAL(mask1) )
@@ -93,7 +94,8 @@ pro calc_resonance_energy_from_UHR_file, UHR_file_name=UHR_file_name
     ; data_names[0] = 'mepe_PA_0-3'
     ; data_names[1:-1] = names ;store_name[1:-1] = names
 
-    store_names=['mepe_PA_0-3', 'resonance_energy_f0.5', 'resonance_energy_f1.0', 'resonance_energy_f1.5', 'resonance_energy_f2.0', 'resonance_energy_f2.5']
+    ; store_names=['mepe_PA_0-3', 'resonance_energy_f0.5', 'resonance_energy_f1.0', 'resonance_energy_f1.5', 'resonance_energy_f2.0', 'resonance_energy_f2.5']
+    store_names=['mepe_PA_0-3', 'resonance_energy_f2.0', 'resonance_energy_f4.0', 'resonance_energy_f6.0', 'resonance_energy_f8.0']
     ; store_names=['mepe_PA_0-3', 'resonance_energy_f0.3', 'resonance_energy_f0.5', 'resonance_energy_f0.8']
 
     store_data, 'mepe_PA_0-3_re', data=store_names

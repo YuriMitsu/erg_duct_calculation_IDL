@@ -1,5 +1,5 @@
 ; コンパイル 
-; .compile -v '/Users/ampuku/Documents/duct/code/IDL/plots/plot_f_kpara.pro'
+; .compile -v '/Users/ampuku/Documents/duct/code/IDL/plots/plot_f_kpara_wfc.pro'
 
 ; input
 ;   tplot 'kpara_LASVD_ma3_mask'
@@ -11,20 +11,22 @@
 ;   ver lsm
 
 
-pro plot_f_kpara, focus_f=focus_f, duct_time=duct_time, duct_wid_data_n=duct_wid_data_n, test=test, lsm=lsm, data__f_kpara=data__f_kpara
+pro plot_f_kpara_wfc, focus_f=focus_f, duct_time=duct_time, test=test, lsm=lsm, data__f_kpara=data__f_kpara
 
 
   ; ******************************
   ; 3.make fig
   ; ******************************
 
-  get_data, 'kpara_LASVD_ma3_mask', data = kpara_data
+  get_data, 'kpara_mask', data = kpara_data
   kpara_data.y[*, where(kpara_data.v lt focus_f[0]-0.1) ] = 'NaN'
   kpara_data.y[*, where(kpara_data.v gt focus_f[-1]+0.1) ] = 'NaN'
 
-  duct_time_double = time_double(duct_time)
-  time_res = kpara_data.x[100]- kpara_data.x[99]
-  idx_t = where( kpara_data.x lt duct_time_double+time_res/2 and kpara_data.x gt duct_time_double-time_res/2, cnt )
+  ; duct_time_double1 = time_double(duct_time1)
+  ; duct_time_double2 = time_double(duct_time2)
+  ; time_res =  kvec_data.x[100]- kvec_data.x[99]
+  ; idx_t1 = where( kvec_data.x lt duct_time_double1+time_res/2 and kvec_data.x gt duct_time_double1-time_res/2, cnt )
+  ; idx_t2 = where( kvec_data.x lt duct_time_double2+time_res/2 and kvec_data.x gt duct_time_double2-time_res/2, cnt )
 
   kpara_linear = lsm[0] * focus_f + lsm[1]
 

@@ -295,6 +295,7 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
 
   powspec_b = dblarr(n_t,n_e)
   wna = dblarr(n_t,n_e)
+  wna_azm = dblarr(n_t,n_e)
   polarization = dblarr(n_t,n_e)
   planarity = dblarr(n_t,n_e)
   lambda1 = dblarr(n_t,n_e)
@@ -308,7 +309,7 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
       powspec_b[i,j] = sqrt(A[0,0,i,j]^2 + A[1,1,i,j]^2 + A[2,2,i,j]^2)
       ; wave normal
       wna[i,j] = abs(atan(sqrt(V_SORT[0,0,i,j]^2+V_SORT[0,1,i,j]^2)/V_SORT[0,2,i,j])/!dtor) ;[degree]
-      ; wna_azm[i,j] = atan(V_SORT[0,1,i,j], V_SORT[0,0,i,j])/!dtor 
+      wna_azm[i,j] = atan(V_SORT[0,1,i,j], V_SORT[0,0,i,j])/!dtor 
       ; polarization
       polarization[i,j] = W_SORT[1,i,j]/W_SORT[2,i,j]
       if(rr_[1,0,i,j,1] LT 0.) then polarization[i,j] *= -1.
@@ -337,6 +338,12 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
     ztitle='[degree]', ysubtitle='Frequency [kHz]', spec = 1
   ylim, 'kvec_LASVD'+ma, 0.064, 20, 1 ; kHz
   zlim, 'kvec_LASVD'+ma, 0., 90, 0 ; degree
+
+  store_data, 'kvecazm_LASVD'+ma, data={x:s00.x, y:wna_azm, v:s00.v2} ; *** modified (v->v2)
+  options, 'kvecazm_LASVD'+ma, ytitle='wave normal angle azm!CLA SVD'+ma, $
+    ztitle='[degree]', ysubtitle='Frequency [kHz]', spec = 1
+  ylim, 'kvecazm_LASVD'+ma, 0.064, 20, 1 ; kHz
+  zlim, 'kvecazm_LASVD'+ma, 0., 360, 0 ; degree
 
   store_data, 'polarization_LASVD'+ma, data={x:s00.x, y:polarization, v:s00.v2} ; *** modified (v->v2)
   options, 'polarization_LASVD'+ma, ytitle='polarization!CLA SVD'+ma, $
@@ -417,10 +424,13 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
     ; calc Ez
     c_ez = dcindgen(n_elements(data_ex.x), n_elements(data_ex.v2))
     idx = nn(data_bx.x, data_ex.x)
+    mask = ( data_bx.x[idx] ne data_ex.x ) 
 
     for i=0, n_elements(data_ex.x)-1 do begin
       c_ez[i,*] = (-c_ex[i,*]*c_bx[idx[i],*] - c_ey[i,*]*c_by[idx[i],*]) / c_bz[idx[i],*]
     endfor
+
+    c_ez[mask] = !VALUES.F_NAN
 
     Sx=dindgen(n_elements(data_bx.x),n_elements(data_bx.v2))
     Sy=dindgen(n_elements(data_bx.x),n_elements(data_bx.v2))
@@ -428,6 +438,7 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
 
     ; calc Poynting flux
     idx = nn(data_ex.x, data_bx.x) 
+    mask = ( data_ex.x[idx] ne data_bx.x ) 
 
     for i=0, n_elements(data_bx.x)-1 do begin
       for j=0, n_elements(data_bx.v2)-1 do begin
@@ -436,6 +447,10 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
         Sz[i,j]= double(c_ex[idx[i],j]*conj(c_by[i,j])-c_ey[idx[i],j]*conj(c_bx[i,j]))
       endfor
     endfor
+
+    Sx[mask] = !VALUES.F_NAN
+    Sy[mask] = !VALUES.F_NAN
+    Sz[mask] = !VALUES.F_NAN
 
     ; analyze MGF data
     split_vec, 'erg_mgf_l2_mag_64hz_sgi'
@@ -472,6 +487,7 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
     endfor
 
     theta=acos(S[*,*,2]/sqrt(S[*,*,0]^2+S[*,*,1]^2+S[*,*,2]^2))/!dtor
+    theta[mask] = !VALUES.F_NAN
     store_data, 'S', data={x:data_bx.x, y:theta, v:data_bx.v2}, dlim=dlim, lim=lim
     ylim, [pr_complex + 'Etotal_132', pr_complex + 'Btotal_132', 'S'], 0.064, 20, 1
     zlim, pr_complex + 'Etotal_132', 1E-7, 1E0, 1 ; mV^2/m^2/Hz
@@ -534,6 +550,10 @@ pro calc_wave_params, moving_average=moving_average, algebraic_SVD=algebraic_SVD
   get_data, 'kvec_LASVD'+ma, data=data, dlim=dlim, lim=lim
   data.y[where(data_ref.y LT cut_f)] = 'NaN'
   store_data, 'kvec_LASVD'+ma+'_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
+  ; kvec azm
+  get_data, 'kvecazm_LASVD'+ma, data=data, dlim=dlim, lim=lim
+  data.y[where(data_ref.y LT cut_f)] = 'NaN'
+  store_data, 'kvecazm_LASVD'+ma+'_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
   ; polarization
   get_data, 'polarization_LASVD'+ma, data=data, dlim=dlim, lim=lim
   data.y[where(data_ref.y LT cut_f)] = 'NaN'

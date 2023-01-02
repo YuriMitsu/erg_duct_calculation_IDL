@@ -21,6 +21,9 @@ pro memo_sus_201704_event_list
     timespan, '2017-04-07/16:05:00', 50, /minute 
     plot_event_normal, UHR_file_name='kuma'
 
+    timespan, '2017-04-11/08:00:00', 20, /minute 
+    plot_event_normal, UHR_file_name='kuma'
+
     timespan, '2017-04-12/22:10:00', 30, /minute 
     plot_event_normal, UHR_file_name='kuma'
 

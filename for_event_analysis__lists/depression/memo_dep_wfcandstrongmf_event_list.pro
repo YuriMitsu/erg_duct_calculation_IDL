@@ -5,7 +5,7 @@
 
 pro memo_dep_wfcandstrongmf_event_list
 
-    timespan, '2017-07-03/04:20:00', 25.0, /minute 
+    timespan, '2017-07-03/04:20:00', 25.0, /minute
     ;plot_event_normal_5min, UHR_file_name='kuma'
     event_analysis_duct__wfc, duct_time='2017-07-03/04:32:32', focus_f=[4.,5.,6.,7.,8.,9.], UHR_file_name='kuma', duct_wid_data_n=uint(2.0/0.037617), IorD='D', lsm=[0.0003885061167220895, 0.00014587832147501856]
     ; event_analysis_duct, duct_time='2017-07-03/04:32:32', focus_f=[4.,5.,6.,7.,8.,9.], UHR_file_name='kuma', duct_wid_data_n=1, IorD='D'

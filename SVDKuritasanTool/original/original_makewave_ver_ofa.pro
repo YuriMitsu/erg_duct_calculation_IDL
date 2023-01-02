@@ -12,7 +12,7 @@ wpe=5.0D*wce ; assume wpe/wce=5.0
 wpi=wpe/sqrt(1840.0D)
 wci=wce/1840.0D
 ww=0.2*wce  ; assume 0.2wce wave
-fsamp=8192.0*8D
+fsamp=8192.0*8D ; 65kHz OFA
 
 tt=dindgen(fsamp*8)/fsamp
 timespan,'1970-01-01',tt,/s
