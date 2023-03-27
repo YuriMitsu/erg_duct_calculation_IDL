@@ -258,27 +258,27 @@ pro f_ne_f_b_plot
     ; !p.charsize=1.0
 
 
-    ; timespan, '2018-06-06/11:25:00', 20, /min
+    timespan, '2018-06-06/11:25:00', 20, /min
 
-    ; duct_time='2018-06-06/11:29:40' & focus_f=[1., 2., 3., 4.] & duct_wid_data_n=3 & IorD='I' & lsm=[0.00037135126, 0.00056528556]
-    ; a = loading_f_ne_f_b_plot()
-    ; ; 以下plot_f_Ne0_f_Bの中身
-    ; a = loading_f_ne_f_b_plot2(duct_time=duct_time, focus_f=focus_f, duct_wid_data_n=duct_wid_data_n, IorD=IorD, lsm=lsm,  number=1)
+    duct_time='2018-06-06/11:29:40' & focus_f=[1., 2., 3., 4.] & duct_wid_data_n=3 & IorD='I' & lsm=[0.00037135126, 0.00056528556]
+    a = loading_f_ne_f_b_plot()
+    ; 以下plot_f_Ne0_f_Bの中身
+    a = loading_f_ne_f_b_plot2(duct_time=duct_time, focus_f=focus_f, duct_wid_data_n=duct_wid_data_n, IorD=IorD, lsm=lsm,  number=1)
 
-    ; ; stop   
+    stop   
 
-    ; duct_time='2018-06-06/11:32:29' & focus_f=[3., 4., 5., 6., 7.] & duct_wid_data_n=3 & IorD='D' & lsm=[0.0003555313670662758, 0.00036820383445613147]
-    ; a = loading_f_ne_f_b_plot2(duct_time=duct_time, focus_f=focus_f, duct_wid_data_n=duct_wid_data_n, IorD=IorD, lsm=lsm,  number=2)
+    duct_time='2018-06-06/11:32:29' & focus_f=[3., 4., 5., 6., 7.] & duct_wid_data_n=3 & IorD='D' & lsm=[0.0003555313670662758, 0.00036820383445613147]
+    a = loading_f_ne_f_b_plot2(duct_time=duct_time, focus_f=focus_f, duct_wid_data_n=duct_wid_data_n, IorD=IorD, lsm=lsm,  number=2)
 
-    ; ; stop
+    stop
 
-    ; timespan, '2017-07-14/02:40:00', 20.0, /minute
+    timespan, '2017-07-14/02:40:00', 20.0, /minute
 
-    ; duct_time='2017-07-14/02:52:17' & focus_f=[1.,2.,3.,4.,5.] & duct_wid_data_n=10 & IorD='D' & lsm=[0.00021773415,-0.00012809447]
-    ; a = loading_f_ne_f_b_plot()
-    ; a = loading_f_ne_f_b_plot2(duct_time=duct_time, focus_f=focus_f, duct_wid_data_n=duct_wid_data_n, IorD=IorD, lsm=lsm,  number=3)
+    duct_time='2017-07-14/02:52:17' & focus_f=[1.,2.,3.,4.,5.] & duct_wid_data_n=10 & IorD='D' & lsm=[0.00021773415,-0.00012809447]
+    a = loading_f_ne_f_b_plot()
+    a = loading_f_ne_f_b_plot2(duct_time=duct_time, focus_f=focus_f, duct_wid_data_n=duct_wid_data_n, IorD=IorD, lsm=lsm,  number=3)
 
-    ; stop
+    stop
 
     timespan, '2017-07-03/04:32:00', 1, /min
 
@@ -299,12 +299,12 @@ pro f_ne_f_b_plot
     a = loading_f_ne_f_b_plot2_wfc(duct_time=duct_time, focus_f=focus_f, IorD=IorD, lsm=lsm,  number=42)
 
 
-    lsm=[0.0003793070494856606, 0.0002664968416327885] ; Lower-bandにフォーカス
-    a = loading_f_ne_f_b_plot2_wfc(duct_time=duct_time, focus_f=focus_f, IorD=IorD, lsm=lsm,  number=41)
+    ; lsm=[0.0003793070494856606, 0.0002664968416327885] ; Lower-bandにフォーカス
+    ; a = loading_f_ne_f_b_plot2_wfc(duct_time=duct_time, focus_f=focus_f, IorD=IorD, lsm=lsm,  number=41)
 
-    ; ちょっとしたの方の周波数帯も見てみた
-    duct_time='2017-07-03/04:32:32' & focus_f=[0., 1., 2., 3., 4., 5., 6., 7., 8., 9.] & IorD='D'
-    a = loading_f_ne_f_b_plot2_wfc(duct_time=duct_time, focus_f=focus_f, IorD=IorD, lsm=lsm,  number=43)
+    ; ; ちょっとしたの方の周波数帯も見てみた
+    ; duct_time='2017-07-03/04:32:32' & focus_f=[0., 1., 2., 3., 4., 5., 6., 7., 8., 9.] & IorD='D'
+    ; a = loading_f_ne_f_b_plot2_wfc(duct_time=duct_time, focus_f=focus_f, IorD=IorD, lsm=lsm,  number=43)
 
 
     stop

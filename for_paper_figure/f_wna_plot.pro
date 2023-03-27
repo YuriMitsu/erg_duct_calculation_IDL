@@ -186,7 +186,7 @@ function loading_f_wna_plot2_wfc, duct_time=duct_time, focus_f=focus_f, number=n
     ylim, 'test', 0, 10, 0
     ylim, ['espec', 'bspec', 'wna_mask'], 0, 10000, 0
     stop
-    tplot, [150, 145]
+    ; tplot, [150, 145]
 
     File_path = '/Users/ampuku/Documents/duct/code/python/for_paper_figure/f_wna_data'+STRING(number, FORMAT='(i0)')+'/'
     WRITE_CSV, File_path+'fobs_data.csv', f_obs

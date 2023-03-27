@@ -308,6 +308,8 @@ end
 
 pro event_plot
 
+    path = '/Users/ampuku/Documents/duct/fig/_paper_figure/'
+
     SET_PLOT, 'Z'
     DEVICE, SET_RESOLUTION = [1000,800]
     ; DEVICE, SET_RESOLUTION = [600,1800]
@@ -330,7 +332,7 @@ pro event_plot
     ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_gyro', 'S_mask_gyro']
     tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_gyro', 'kvec_mask_gyro', 'polarization_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_gyro', 'S_mask_gyro']
 
-    ; makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot12_ver4', /mkdir
+    ; makepng, path+'event_plot12_ver4', /mkdir
     makepng, '/Users/ampuku/OneDrive/4_event12_test'
 
     stop
