@@ -44,28 +44,29 @@ bz=0.0D
 wrnn = n_elements(wna_rad)
 
 ; 周波数変化あり
-if wrnn eq 1 then begin
-    dfreq = [0.]
-endif else begin
-    ; dfreq = ( dindgen(wrnn) - float(wrnn-1)/2. ) * 50/wrnn
-    dfreq = ( dindgen(wrnn) - float(wrnn-1)/2. ) * 64/(wrnn-1) ; ズレ幅を増やしてみるべき
-endelse
+; if wrnn eq 1 then begin
+;     dfreq = [0.]
+; endif else begin
+;     ; dfreq = ( dindgen(wrnn) - float(wrnn-1)/2. ) * 50/wrnn
+;     dfreq = ( dindgen(wrnn) - float(wrnn-1)/2. ) * 64/(wrnn-1) ; ズレ幅を増やしてみるべき
+; endelse
 
 ; 周波数変化なし
-; dfreq = fltarr(wrnn)
+dfreq = fltarr(wrnn)
 
 randn = randomu(seed,[n_elements(wna_rad),8])*2*!dpi ; 初期位相のズレを入れる
 
 for i=0,n_elements(wna_rad)-1 do begin
 
+    ; ww=0.1*wce + dfreq[i]  ;assume 0.1wce wave
     ww=0.2*wce + dfreq[i]  ;assume 0.2wce wave
+    ; ww=0.35*wce + dfreq[i]  ;assume 0.35wce wave
 
     ; Cold plasma dispersion relation is evaluated
     ; assuming plasma consisting of electrons and protons
 
     sp=1.0-wpe*wpe/(ww*ww-wce*wce)-wpi*wpi/(ww*ww-wci*wci) ; Stix S parameter
-    dp=wce*wpe*wpe/(ww^3-ww*wce*wce)+wpi*wpi*wci/(ww^3-ww*wci*wci) ; Stix D parameter
-    ; dp=-wce*wpe*wpe/(ww^3-ww*wce*wce)+wpi*wpi*wci/(ww^3-ww*wci*wci) ; Stix D parameter
+    dp=-wce*wpe*wpe/(ww^3-ww*wce*wce)+wpi*wpi*wci/(ww^3-ww*wci*wci) ; Stix D parameter
     pp=1.0-wpe*wpe/ww^2-wpi*wpi/ww^2 ; Stix P parameter
 
     rr=sp+dp
@@ -113,7 +114,7 @@ for i=0,n_elements(wna_rad)-1 do begin
     by_base=byamp*(cos(-ww*tt+randn[i,0]));+nlevel_b*randomu(s,n_elements(tt))-0.005)
     bz_base=bzamp*(sin(-ww*tt+randn[i,0]));+nlevel_b*randomu(s,n_elements(tt))-0.005)
 
-    if 0 then begin
+    if 1 then begin
         for l=0,7 do begin
             ex_base[1024*l:1024*(l+1)-1]=examp*(cos(-ww*tt[1024*l:1024*(l+1)-1]+randn[i,l]));+nlevel_e*randomu(s,n_elements(tt))-0.005)
             ey_base[1024*l:1024*(l+1)-1]=eyamp*(sin(-ww*tt[1024*l:1024*(l+1)-1]+randn[i,l]));+nlevel_e*randomu(s,n_elements(tt))-0.005)

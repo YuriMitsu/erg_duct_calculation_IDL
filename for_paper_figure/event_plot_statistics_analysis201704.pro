@@ -75,6 +75,8 @@ function loading
         data=['erg_pwe_ofa_l2_matrix_Etotal_132', 'fce', 'fce_half', 'flhr', 'fce_TS04', 'fce_TS04_half']
     store_data, 'ofa_b_gyro', $
         data=['erg_pwe_ofa_l2_matrix_Btotal_132', 'fce', 'fce_half', 'flhr', 'fce_TS04', 'fce_TS04_half']
+    store_data, 'kvec_gyro', $
+        data=['kvec_LASVD_ma3', 'fce', 'fce_half', 'flhr', 'fce_TS04', 'fce_TS04_half']
     store_data, 'kvec_mask_gyro', $
         data=['kvec_LASVD_mask', 'fce', 'fce_half', 'flhr', 'fce_TS04', 'fce_TS04_half']
     store_data, 'polarization_mask_gyro', $
@@ -95,14 +97,15 @@ function loading
     zlim, 'ofa_e_gyro', 1e-9, 1e2,  1
     zlim, 'ofa_b_gyro', 1e-4, 1e2,  1 ; pT^2/Hz
 
-    options, 'hfa_e_gyro',             ytitle='HFA-E',             ysubtitle='frequency [kHz]', ztitle='[mV!U2!N/m!U2!N/Hz]'
-    options, 'ofa_e_gyro',             ytitle='OFA-E',             ysubtitle='frequency [kHz]', ztitle='[mV!U2!N/m!U2!N/Hz]'
-    options, 'ofa_b_gyro',             ytitle='OFA-B',             ysubtitle='frequency [kHz]', ztitle='[pT!U2!N/Hz]'
+    options, 'hfa_e_gyro',             ytitle='HFA-E',             ysubtitle='f [kHz]', ztitle='[mV!U2!N/m!U2!N/Hz]'
+    options, 'ofa_e_gyro',             ytitle='OFA-E',             ysubtitle='f [kHz]', ztitle='[mV!U2!N/m!U2!N/Hz]'
+    options, 'ofa_b_gyro',             ytitle='OFA-B',             ysubtitle='f [kHz]', ztitle='[pT!U2!N/Hz]'
     options, 'Ne',                     ytitle='',                  ysubtitle='Ne [/cc]'
-    options, 'kvec_mask_gyro',         ytitle='wave normal angle', ysubtitle='frequency [kHz]', ztitle='[degree]'
-    options, 'polarization_mask_gyro', ytitle='ploarization',      ysubtitle='frequency [kHz]', ztitle=''
-    options, 'planarity_gyro',         ytitle='planarity',         ysubtitle='frequency [kHz]', ztitle=''
-    options, 'S_mask_gyro',            ytitle='Poynting vector',   ysubtitle='frequency [kHz]', ztitle='[degree]'
+    options, 'kvec_gyro',              ytitle='WNA',               ysubtitle='f [kHz]', ztitle='[degree]'
+    options, 'kvec_mask_gyro',         ytitle='WNA',               ysubtitle='f [kHz]', ztitle='[degree]'
+    options, 'polarization_mask_gyro', ytitle='ploarization',      ysubtitle='f [kHz]', ztitle=''
+    options, 'planarity_gyro',         ytitle='planarity',         ysubtitle='f [kHz]', ztitle=''
+    options, 'S_mask_gyro',            ytitle='Poynting!Cvector',  ysubtitle='f [kHz]', ztitle='[degree]'
 
     options, '*_gyro', 'zoffset', [1., 2.]
     options, '*_gyro', 'zticklen', -0.5
@@ -132,11 +135,11 @@ pro event_plot_statistics_analysis201704
 
 
     SET_PLOT, 'Z'
-    DEVICE, SET_RESOLUTION = [1200,1200]
+    DEVICE, SET_RESOLUTION = [1000,1300]
     !p.BACKGROUND = 255
     !p.color = 0
     ; !P.FONT = 0
-    !p.charsize=1.0
+    !p.charsize=1.2
 
 
 
@@ -146,12 +149,13 @@ pro event_plot_statistics_analysis201704
 
     ylim, '*_gyro', 0.064, 15.0, 0 ; kHz
     ylim, 'hfa_e_gyro', 70.0, 300.0, 0
-    ylim, 'Ne', 100.0, 500.0, 0
+    ylim, 'Ne', 120.0, 600.0, 0
 
-    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro']
+    ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro']
+    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro']
 
-    makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot0401', /mkdir
-
+    ; makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot0401', /mkdir
+    makepng, '/Users/ampuku/OneDrive/duct/test/event_plot0401', /mkdir
     ; stop
 
 
@@ -165,10 +169,11 @@ pro event_plot_statistics_analysis201704
     ylim, 'hfa_e_gyro', 70.0, 300.0, 0
     ylim, 'Ne', 100.0, 500.0, 0
 
-    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro']
+    ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro']
+    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro']
 
-    makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot0403', /mkdir
-
+    ; makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot0403', /mkdir
+    makepng, '/Users/ampuku/OneDrive/duct/test/event_plot0403', /mkdir
 
 
 
@@ -176,14 +181,15 @@ pro event_plot_statistics_analysis201704
 
     a = loading()
 
-    ylim, '*_gyro', 0.064, 15.0, 0 ; kHz
-    ylim, 'hfa_e_gyro', 70.0, 300.0, 0
-    ylim, 'Ne', 100.0, 500.0, 0
+    ylim, '*_gyro', 0.064, 7.0, 0 ; kHz
+    ylim, 'hfa_e_gyro', 100.0, 250.0, 0
+    ylim, 'Ne', 250.0, 550.0, 0
 
-    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro']
+    ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro']
+    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro']
 
-    makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot0404', /mkdir
-
+    ; makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot0404', /mkdir
+    makepng, '/Users/ampuku/OneDrive/duct/test/event_plot0404', /mkdir
 
 
 
@@ -191,14 +197,15 @@ pro event_plot_statistics_analysis201704
 
     a = loading()
 
-    ylim, '*_gyro', 0.064, 15.0, 0 ; kHz
-    ylim, 'hfa_e_gyro', 70.0, 300.0, 0
-    ylim, 'Ne', 100.0, 500.0, 0
+    ylim, '*_gyro', 3.0, 9.0, 0 ; kHz
+    ylim, 'hfa_e_gyro', 50.0, 130.0, 0
+    ylim, 'Ne', 50.0, 130.0, 0
 
-    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro']
+    ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro']
+    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro']
 
-    makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot0405', /mkdir
-
+    ; makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot0405', /mkdir
+    makepng, '/Users/ampuku/OneDrive/duct/test/event_plot0405', /mkdir
 
 
 
@@ -206,28 +213,30 @@ pro event_plot_statistics_analysis201704
 
     a = loading()
 
-    ylim, '*_gyro', 0.064, 15.0, 0 ; kHz
+    ylim, '*_gyro', 0.064, 5.0, 0 ; kHz
     ylim, 'hfa_e_gyro', 70.0, 300.0, 0
     ylim, 'Ne', 100.0, 500.0, 0
 
-    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro']
+    ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro']
+    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro']
 
-    makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot0407', /mkdir
-
+    ; makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot0407', /mkdir
+    makepng, '/Users/ampuku/OneDrive/duct/test/event_plot0407', /mkdir
 
 
     timespan, '2017-04-11/08:00:00', 20, /minute
 
     a = loading()
 
-    ylim, '*_gyro', 0.064, 15.0, 0 ; kHz
+    ylim, '*_gyro', 5.0, 15.0, 0 ; kHz
     ylim, 'hfa_e_gyro', 70.0, 300.0, 0
-    ylim, 'Ne', 100.0, 500.0, 0
+    ylim, 'Ne', 150.0, 600.0, 0
 
-    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro']
+    ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro']
+    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro']
 
-    makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot0411', /mkdir
-
+    ; makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot0411', /mkdir
+    makepng, '/Users/ampuku/OneDrive/duct/test/event_plot0411', /mkdir
 
 ; stop
 
@@ -235,14 +244,15 @@ pro event_plot_statistics_analysis201704
 
     a = loading()
 
-    ylim, '*_gyro', 0.064, 15.0, 0 ; kHz
-    ylim, 'hfa_e_gyro', 70.0, 300.0, 0
-    ylim, 'Ne', 100.0, 500.0, 0
+    ylim, '*_gyro', 1.0, 6.0, 0 ; kHz
+    ylim, 'hfa_e_gyro', 50.0, 200.0, 0
+    ylim, 'Ne', 50.0, 350.0, 0
 
-    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro']
+    ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro']
+    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro']
 
-    makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot0412', /mkdir
-
+    ; makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot0412', /mkdir
+    makepng, '/Users/ampuku/OneDrive/duct/test/event_plot0412', /mkdir
 
 
 
@@ -250,14 +260,15 @@ pro event_plot_statistics_analysis201704
 
     a = loading()
 
-    ylim, '*_gyro', 0.064, 15.0, 0 ; kHz
-    ylim, 'hfa_e_gyro', 70.0, 300.0, 0
-    ylim, 'Ne', 100.0, 500.0, 0
+    ylim, '*_gyro', 0.064, 4.0, 0 ; kHz
+    ylim, 'hfa_e_gyro', 70.0, 200.0, 0
+    ylim, 'Ne', 50.0, 300.0, 0
 
-    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro']
+    ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro']
+    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro']
 
-    makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot0413', /mkdir
-
+    ; makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot0413', /mkdir
+    makepng, '/Users/ampuku/OneDrive/duct/test/event_plot0413', /mkdir
 
 
 
@@ -265,14 +276,15 @@ pro event_plot_statistics_analysis201704
 
     a = loading()
 
-    ylim, '*_gyro', 0.064, 15.0, 0 ; kHz
-    ylim, 'hfa_e_gyro', 70.0, 300.0, 0
-    ylim, 'Ne', 100.0, 500.0, 0
+    ylim, '*_gyro', 0.064, 5.0, 0 ; kHz
+    ylim, 'hfa_e_gyro', 100.0, 350.0, 0
+    ylim, 'Ne', 300.0, 800.0, 0
 
-    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro']
+    ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro']
+    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro']
 
-    makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot04141', /mkdir
-
+    ; makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot04141', /mkdir
+    makepng, '/Users/ampuku/OneDrive/duct/test/event_plot04141', /mkdir
 
 
 
@@ -280,14 +292,15 @@ pro event_plot_statistics_analysis201704
 
     a = loading()
 
-    ylim, '*_gyro', 0.064, 15.0, 0 ; kHz
-    ylim, 'hfa_e_gyro', 70.0, 300.0, 0
+    ylim, '*_gyro', 0.064, 4.0, 0 ; kHz
+    ylim, 'hfa_e_gyro', 100.0, 250.0, 0
     ylim, 'Ne', 100.0, 500.0, 0
 
-    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro']
+    ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro']
+    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro']
 
-    makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot04142', /mkdir
-
+    ; makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot04142', /mkdir
+    makepng, '/Users/ampuku/OneDrive/duct/test/event_plot04142', /mkdir
 
 
 
@@ -295,14 +308,15 @@ pro event_plot_statistics_analysis201704
 
     a = loading()
 
-    ylim, '*_gyro', 0.064, 15.0, 0 ; kHz
-    ylim, 'hfa_e_gyro', 70.0, 300.0, 0
+    ylim, '*_gyro', 0.064, 3.0, 0 ; kHz
+    ylim, 'hfa_e_gyro', 70.0, 250.0, 0
     ylim, 'Ne', 100.0, 500.0, 0
 
-    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro']
+    ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro']
+    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro']
 
-    makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot0417', /mkdir
-
+    ; makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot0417', /mkdir
+    makepng, '/Users/ampuku/OneDrive/duct/test/event_plot0417', /mkdir
 
 
 
@@ -310,14 +324,15 @@ pro event_plot_statistics_analysis201704
 
     a = loading()
 
-    ylim, '*_gyro', 0.064, 15.0, 0 ; kHz
+    ylim, '*_gyro', 0.064, 7.0, 0 ; kHz
     ylim, 'hfa_e_gyro', 70.0, 300.0, 0
     ylim, 'Ne', 100.0, 500.0, 0
 
-    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro']
+    ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro']
+    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro']
 
-    makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot0424', /mkdir
-
+    ; makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot0424', /mkdir
+    makepng, '/Users/ampuku/OneDrive/duct/test/event_plot0424', /mkdir
 
 
 
@@ -325,14 +340,15 @@ pro event_plot_statistics_analysis201704
 
     a = loading()
 
-    ylim, '*_gyro', 0.064, 15.0, 0 ; kHz
-    ylim, 'hfa_e_gyro', 70.0, 300.0, 0
-    ylim, 'Ne', 100.0, 500.0, 0
+    ylim, '*_gyro', 1.0, 5.0, 0 ; kHz
+    ylim, 'hfa_e_gyro', 70.0, 200.0, 0
+    ylim, 'Ne', 150.0, 350.0, 0
 
-    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro']
+    ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro']
+    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_gyro', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro']
 
-    makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot0430', /mkdir
-
+    ; makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot0430', /mkdir
+    makepng, '/Users/ampuku/OneDrive/duct/test/event_plot0430', /mkdir
 
 
 

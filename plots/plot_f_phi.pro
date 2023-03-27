@@ -32,6 +32,41 @@ pro plot_f_phi, duct_time=duct_time, focus_f=focus_f, test=test, duct_wid_data_n
     for i=0,n_elements(kvecazm_obs[*,0])-1 do f_kvec_obs[i,*] = f_obs ; obs.x
 
 
+
+; ==========================================================================
+    f_data = fltarr(n_elements(kvecazm_obs[*,0])*n_elements(kvecazm_obs[0,*]))
+    kvecazm_data = fltarr(n_elements(kvecazm_obs[*,0])*n_elements(kvecazm_obs[0,*]))
+    
+
+    for i=0,n_elements(kvecazm_obs[*,0])-1 do f_data[i*n_elements(kvecazm_obs[i,*]):(i+1)*n_elements(kvecazm_obs[i,*])-1] = f_obs
+    for i=0,n_elements(kvecazm_obs[*,0])-1 do kvecazm_data[i*n_elements(kvecazm_obs[i,*]):(i+1)*n_elements(kvecazm_obs[i,*])-1] = kvecazm_obs[i,*]
+
+    WRITE_CSV, '/Users/ampuku/Documents/duct/code/python/for_M_thesis/event/f.csv', f_data
+    WRITE_CSV, '/Users/ampuku/Documents/duct/code/python/for_M_thesis/event/phi.csv', kvecazm_data
+
+    ; for plot dots of observation WNA
+    get_data, 'kvec_LASVD_ma3_mask', data=kvec_data
+    kvec_data.y[*, where(kvec_data.v lt focus_f[0]-0.1) ] = 'NaN'
+    kvec_data.y[*, where(kvec_data.v gt focus_f[-1]+0.1) ] = 'NaN'
+
+    duct_time_double = time_double(duct_time)
+    time_res =  kvec_data.x[100]- kvec_data.x[99]
+    idx_t = where( kvec_data.x lt duct_time_double+time_res/2 and kvec_data.x gt duct_time_double-time_res/2, cnt )
+
+    f_obs = kvec_data.v ; the.x
+    kvec_obs = kvec_data.y[idx_t-duct_wid_data_n:idx_t+duct_wid_data_n,*] ; obs.y
+
+    kvec_data = fltarr(n_elements(kvecazm_obs[*,0])*n_elements(kvecazm_obs[0,*]))
+
+    for i=0,n_elements(kvecazm_obs[*,0])-1 do kvec_data[i*n_elements(kvecazm_obs[i,*]):(i+1)*n_elements(kvecazm_obs[i,*])-1] = kvec_obs[i,*]
+
+
+    WRITE_CSV, '/Users/ampuku/Documents/duct/code/python/for_M_thesis/event/theta.csv', kvec_data
+
+stop
+
+
+
     ; for plot dots of observation WNA
     get_data, 'kvec_LASVD_ma3_mask', data=kvec_data
     kvec_data.y[*, where(kvec_data.v lt focus_f[0]-0.1) ] = 'NaN'

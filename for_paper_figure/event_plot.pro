@@ -58,11 +58,18 @@ function loading
     store_data, 'planarity_LASVD_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
 
     ; Poynting vector
-    tinterpol_mxn, 'erg_pwe_ofa_l2_matrix_Btotal_132', 'S'
+    ; erg_load_pwe_ofa, level='l3'
+    tinterpol_mxn, 'erg_pwe_ofa_l2_matrix_Btotal_132', 'erg_pwe_ofa_l3_property_Pvec_angle_132'
     get_data, 'erg_pwe_ofa_l2_matrix_Btotal_132_interp', data=data_ref
-    get_data, 'S', data=data, dlim=dlim, lim=lim
+    get_data, 'erg_pwe_ofa_l3_property_Pvec_angle_132', data=data, dlim=dlim, lim=lim
     data.y[where(data_ref.y LT cut_f)] = 'NaN'
     store_data, 'S_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
+
+    ; tinterpol_mxn, 'erg_pwe_ofa_l2_matrix_Btotal_132', 'S'
+    ; get_data, 'erg_pwe_ofa_l2_matrix_Btotal_132_interp', data=data_ref
+    ; get_data, 'S', data=data, dlim=dlim, lim=lim
+    ; data.y[where(data_ref.y LT cut_f)] = 'NaN'
+    ; store_data, 'S_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
 
 
     ; ************************************
@@ -88,7 +95,10 @@ function loading
     store_data, 'planarity_mask_gyro', $
         data=['planarity_LASVD_mask', 'fce', 'fce_half', 'flhr', 'fce_TS04', 'fce_TS04_half']
     store_data, 'S_gyro', $
-        data=['S', 'fce', 'fce_half', 'flhr', 'fce_TS04', 'fce_TS04_half']
+        data=['erg_pwe_ofa_l3_property_Pvec_angle_132', 'fce', 'fce_half', 'flhr', 'fce_TS04', 'fce_TS04_half']
+
+    ; store_data, 'S_gyro', $
+        ; data=['S', 'fce', 'fce_half', 'flhr', 'fce_TS04', 'fce_TS04_half']
     store_data, 'S_mask_gyro', $
         data=['S_mask', 'fce', 'fce_half', 'flhr', 'fce_TS04', 'fce_TS04_half']
 
@@ -101,18 +111,18 @@ function loading
     zlim, 'ofa_e_gyro', 1e-9, 1e2,  1
     zlim, 'ofa_b_gyro', 1e-4, 1e2,  1 ; pT^2/Hz
 
-    options, 'hfa_e_gyro',             ytitle='HFA-E',             ysubtitle='frequency [kHz]', ztitle='[mV!U2!N/m!U2!N/Hz]'
-    options, 'ofa_e_gyro',             ytitle='OFA-E',             ysubtitle='frequency [kHz]', ztitle='[mV!U2!N/m!U2!N/Hz]'
-    options, 'ofa_b_gyro',             ytitle='OFA-B',             ysubtitle='frequency [kHz]', ztitle='[pT!U2!N/Hz]'
+    options, 'hfa_e_gyro',             ytitle='HFA-E',             ysubtitle='f [kHz]', ztitle='[mV!U2!N/m!U2!N/Hz]'
+    options, 'ofa_e_gyro',             ytitle='OFA-E',             ysubtitle='f [kHz]', ztitle='[mV!U2!N/m!U2!N/Hz]'
+    options, 'ofa_b_gyro',             ytitle='OFA-B',             ysubtitle='f [kHz]', ztitle='[pT!U2!N/Hz]'
     options, 'Ne',                     ytitle='',                  ysubtitle='Ne [/cc]'
-    options, 'kvec_gyro',              ytitle='wave normal angle', ysubtitle='frequency [kHz]', ztitle='[degree]'
-    options, 'kvec_mask_gyro',         ytitle='wave normal angle', ysubtitle='frequency [kHz]', ztitle='[degree]'
-    options, 'polarization_gyro',      ytitle='ploarization',      ysubtitle='frequency [kHz]', ztitle=''
-    options, 'polarization_mask_gyro', ytitle='ploarization',      ysubtitle='frequency [kHz]', ztitle=''
-    options, 'planarity_gyro',         ytitle='planarity',         ysubtitle='frequency [kHz]', ztitle=''
-    options, 'planarity_mask_gyro',    ytitle='planarity',         ysubtitle='frequency [kHz]', ztitle=''
-    options, 'S_gyro',                 ytitle='Poynting vector',   ysubtitle='frequency [kHz]', ztitle='[degree]'
-    options, 'S_mask_gyro',            ytitle='Poynting vector',   ysubtitle='frequency [kHz]', ztitle='[degree]'
+    options, 'kvec_gyro',              ytitle='WNA',               ysubtitle='f [kHz]', ztitle='[degree]'
+    options, 'kvec_mask_gyro',         ytitle='WNA',               ysubtitle='f [kHz]', ztitle='[degree]'
+    options, 'polarization_gyro',      ytitle='ploarization',      ysubtitle='f [kHz]', ztitle=''
+    options, 'polarization_mask_gyro', ytitle='ploarization',      ysubtitle='f [kHz]', ztitle=''
+    options, 'planarity_gyro',         ytitle='planarity',         ysubtitle='f [kHz]', ztitle=''
+    options, 'planarity_mask_gyro',    ytitle='planarity',         ysubtitle='f [kHz]', ztitle=''
+    options, 'S_gyro',                 ytitle='Poynting!Cvector',  ysubtitle='f [kHz]', ztitle='[degree]'
+    options, 'S_mask_gyro',            ytitle='Poynting!Cvector',  ysubtitle='f [kHz]', ztitle='[degree]'
 
     options, '*_gyro', 'zoffset', [1., 2.]
     options, '*_gyro', 'zticklen', -0.5
@@ -186,13 +196,17 @@ function loading_wfc
     get_data, 'planarity', data=data, dlim=dlim, lim=lim
     data.y[where(data_ref.y LT cut_f)] = 'NaN'
     store_data, 'planarity_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
+    ; planarity
+    get_data, 'kvec_xy', data=data, dlim=dlim, lim=lim
+    data.y[where(data_ref.y LT cut_f)] = 'NaN'
+    store_data, 'kvec_xy_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
 
     ; Poynting vector
-    tinterpol_mxn, 'erg_pwe_ofa_l2_matrix_Btotal_132', 'S'
-    get_data, 'erg_pwe_ofa_l2_matrix_Btotal_132_interp', data=data_ref
-    get_data, 'S', data=data, dlim=dlim, lim=lim
-    data.y[where(data_ref.y LT cut_f)] = 'NaN'
-    store_data, 'S_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
+    ; tinterpol_mxn, 'erg_pwe_ofa_l2_matrix_Btotal_132', 'S'
+    ; get_data, 'erg_pwe_ofa_l2_matrix_Btotal_132_interp', data=data_ref
+    ; get_data, 'S', data=data, dlim=dlim, lim=lim
+    ; data.y[where(data_ref.y LT cut_f)] = 'NaN'
+    ; store_data, 'S_mask', data={x:data.x, y:data.y, v:data.v}, dlim=dlim, lim=lim
 
 
     ; ************************************
@@ -209,6 +223,12 @@ function loading_wfc
         data=['wna', 'fce', 'fce_half', 'flhr', 'fce_TS04', 'fce_TS04_half']
     store_data, 'wna_mask_gyro', $
         data=['wna_mask', 'fce', 'fce_half', 'flhr', 'fce_TS04', 'fce_TS04_half']
+
+    store_data, 'kvec_xy_gyro', $
+        data=['kvec_xy', 'fce', 'fce_half', 'flhr', 'fce_TS04', 'fce_TS04_half']
+    store_data, 'kvec_xy_mask_gyro', $
+        data=['kvec_xy_mask', 'fce', 'fce_half', 'flhr', 'fce_TS04', 'fce_TS04_half']
+
     store_data, 'polarization_gyro', $
         data=['polarization', 'fce', 'fce_half', 'flhr', 'fce_TS04', 'fce_TS04_half']
     store_data, 'polarization_mask_gyro', $
@@ -217,10 +237,10 @@ function loading_wfc
         data=['planarity', 'fce', 'fce_half', 'flhr', 'fce_TS04', 'fce_TS04_half']
     store_data, 'planarity_mask_gyro', $
         data=['planarity_mask', 'fce', 'fce_half', 'flhr', 'fce_TS04', 'fce_TS04_half']
-    store_data, 'S_gyro', $
-        data=['S', 'fce', 'fce_half', 'flhr', 'fce_TS04', 'fce_TS04_half']
-    store_data, 'S_mask_gyro', $
-        data=['S_mask', 'fce', 'fce_half', 'flhr', 'fce_TS04', 'fce_TS04_half']
+    ; store_data, 'S_gyro', $
+    ;     data=['S', 'fce', 'fce_half', 'flhr', 'fce_TS04', 'fce_TS04_half']
+    ; store_data, 'S_mask_gyro', $
+    ;     data=['S_mask', 'fce', 'fce_half', 'flhr', 'fce_TS04', 'fce_TS04_half']
 
 
     ; ************************************
@@ -235,26 +255,34 @@ function loading_wfc
     get_data, 'bspec', data=data & store_data, 'bspec', data={x:data.x, y:data.y, v:data.v/1000.}
     get_data, 'wna', data=data & store_data, 'wna', data={x:data.x, y:data.y, v:data.v/1000.}
     get_data, 'wna_mask', data=data & store_data, 'wna_mask', data={x:data.x, y:data.y, v:data.v/1000.}
+
+    get_data, 'kvec_xy', data=data & store_data, 'kvec_xy', data={x:data.x, y:data.y, v:data.v/1000.}
+    get_data, 'kvec_xy_mask', data=data & store_data, 'kvec_xy_mask', data={x:data.x, y:data.y, v:data.v/1000.}
+    
     get_data, 'polarization', data=data & store_data, 'polarization', data={x:data.x, y:data.y, v:data.v/1000.}
     get_data, 'polarization_mask', data=data & store_data, 'polarization_mask', data={x:data.x, y:data.y, v:data.v/1000.}
     get_data, 'planarity', data=data & store_data, 'planarity', data={x:data.x, y:data.y, v:data.v/1000.}
     get_data, 'planarity_mask', data=data & store_data, 'planarity_mask', data={x:data.x, y:data.y, v:data.v/1000.}
     ; get_data, 'S', data=data & store_data, 'S', data={x:data.x, y:data.y, v:data.v/1000.}
     ; get_data, 'S_mask', data=data & store_data, 'S_mask', data={}
-    get_data, 'S_mask', data=data & store_data, 'S_mask', data={x:data.x, y:data.y, v:data.v/1000.}
+    ; get_data, 'S_mask', data=data & store_data, 'S_mask', data={x:data.x, y:data.y, v:data.v/1000.}
 
-    options, 'hfa_e_gyro',             ytitle='HFA-E',             ysubtitle='frequency [kHz]', ztitle='[mV!U2!N/m!U2!N/Hz]'
-    options, 'wfc_e_gyro',             ytitle='WFC-E',             ysubtitle='frequency [kHz]', ztitle='[mV!U2!N/m!U2!N/Hz]'
-    options, 'wfc_b_gyro',             ytitle='WFC-B',             ysubtitle='frequency [kHz]', ztitle='[pT!U2!N/Hz]'
+    options, 'hfa_e_gyro',             ytitle='HFA-E',             ysubtitle='f [kHz]', ztitle='[mV!U2!N/m!U2!N/Hz]'
+    options, 'wfc_e_gyro',             ytitle='WFC-E',             ysubtitle='f [kHz]', ztitle='[mV!U2!N/m!U2!N/Hz]'
+    options, 'wfc_b_gyro',             ytitle='WFC-B',             ysubtitle='f [kHz]', ztitle='[pT!U2!N/Hz]'
     options, 'Ne',                     ytitle='',                  ysubtitle='Ne [/cc]'
-    options, 'wna_gyro',               ytitle='wave normal angle', ysubtitle='frequency [kHz]', ztitle='[degree]'
-    options, 'wna_mask_gyro',          ytitle='wave normal angle', ysubtitle='frequency [kHz]', ztitle='[degree]'
-    options, 'polarization_gyro',      ytitle='ploarization',      ysubtitle='frequency [kHz]', ztitle=''
-    options, 'polarization_mask_gyro', ytitle='ploarization',      ysubtitle='frequency [kHz]', ztitle=''
-    options, 'planarity_gyro',         ytitle='planarity',         ysubtitle='frequency [kHz]', ztitle=''
-    options, 'planarity_mask_gyro',    ytitle='planarity',         ysubtitle='frequency [kHz]', ztitle=''
-    ; options, 'S_gyro',                 ytitle='Poynting vector',   ysubtitle='frequency [kHz]', ztitle='[degree]'
-    ; options, 'S_mask_gyro',            ytitle='Poynting vector',   ysubtitle='frequency [kHz]', ztitle='[degree]'
+    options, 'wna_gyro',               ytitle='WNA',               ysubtitle='f [kHz]', ztitle='[degree]'
+    options, 'wna_mask_gyro',          ytitle='WNA',               ysubtitle='f [kHz]', ztitle='[degree]'
+
+    options, 'kvec_xy_gyro',           ytitle='phi',               ysubtitle='f [kHz]', ztitle='[degree]'
+    options, 'kvec_xy_mask_gyro',      ytitle='phi',               ysubtitle='f [kHz]', ztitle='[degree]'
+    
+    options, 'polarization_gyro',      ytitle='ploarization',      ysubtitle='f [kHz]', ztitle=''
+    options, 'polarization_mask_gyro', ytitle='ploarization',      ysubtitle='f [kHz]', ztitle=''
+    options, 'planarity_gyro',         ytitle='planarity',         ysubtitle='f [kHz]', ztitle=''
+    options, 'planarity_mask_gyro',    ytitle='planarity',         ysubtitle='f [kHz]', ztitle=''
+    ; options, 'S_gyro',                 ytitle='Poynting!Cvector',  ysubtitle='f [kHz]', ztitle='[degree]'
+    ; options, 'S_mask_gyro',            ytitle='Poynting!Cvector',  ysubtitle='f [kHz]', ztitle='[degree]'
 
     options, '*_gyro', 'zoffset', [1., 2.]
     options, '*_gyro', 'zticklen', -0.5
@@ -281,30 +309,31 @@ end
 pro event_plot
 
     SET_PLOT, 'Z'
-    ; DEVICE, SET_RESOLUTION = [600,1200]
-    DEVICE, SET_RESOLUTION = [600,1800]
+    DEVICE, SET_RESOLUTION = [1000,800]
+    ; DEVICE, SET_RESOLUTION = [600,1800]
     !p.BACKGROUND = 255
     !p.color = 0
     ; !P.FONT = 0
-    !p.charsize=1.0
+    !p.charsize=1.2
 
 
-    ; timespan, '2018-06-06/11:25:00', 20, /min
+    timespan, '2018-06-06/11:25:00', 20, /min
 
-    ; a = loading()
+    a = loading()
 
-    ; ylim, '*_gyro', 0.064, 8, 0 ; kHz
-    ; ylim, 'hfa_e_gyro', 90.0, 190.0, 0
-    ; ylim, 'Ne', 100.0, 400.0, 0
+    ylim, '*_gyro', 0.064, 8, 0 ; kHz
+    ylim, 'hfa_e_gyro', 90.0, 190.0, 0
+    ylim, 'Ne', 100.0, 400.0, 0
 
-    ; ; tplot_save, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro'], $
-    ;     ; filename='/Users/ampuku/Documents/duct/code/IDL/for_paper_figure/event_tplots/event_plot1'
-    ; ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_gyro', 'S_mask_gyro']
-    ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_gyro', 'kvec_mask_gyro', 'polarization_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_gyro', 'S_mask_gyro']
+    ; tplot_save, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro'], $
+        ; filename='/Users/ampuku/Documents/duct/code/IDL/for_paper_figure/event_tplots/event_plot1'
+    ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_gyro', 'S_mask_gyro']
+    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_gyro', 'kvec_mask_gyro', 'polarization_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_gyro', 'S_mask_gyro']
 
     ; makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot12_ver4', /mkdir
+    makepng, '/Users/ampuku/OneDrive/4_event12_test'
 
-    ; stop
+    stop
 
 
     ; timespan, '2017-07-14/02:40:00', 20, /min
@@ -324,12 +353,13 @@ pro event_plot
     ; ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_gyro', 'S_mask_gyro']
     ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_gyro', 'kvec_mask_gyro', 'polarization_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_gyro', 'S_mask_gyro']
 
-    ; makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot3_ver4', /mkdir
+    ; ; makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot3_ver4', /mkdir
+    ; makepng, '/Users/ampuku/OneDrive/4_event3_test'
 
     ; stop
 
 
-;     timespan, '2017-07-03/04:32:00', 40, /sec
+    ; timespan, '2017-07-03/04:32:00', 40, /sec
 
     ; tplot_restore, filename='/Users/ampuku/Documents/duct/code/IDL/tplots/wfc_wna_tplots_from_iseewave/2017-07-03/erg_pwe_wfc_20170703043200_20170703043255.tplot'
     ; a = loading_wfc()
@@ -341,26 +371,44 @@ pro event_plot
 ;     ; tplot_save, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_mask_gyro'], $
 ;         ; filename='/Users/ampuku/Documents/duct/code/IDL/for_paper_figure/event_tplots/event_plot1'
 ;     ; tplot, ['hfa_e_gyro', 'wfc_e_gyro', 'wfc_b_gyro', 'Ne', 'wna_mask_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_gyro', 'S_mask_gyro']
-    ; tplot, ['hfa_e_gyro', 'wfc_e_gyro', 'wfc_b_gyro', 'Ne', 'wna_gyro', 'wna_mask_gyro', 'polarization_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_gyro', 'S_mask_gyro']
+;     tplot, ['hfa_e_gyro', 'wfc_e_gyro', 'wfc_b_gyro', 'Ne', 'wna_gyro', 'wna_mask_gyro', 'polarization_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_gyro', 'S_mask_gyro']
 
-    ; makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot4_ver4', /mkdir
+;     ; makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot4_ver4', /mkdir
+;     makepng, '/Users/ampuku/OneDrive/4_event41_test'
 
 ; stop
 
 
-    timespan, '2017-07-03/04:17:00', 20, /min
+    ; timespan, '2017-07-03/04:17:00', 20, /min
 
-    a = loading()
+    ; a = loading()
 
-    ylim, '*_gyro', 2., 12., 0 ; kHz
-    ylim, 'hfa_e_gyro', 80.0, 160.0, 0
-    ylim, 'Ne', 100.0, 270.0, 0
+    ; ylim, '*_gyro', 2., 12., 0 ; kHz
+    ; ylim, 'hfa_e_gyro', 80.0, 160.0, 0
+    ; ylim, 'Ne', 100.0, 270.0, 0
 
-    tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_gyro', 'kvec_mask_gyro', 'polarization_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_gyro', 'S_mask_gyro']
+    ; tplot, ['hfa_e_gyro', 'ofa_e_gyro', 'ofa_b_gyro', 'Ne', 'kvec_gyro', 'kvec_mask_gyro', 'polarization_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_gyro', 'S_mask_gyro']
 
-    makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot4_ver42', /mkdir
+    ; ; makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot4_ver42', /mkdir
+    ; makepng, '/Users/ampuku/OneDrive/4_event42_test'
+
+    ; stop
+
+
+    timespan, '2017-07-03/04:32:28', 8, /sec
+
+    a = loading_wfc()
+
+    ylim, '*_gyro', 4., 9., 0 ; kHz
+
+    tplot, ['wfc_e_gyro', 'wfc_b_gyro', 'wna_gyro', 'kvec_xy_gyro', 'planarity_gyro']
+    ; tplot, ['wfc_e_gyro', 'wfc_b_gyro', 'wna_gyro', 'wna_mask_gyro', 'polarization_gyro', 'polarization_mask_gyro', 'planarity_gyro', 'planarity_mask_gyro', 'S_gyro', 'S_mask_gyro']
+
+    ; makepng, '/Users/ampuku/Documents/duct/fig/_paper_figure/event_plot4_ver42', /mkdir
+    makepng, '/Users/ampuku/OneDrive/5_event4'
 
     stop
+
 
 
 
