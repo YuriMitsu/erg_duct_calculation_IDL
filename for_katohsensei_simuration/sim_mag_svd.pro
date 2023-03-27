@@ -141,6 +141,8 @@ if size(scw,/type) eq 8 then begin
         !p.background = 255
         !p.color = 0
 
+        timespan, 0, 0.05, /sec ; ここ、本当はおかしい?
+
         ylim,['wfc_fft_all','sim_wfc_wna_msvd','sim_wfc_plan_msvd','sim_wfc_elip_msvd','sim_wfc_azim_msvd'],1e4,1e6, 1
         zlim,'wfc_fft_all',1e-10,1e-1
         tplot,['wfc_fft_all','sim_wfc_wna_msvd','sim_wfc_plan_msvd','sim_wfc_elip_msvd','sim_wfc_azim_msvd']

@@ -1,4 +1,6 @@
 ; .compile '/Users/ampuku/Documents/duct/code/IDL/for_katohsensei_simuration/read_wfc_sim_v00.pro' 
+
+
 pro read_wfc_sim_v00,dir=dir
 
 ; omega_ce = 2*!dpi*2000.
