@@ -133,3 +133,8 @@ ylim, ['hfa_gyro', 'espec', 'bspec', 'Ne', 'kvec_mask_gyro', 'polarization_plot'
 ylim, 'hfa_gyro', 10, 200, 1
 ylim, ['espec', 'bspec', 'polarization_plot', 'planarity', 'planarity_plot'],0, 10000, 0
 tplot, ['hfa_gyro', 'espec', 'bspec', 'Ne', 'kvec_mask_gyro', 'polarization_plot', 'planarity', 'planarity_plot']
+
+
+
+tplot, ['espec_plot', 'bspec_plot', 'wna_plot', 'kvec_xy', 'planarity_plot']
+timespan, '2017-07-03/04:32:29', 6, /sec
